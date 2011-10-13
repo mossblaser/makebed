@@ -25,12 +25,14 @@
 
 include makedefs
 
-RTOS_SOURCE_DIR=../../Source
-DEMO_SOURCE_DIR=../Common/Minimal
+RTOS_SOURCE_DIR=../../../Source
+DEMO_SOURCE_DIR=../../Common/Minimal
 
+CFLAGS+= -I ../../Common/include -I webserver
+CFLAGS+= -I ../../Common/include -I webserver
 CFLAGS+=-I hw_include -I . -I ${RTOS_SOURCE_DIR}/include -I ${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3 -I ../Common/include -D GCC_ARMCM3_LM3S102 -D inline=
 
-VPATH=${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3:${DEMO_SOURCE_DIR}:init:hw_include
+VPATH=${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3:${DEMO_SOURCE_DIR}:init:webserver:hw_include
 
 OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/list.o    \
@@ -42,9 +44,15 @@ OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/PollQ.o	\
 	  ${COMPILER}/integer.o	\
 	  ${COMPILER}/semtest.o \
-	  ${COMPILER}/osram96x16.o
+	  ${COMPILER}/emac.o \
+	  ${COMPILER}/ParTest.o \
+	  ${COMPILER}/syscalls.o \
+	  ${COMPILER}/printf-stdarg.o \
+	  ${COMPILER}/httpd-cgi.o ${COMPILER}/psock.o ${COMPILER}/uip_arp.o ${COMPILER}/uIP_Task.o \
+	  ${COMPILER}/httpd.o ${COMPILER}/httpd-fs.o ${COMPILER}/http-strings.o ${COMPILER}/timer.o ${COMPILER}/uip.o
 
-INIT_OBJS= ${COMPILER}/startup.o
+
+INIT_OBJS= ${COMPILER}/cr_startup_lpc17.o
 
 LIBS= hw_include/libdriver.a
 
@@ -69,7 +77,7 @@ ${COMPILER}:
 	@mkdir ${COMPILER}
 
 ${COMPILER}/RTOSDemo.axf: ${INIT_OBJS} ${OBJS} ${LIBS}
-SCATTER_RTOSDemo=standalone.ld
+SCATTER_RTOSDemo=rtosdemo_rdb1768_Debug.ld
 ENTRY_RTOSDemo=ResetISR
 
 #

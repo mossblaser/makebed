@@ -69,7 +69,7 @@
 /* Demo includes. */
 #include "EthDev_LPC17xx.h"
 #include "EthDev.h"
-#include "ParTest.h"
+#include "partest.h"
 
 /*-----------------------------------------------------------*/
 
