@@ -79,9 +79,9 @@ SECTIONS
 	
 	.ETHRAM :
 	{
-	} > AHBSRAM0
+	} > AHBRAM0
 	
 	.USBRAM :
 	{
-	} > AHBSRAM1
+	} > AHBRAM1
 }

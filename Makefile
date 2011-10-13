@@ -32,16 +32,21 @@ CFLAGS+= -I ../../Common/include -I webserver
 CFLAGS+= -I ../../Common/include -I webserver
 CFLAGS+=-I hw_include -I . -I ${RTOS_SOURCE_DIR}/include -I ${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3 -I ../Common/include -D GCC_ARMCM3_LM3S102 -D inline=
 
-VPATH=${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3:${DEMO_SOURCE_DIR}:init:webserver:hw_include
+VPATH=${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3:${DEMO_SOURCE_DIR}:init:webserver:hw_include:LPCUSB
 
 OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/list.o    \
-      ${COMPILER}/queue.o   \
-      ${COMPILER}/tasks.o   \
-      ${COMPILER}/port.o    \
-      ${COMPILER}/heap_1.o  \
+	  ${COMPILER}/queue.o   \
+	  ${COMPILER}/tasks.o   \
+	  ${COMPILER}/port.o    \
+	  ${COMPILER}/heap_1.o  \
 	  ${COMPILER}/BlockQ.o	\
 	  ${COMPILER}/PollQ.o	\
+	  ${COMPILER}/QPeek.o \
+	  ${COMPILER}/GenQTest.o \
+	  ${COMPILER}/blocktim.o \
+	  ${COMPILER}/flash.o \
+	  ${COMPILER}/recmutex.o \
 	  ${COMPILER}/integer.o	\
 	  ${COMPILER}/semtest.o \
 	  ${COMPILER}/emac.o \
@@ -49,7 +54,13 @@ OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/syscalls.o \
 	  ${COMPILER}/printf-stdarg.o \
 	  ${COMPILER}/httpd-cgi.o ${COMPILER}/psock.o ${COMPILER}/uip_arp.o ${COMPILER}/uIP_Task.o \
-	  ${COMPILER}/httpd.o ${COMPILER}/httpd-fs.o ${COMPILER}/http-strings.o ${COMPILER}/timer.o ${COMPILER}/uip.o
+	  ${COMPILER}/httpd.o ${COMPILER}/httpd-fs.o ${COMPILER}/http-strings.o ${COMPILER}/timer.o ${COMPILER}/uip.o \
+	  ${COMPILER}/usbcontrol.o \
+	  ${COMPILER}/USB_CDC.o \
+	  ${COMPILER}/usbhw_lpc.o \
+	  ${COMPILER}/usbinit.o \
+	  ${COMPILER}/usbstdreq.o
+
 
 
 INIT_OBJS= ${COMPILER}/cr_startup_lpc17.o
@@ -79,6 +90,9 @@ ${COMPILER}:
 ${COMPILER}/RTOSDemo.axf: ${INIT_OBJS} ${OBJS} ${LIBS}
 SCATTER_RTOSDemo=rtosdemo_rdb1768_Debug.ld
 ENTRY_RTOSDemo=ResetISR
+
+install: all
+	@cp ${COMPILER}/RTOSDemo.bin /media/mbed/freertos-lpc1768.bin
 
 #
 #

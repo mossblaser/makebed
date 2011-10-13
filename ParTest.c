@@ -57,10 +57,10 @@
 /* Demo application includes. */
 #include "partest.h"
 
-#define LED_2 ( 1UL << 24UL )
-#define LED_3 ( 1UL << 25UL )
-#define LED_4 ( 1UL << 28UL )
-#define LED_5 ( 1UL << 29UL )
+#define LED_2 ( 1UL << 18UL )
+#define LED_3 ( 1UL << 20UL )
+#define LED_4 ( 1UL << 23UL )
+#define LED_5 ( 1UL << 21UL )
 
 #define partstFIO1_BITS			( LED_2 | LED_3 | LED_4 | LED_5 )
 #define partstNUM_LEDS			( 4 )

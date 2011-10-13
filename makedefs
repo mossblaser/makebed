@@ -204,6 +204,7 @@ ifeq (${COMPILER}, gcc)
 	       --entry ${ENTRY_${notdir ${@:.axf=}}} \
 	       ${LDFLAGSgcc_${notdir ${@:.axf=}}}    \
 	       ${LDFLAGS} -o ${@} ${^}               \
-	       '${LIBC}' '${LIBGCC}'
+	       '${LIBC}' '${LIBGCC}' \
+	       -L/home/jonathan/arm-cs-tools/lib/gcc/arm-none-eabi/4.5.1/thumb
 	@${OBJCOPY} -O binary ${@} ${@:.axf=.bin}
 endif
