@@ -5,7 +5,7 @@
  * (created from nxp_lpc13_c.ld (v2.0.11 (200907061347)) on Thu Jul 09 12:44:31 BST 2009)
 */
 
-GROUP(libgcc.a libc.a)
+/*GROUP(libgcc.a libc.a)*/
 
 MEMORY
 {
@@ -79,9 +79,9 @@ SECTIONS
 	
 	.ETHRAM :
 	{
-	} > AHBRAM0
+	} > AHBSRAM0
 	
 	.USBRAM :
 	{
-	} > AHBRAM1
+	} > AHBSRAM1
 }
