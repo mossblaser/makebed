@@ -54,6 +54,9 @@
 /* FreeRTOS.org includes. */
 #include "FreeRTOS.h"
 
+/* IO Support includes. */
+#include "gpio.h"
+
 /* Demo application includes. */
 #include "partest.h"
 
@@ -67,17 +70,24 @@
 
 static unsigned long ulLEDs[] = { LED_3, LED_2, LED_5, LED_4 };
 
+static gpio_t *LEDs[] = {
+	&gpio_mbed_led1,
+	&gpio_mbed_led2,
+	&gpio_mbed_led3,
+	&gpio_mbed_led4
+};
+
 /*-----------------------------------------------------------
  * Simple parallel port IO routines.
  *-----------------------------------------------------------*/
 
 void vParTestInitialise( void )
 {
-	/* LEDs on port 1. */
-	LPC_GPIO1->FIODIR  = partstFIO1_BITS;
-	
-	/* Start will all LEDs off. */
-	LPC_GPIO1->FIOCLR = partstFIO1_BITS;
+	///* LEDs on port 1. */
+	//LPC_GPIO1->FIODIR  = partstFIO1_BITS;
+	//
+	///* Start will all LEDs off. */
+	//LPC_GPIO1->FIOCLR = partstFIO1_BITS;
 }
 /*-----------------------------------------------------------*/
 
@@ -102,14 +112,7 @@ void vParTestToggleLED( unsigned portBASE_TYPE uxLED )
 {
 	if( uxLED < partstNUM_LEDS )
 	{
-		if( LPC_GPIO1->FIOPIN & ulLEDs[ uxLED ] )
-		{
-			LPC_GPIO1->FIOCLR = ulLEDs[ uxLED ];
-		}
-		else
-		{
-			LPC_GPIO1->FIOSET = ulLEDs[ uxLED ];
-		}
+		gpio_write(LEDs[uxLED], !gpio_read(LEDs[uxLED]));
 	}
 }
 /*-----------------------------------------------------------*/

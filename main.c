@@ -95,6 +95,10 @@
 #include "QPeek.h"
 #include "recmutex.h"
 
+/* Peripheral support includes */
+#include "usb_cdc.h"
+#include "gpio.h"
+
 /*-----------------------------------------------------------*/
 
 /* The time between cycles of the 'check' functionality (defined within the
@@ -119,7 +123,6 @@ without an error being reported. */
 #define mainPASS_STATUS_MESSAGE				"All tasks are executing without error."
 
 /* Bit definitions. */
-#define PCONP_PCGPIO    0x00008000
 #define PLLFEED_FEED1   0x000000AA
 #define PLLFEED_FEED2   0x00000055
 /*-----------------------------------------------------------*/
@@ -134,11 +137,6 @@ static void prvSetupHardware( void );
  * this task.
  */
 extern void vuIP_Task( void *pvParameters );
-
-/*
- * The task that handles the USB stack.
- */
-extern void vUSBTask( void *pvParameters );
 
 /*
  * Simply returns the current status message for display on served WEB pages.
@@ -158,6 +156,7 @@ char cIPAddress[ 16 ]; /* Enough space for "xxx.xxx.xxx.xxx\0". */
 
 	/* Configure the hardware for use by this demo. */
 	prvSetupHardware();
+	usb_init();
 
 	/* Start the standard demo tasks.  These are just here to exercise the
 	kernel port and provide examples of how the FreeRTOS API can be used. */
@@ -251,10 +250,10 @@ void prvSetupHardware( void )
 {
 	/* Disable peripherals power. */
 	LPC_SC->PCONP = 0;
-
-	/* Enable GPIO power. */
-	LPC_SC->PCONP = PCONP_PCGPIO;
-
+	
+	/* Start GPIO */
+	gpio_init();
+	
 	/* Disable TPIU. */
 	LPC_PINCON->PINSEL10 = 0;
 
