@@ -180,52 +180,6 @@ gpio_write(gpio_t *gpio, gpio_value_t value)
 	else
 		gpio->port->lpc_port->FIOCLR = 1 << (gpio->pin);
 	
-	
-	// XXX: Debugging
-	VCOM_putstr("gpio_write:\r\n");
-	
-	VCOM_putstr("  port = 0x");
-	VCOM_putuint_base((unsigned int) &(gpio->port->lpc_port), 16);
-	VCOM_putstr("\r\n");
-	
-	VCOM_putstr("  pin = ");
-	VCOM_putuint((unsigned int) gpio->pin);
-	VCOM_putstr("\r\n");
-	
-	VCOM_putstr("  value = ");
-	VCOM_putuint((unsigned int) value);
-	VCOM_putstr("\r\n");
-	
-	VCOM_putstr("  FIOPIN = ");
-	VCOM_putuint_base((unsigned int) gpio->port->lpc_port->FIOPIN, 2);
-	VCOM_putstr("\r\n");
-	VCOM_putstr("           ........^.^^.^..................");
-	VCOM_putstr("\r\n");
-	
-	VCOM_putstr("  FIOMASK = ");
-	VCOM_putuint_base((unsigned int) gpio->port->lpc_port->FIOMASK, 2);
-	VCOM_putstr("\r\n");
-	VCOM_putstr("            ........^.^^.^..................");
-	VCOM_putstr("\r\n");
-	
-	VCOM_putstr("  FIODIR = ");
-	VCOM_putuint_base((unsigned int) gpio->port->lpc_port->FIODIR, 2);
-	VCOM_putstr("\r\n");
-	VCOM_putstr("           ........^.^^.^..................");
-	VCOM_putstr("\r\n");
-	
-	VCOM_putstr("  Mask = ");
-	VCOM_putuint_base((unsigned int) (1u << (gpio->pin)), 2);
-	VCOM_putstr("\r\n");
-	VCOM_putstr("         ........^.^^.^..................");
-	VCOM_putstr("\r\n");
-	
-	VCOM_putstr("  PINSEL3 = ");
-	VCOM_putuint_base((unsigned int) LPC_PINCON->PINSEL3, 2);
-	VCOM_putstr("\r\n");
-	VCOM_putstr("         ..........................^^....");
-	VCOM_putstr("\r\n");
-	
 	// Release the mutex
 	xSemaphoreGive(gpio->port->mutex);
 }
