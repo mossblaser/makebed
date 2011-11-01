@@ -45,6 +45,8 @@
 
 */
 
+#include "usb_cdc.h"
+
 #include "FreeRTOS.h"
 #include "queue.h"
 
@@ -91,7 +93,8 @@ static TLineCoding LineCoding = {115200, 0, 0, 8};
 static unsigned char abBulkBuf[64];
 static unsigned char abClassReqData[8];
 
-static xQueueHandle xRxedChars = NULL, xCharsForTx = NULL;
+xQueueHandle xRxedChars  = NULL;
+xQueueHandle xCharsForTx = NULL;
 
 // forward declaration of interrupt handler
 void USBIntHandler(void);
@@ -192,17 +195,17 @@ static const unsigned char abDescriptors[] = {
 	DESC_STRING,
 	LE_WORD(0x0409),
 
-	0x0E,
+	0x0C,
 	DESC_STRING,
-	'L', 0, 'P', 0, 'C', 0, 'U', 0, 'S', 0, 'B', 0,
-
-	0x14,
-	DESC_STRING,
-	'U', 0, 'S', 0, 'B', 0, 'S', 0, 'e', 0, 'r', 0, 'i', 0, 'a', 0, 'l', 0,
+	'J', 0, 'h', 0, 'n', 0, 'e', 0, 't', 0,
 
 	0x12,
 	DESC_STRING,
-	'D', 0, 'E', 0, 'A', 0, 'D', 0, 'C', 0, '0', 0, 'D', 0, 'E', 0,
+	'M', 0, 'a', 0, 'k', 0, 'e', 0, 'r', 0, 'b', 0, 'o', 0, 't', 0,
+
+	0x12,
+	DESC_STRING,
+	'D', 0, 'E', 0, 'A', 0, 'D', 0, 'B', 0, 'E', 0, 'A', 0, 'F', 0,
 
 // terminating zero
 	0
@@ -334,6 +337,42 @@ char cc = ( char ) c;
 }
 
 
+void VCOM_putstr(char *s)
+{
+	while (*s != '\0') {
+		VCOM_putchar((int)*(s++));
+	}
+}
+
+
+void VCOM_putuint(unsigned int value)
+{
+	VCOM_putuint_base(value, 10);
+}
+
+void VCOM_putuint_base(unsigned int value, unsigned int base)
+{
+	static const char digits[] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+	
+	/* Worst case is we print in binary so that's all the "buffer" we need */
+	char stack[(sizeof(int)*8)] = {0};
+	char *stack_ptr = stack;
+	
+	/* Can't deal with bases above 16 */
+	if (base > 16 || base < 2)
+		return;
+	
+	while (value > 0)
+	{
+		*(stack_ptr++) = digits[value % base];
+		value /= base;
+	}
+	
+	while (stack_ptr != stack)
+		VCOM_putchar(*(--stack_ptr));
+}
+
+
 /**
 	Reads one character from VCOM port
 	
@@ -395,12 +434,9 @@ unsigned long CPUcpsie(void)
     return(ulRet);
 }
 
-void vUSBTask( void *pvParameters )
+
+void usb_init(void)
 {
-	int c;
-	
-	/* Just to prevent compiler warnings about the unused parameter. */
-	( void ) pvParameters;
 	DBG("Initialising USB stack\n");
 
 	xRxedChars = xQueueCreate( usbBUFFER_LEN, sizeof( char ) );
@@ -443,7 +479,15 @@ void vUSBTask( void *pvParameters )
 		
 	DBG("Connecting to USB bus\n");
 	USBHwConnect(TRUE);
+}
 
+
+void vUSBTask( void *pvParameters )
+{
+	int c;
+	
+	/* Just to prevent compiler warnings about the unused parameter. */
+	( void ) pvParameters;
 	// echo any character received (do USB stuff in interrupt)
 	for( ;; )
 	{
@@ -453,6 +497,8 @@ void vUSBTask( void *pvParameters )
 			// Echo character back with INCREMENT_ECHO_BY offset, so for example if
 			// INCREMENT_ECHO_BY is 1 and 'A' is received, 'B' will be echoed back.
 			VCOM_putchar(c + INCREMENT_ECHO_BY );
+		} else {
+			VCOM_putchar('!');
 		}
 	}
 }
