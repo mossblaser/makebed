@@ -106,7 +106,6 @@ gpio_init_port_t(LPC_GPIO_TypeDef *lpc_port)
 	gpio_port_t port;
 	
 	port.lpc_port = lpc_port;
-	port.mutex    = xSemaphoreCreateMutex();
 	
 	return port;
 }
@@ -127,8 +126,7 @@ gpio_init_gpio_t(gpio_port_t *port, unsigned int pin)
 void
 gpio_set_mode(gpio_t *gpio, gpio_mode_t mode)
 {
-	// Get the port mutex (block forever until it is available)
-	xSemaphoreTake(gpio->port->mutex, portMAX_DELAY);
+	portENTER_CRITICAL();
 	
 	// Clear the IO mask bit (enabling control of the pin)
 	gpio->port->lpc_port->FIOMASK & ~((uint32_t)(1<<gpio->pin));
@@ -139,8 +137,7 @@ gpio_set_mode(gpio_t *gpio, gpio_mode_t mode)
 	// Set the register with the mode bit set as requested
 	gpio->port->lpc_port->FIODIR = cur_mode | ((uint32_t)mode << (gpio->pin));
 	
-	// Release the mutex
-	xSemaphoreGive(gpio->port->mutex);
+	portEXIT_CRITICAL();
 } // gpio_set_mode
 
 
@@ -155,14 +152,13 @@ gpio_disable(gpio_t *gpio)
 gpio_value_t
 gpio_read(gpio_t *gpio)
 {
-	// Get the port mutex (block forever until it is available)
-	xSemaphoreTake(gpio->port->mutex, portMAX_DELAY);
+	portENTER_CRITICAL();
 	
 	// Fetch the pin value
 	gpio_value_t value = (gpio->port->lpc_port->FIOPIN >> gpio->pin) & 1;
 	
 	// Release the mutex
-	xSemaphoreGive(gpio->port->mutex);
+	portEXIT_CRITICAL();
 	
 	return value;
 }
@@ -171,8 +167,7 @@ gpio_read(gpio_t *gpio)
 void
 gpio_write(gpio_t *gpio, gpio_value_t value)
 {
-	// Get the port mutex (block forever until it is available)
-	xSemaphoreTake(gpio->port->mutex, portMAX_DELAY);
+	portENTER_CRITICAL();
 	
 	// Set the pin value
 	if (value == GPIO_HIGH)
@@ -180,6 +175,5 @@ gpio_write(gpio_t *gpio, gpio_value_t value)
 	else
 		gpio->port->lpc_port->FIOCLR = 1 << (gpio->pin);
 	
-	// Release the mutex
-	xSemaphoreGive(gpio->port->mutex);
+	portEXIT_CRITICAL();
 }

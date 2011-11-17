@@ -34,7 +34,6 @@ typedef enum gpio_value {
  */
 typedef struct gpio_port {
 	LPC_GPIO_TypeDef *lpc_port;
-	xSemaphoreHandle  mutex;
 } gpio_port_t;
 
 
