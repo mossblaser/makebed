@@ -1,8 +1,5 @@
 #include "gpio.h"
 
-/* USB Serial Support includes. */
-#include "usb_cdc.h"
-
 
 /* GPIO Ports, private */
 gpio_port_t gpio_port_0;

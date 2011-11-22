@@ -207,6 +207,8 @@ PT_THREAD(net_stats(struct httpd_state *s, char *ptr))
 }
 /*---------------------------------------------------------------------------*/
 
+char XXX_glbl_msg[64] = {'\0'};
+
 extern void vTaskList( signed char *pcWriteBuffer );
 static char cCountBuf[ 128 ];
 long lRefreshCount = 0;
@@ -215,7 +217,10 @@ generate_rtos_stats(void *arg)
 {
 	( void ) arg;
 	lRefreshCount++;
-	sprintf( cCountBuf, "<p><br>Refresh count = %d<p><br>%s", (int)lRefreshCount, "All OK!" );
+	sprintf( cCountBuf, "<p><br>Refresh count = %d<p><br>%s<br>%s",
+	         (int)lRefreshCount,
+	         "All OK!",
+	         XXX_glbl_msg );
     vTaskList( uip_appdata );
 	strcat( uip_appdata, cCountBuf );
 

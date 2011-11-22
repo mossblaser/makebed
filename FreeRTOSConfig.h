@@ -143,6 +143,7 @@ function does the shifting itself.  Note these priorities need to be equal to
 or lower than configMAX_SYSCALL_INTERRUPT_PRIORITY - therefore the numeric
 value needs to be equal to or greater than 5 (on the Cortex-M3 the lower the
 numeric value the higher the interrupt priority). */
+#define configSTEPPER_INTERRUPT_PRIORITY		5
 #define configEMAC_INTERRUPT_PRIORITY		5
 #define configUSB_INTERRUPT_PRIORITY		6
 

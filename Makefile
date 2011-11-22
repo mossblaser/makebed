@@ -27,10 +27,10 @@ include makedefs
 
 RTOS_SOURCE_DIR=/home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Source
 
-CFLAGS+=-I LPCUSB -I cutil -I GPIO -I /home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Demo/Common/include -I webserver
+CFLAGS+=-I LPCUSB -I cutil -I GPIO -I stepper -I /home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Demo/Common/include -I webserver
 CFLAGS+=-I . -I ${RTOS_SOURCE_DIR}/include -I ${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3 -I /home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Demo/Common/include -D GCC_ARMCM3_LM3S102 -D inline=
 
-VPATH=${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3:$init:webserver:LPCUSB:GPIO:cutil
+VPATH=${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3:$init:webserver:LPCUSB:GPIO:stepper:cutil
 
 OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/mbed_boot.o    \
@@ -51,7 +51,8 @@ OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/usbhw_lpc.o \
 	  ${COMPILER}/usbinit.o \
 	  ${COMPILER}/usbstdreq.o \
-	  ${COMPILER}/gpio.o
+	  ${COMPILER}/gpio.o \
+	  ${COMPILER}/stepper.o
 
 
 

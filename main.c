@@ -10,6 +10,7 @@
 /* Peripheral support includes */
 #include "usb_cdc.h"
 #include "gpio.h"
+#include "stepper.h"
 
 /* Task priorities. */
 #define mainUIP_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
@@ -24,40 +25,30 @@ handling library calls. */
  */
 extern void vuIP_Task( void *pvParameters );
 
-int value = 0;
-
-void
-TIMER0_IRQHandler(void)
-{
-	gpio_write(&gpio_mbed_led3, !gpio_read(&gpio_mbed_led3));
-	
-	LPC_TIM0->IR = LPC_TIM0->IR;
-	NVIC_ClearPendingIRQ(TIMER0_IRQn);
-}
-
-
 
 void
 flash_task(void *pvParameters)
 {
+	stepper_init();
+	stepper_init_motor(0, &gpio_mbed_p10, &gpio_mbed_p9,  &gpio_mbed_led1);
+	stepper_init_motor(1, &gpio_mbed_p15, &gpio_mbed_p14, &gpio_mbed_led2);
+	stepper_init_motor(2, &gpio_mbed_p23, &gpio_mbed_p22, &gpio_mbed_led3);
+	
+	stepper_set_action(0, STEPPER_FORWARD, 100, 100);
+	stepper_set_action(1, STEPPER_FORWARD, 100, 50);
+	stepper_set_action(2, STEPPER_FORWARD, 10, 100);
+	
+	stepper_wait_until_idle();
+	
 	portTickType last_flash = xTaskGetTickCount();
-	portTickType delay      = 1000 / portTICK_RATE_MS;
-	
-	/* Timer flashing */
-	gpio_set_mode(&gpio_mbed_led3, GPIO_OUTPUT);
-	LPC_TIM0->TCR  = 2;         // Reset & disable counter/timer
-	LPC_TIM0->PR   = 99999;     // For 1kHz when running at 100mHz
-	LPC_TIM0->MR0  = 999;       // Every 100ms
-	LPC_TIM0->MCR  = 3;         // Reset and interrupt on MR0 match
-	LPC_TIM0->TCR  = 1;         // Enable and remove reset
-	NVIC_EnableIRQ(TIMER0_IRQn); // Enable interupt
-	
+	portTickType delay      = 500 / portTICK_RATE_MS;
 	
 	/* FreeRTOS Flashing */
-	gpio_set_mode(&gpio_mbed_led1, GPIO_OUTPUT);
+	gpio_set_mode(&gpio_mbed_led4, GPIO_OUTPUT);
+	gpio_write(&gpio_mbed_led4, GPIO_HIGH);
 	for (;;) {
 		vTaskDelayUntil(&last_flash, delay);
-		gpio_write(&gpio_mbed_led1, !gpio_read(&gpio_mbed_led1));
+		gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
 	}
 }
 
@@ -69,6 +60,7 @@ main(void)
 	mbed_boot();
 	gpio_init();
 	usb_init();
+	
 	
 	xTaskCreate(vUSBTask,                 // Task entry function
 	            (signed char *) "USB",    // Task name
