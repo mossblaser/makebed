@@ -10,6 +10,7 @@
 /* Peripheral support includes */
 #include "usb_cdc.h"
 #include "gpio.h"
+#include "analog_in.h"
 #include "stepper.h"
 
 /* Task priorities. */
@@ -25,6 +26,7 @@ handling library calls. */
  */
 extern void vuIP_Task( void *pvParameters );
 
+extern char XXX_glbl_msg[64];
 
 void
 flash_task(void *pvParameters)
@@ -38,7 +40,9 @@ flash_task(void *pvParameters)
 	stepper_set_action(1, STEPPER_FORWARD, 100, 50);
 	stepper_set_action(2, STEPPER_FORWARD, 10, 100);
 	
-	stepper_wait_until_idle();
+	//stepper_wait_until_idle();
+	
+	analog_in_set_mode(&analog_in_mbed_p20);
 	
 	portTickType last_flash = xTaskGetTickCount();
 	portTickType delay      = 500 / portTICK_RATE_MS;
@@ -49,6 +53,8 @@ flash_task(void *pvParameters)
 	for (;;) {
 		vTaskDelayUntil(&last_flash, delay);
 		gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
+		
+		sprintf(XXX_glbl_msg, "Read: %d", analog_in_read(&analog_in_mbed_p20));
 	}
 }
 
@@ -59,6 +65,7 @@ main(void)
 	/* Configure the hardware for use by this demo. */
 	mbed_boot();
 	gpio_init();
+	analog_in_init();
 	usb_init();
 	
 	
