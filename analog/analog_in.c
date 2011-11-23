@@ -27,6 +27,9 @@ analog_in_init(void)
 	// Enable the ADC
 	LPC_ADC->ADCR |= ADCR_PDN;
 	
+	// Set up the input clock divider for the ADC
+	LPC_SC->PCLKSEL0 = (LPC_SC->PCLKSEL0 & ~(0x3<<24)) | (0x1<<24);
+	
 	// Set up the clock divider for the ADC
 	LPC_ADC->ADCR |= ADCR_CLKDIV;
 	
