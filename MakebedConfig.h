@@ -12,7 +12,7 @@
 #define STEPPER_NUM_MOTORS 3
 
 /* Which system timer should be used for stepper control (0-3) */
-#define STEPPER_TIMER_NO 0
+#define STEPPER_TIMER_NO 1
 
 /* The frequency at which the timer increments (Hz) */
 #define STEPPER_TIMER_HZ 1000

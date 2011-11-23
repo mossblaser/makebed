@@ -23,6 +23,13 @@ stepper_init(void)
 	xSemaphoreTake(stepper_idle_mutex, portMAX_DELAY);
 	stepper_missed_steps = 0;
 	
+	// Power-on the timer
+	LPC_SC->PCONP |= STEPPER_TIMER_PCON;
+	
+	// Set the clock divider into the timer to use the CPU clock speed
+	STEPPER_TIMER_PCLKSEL = (STEPPER_TIMER_PCLKSEL & ~STEPPER_TIMER_PCLKSEL_MASK)
+	                        | STEPPER_TIMER_PCLKSEL_VAL;
+	
 	// Reset & disable counter/timer
 	STEPPER_TIMER_REG->TCR = 2;
 	
@@ -137,10 +144,11 @@ stepper_set_action(size_t        s_num,
 	steppers[s_num].next_toggle = STEPPER_TIMER_REG->TC + STEPPER_HOLD_TICKS;
 	
 	// Update the timer match register to the new next toggle
-	int next_toggle = INT_MAX;
+	int next_toggle = steppers[s_num].next_toggle;
 	int s_num_i;
 	for (s_num_i = 0; s_num_i < STEPPER_NUM_MOTORS; s_num_i++)
-		next_toggle = MIN(steppers[s_num_i].next_toggle, next_toggle);
+		if (steppers[s_num_i].steps_remaining > 0)
+			next_toggle = MIN(steppers[s_num_i].next_toggle, next_toggle);
 	STEPPER_TIMER_REG->MR0 = next_toggle;
 	
 	// Enable counter/timer
@@ -260,9 +268,9 @@ STEPPER_TIMER_IRQ_HANDLER(void)
 	last_num_idle_motors = num_idle_motors;
 	
 	// Clear the timer-counter interrupt
-	LPC_TIM0->IR = LPC_TIM0->IR;
+	STEPPER_TIMER_REG->IR = STEPPER_TIMER_REG->IR;
 	
 	// Clear the NVIC ready to accept a new interrupt
-	NVIC_ClearPendingIRQ(TIMER0_IRQn);
+	NVIC_ClearPendingIRQ(STEPPER_TIMER_IRQn);
 }
 

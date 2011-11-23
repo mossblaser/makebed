@@ -26,16 +26,9 @@ handling library calls. */
  */
 extern void vuIP_Task( void *pvParameters );
 
-extern char XXX_glbl_msg[64];
-
 void
 flash_task(void *pvParameters)
 {
-	stepper_init();
-	stepper_init_motor(0, &gpio_mbed_p10, &gpio_mbed_p9,  &gpio_mbed_led1);
-	stepper_init_motor(1, &gpio_mbed_p15, &gpio_mbed_p14, &gpio_mbed_led2);
-	stepper_init_motor(2, &gpio_mbed_p23, &gpio_mbed_p22, &gpio_mbed_led3);
-	
 	stepper_set_action(0, STEPPER_FORWARD, 100, 100);
 	stepper_set_action(1, STEPPER_FORWARD, 100, 50);
 	stepper_set_action(2, STEPPER_FORWARD, 10, 100);
@@ -53,8 +46,6 @@ flash_task(void *pvParameters)
 	for (;;) {
 		vTaskDelayUntil(&last_flash, delay);
 		gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
-		
-		sprintf(XXX_glbl_msg, "Read: %d", analog_in_read(&analog_in_mbed_p20));
 	}
 }
 
@@ -66,7 +57,13 @@ main(void)
 	mbed_boot();
 	gpio_init();
 	analog_in_init();
+	stepper_init();
 	usb_init();
+	
+	stepper_init_motor(0, &gpio_mbed_p10, &gpio_mbed_p9,  &gpio_mbed_led1);
+	stepper_init_motor(1, &gpio_mbed_p15, &gpio_mbed_p14, &gpio_mbed_led2);
+	stepper_init_motor(2, &gpio_mbed_p23, &gpio_mbed_p22, &gpio_mbed_led3);
+	
 	
 	
 	xTaskCreate(vUSBTask,                 // Task entry function
