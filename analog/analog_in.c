@@ -84,8 +84,8 @@ analog_in_set_mode(analog_in_t *analog_in)
 {
 	portENTER_CRITICAL();
 	
-	*(analog_in->port->pinsel) = (analog_in->port->mask)
-	                             << ((analog_in->pin * 2) % 32);
+	*(analog_in->port->pinsel) |= (analog_in->port->mask)
+	                              << ((analog_in->pin * 2ul) % 32ul);
 	
 	portEXIT_CRITICAL();
 }
