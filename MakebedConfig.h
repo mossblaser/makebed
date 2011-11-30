@@ -1,12 +1,55 @@
+/**
+ * Parameters, constands and pin allocations for the makebed software.
+ */
+
 #ifndef MAKEBED_CONFIG_H
 #define MAKEBED_CONFIG_H
 
-#include "FreeRTOSConfig.h"
+
+/*******************************************************************************
+ * Watchdog Falisafe Configuration
+ ******************************************************************************/
+
+/* Watchdog feed interval */
+#define WATCHDOG_FEED_INTERVAL_MS 2000
+
+
+
+/*******************************************************************************
+ * Power Control Configuration
+ ******************************************************************************/
+
+/* Pin allocations. */
+
+/* Power Enable pin (active high) for the PSU. */
+#define PIN_POWER_EN (&gpio_mbed_p24)
+
+/* Signal (active high) from PSU indicating normal power flow. */
+#define PIN_POWER_OK (&gpio_mbed_p5)
+
 
 
 /*******************************************************************************
  * Stepper Motor Control Configuration
  ******************************************************************************/
+
+/* !Enable pins for stepper motors */
+#define PIN_STEPPER_0_NEN (&gpio_mbed_p10)
+#define PIN_STEPPER_1_NEN (&gpio_mbed_p15)
+#define PIN_STEPPER_2_NEN (&gpio_mbed_p23)
+
+/* Direction pins for stepper motors */
+#define PIN_STEPPER_0_DIR (&gpio_mbed_p9)
+#define PIN_STEPPER_1_DIR (&gpio_mbed_p14)
+#define PIN_STEPPER_2_DIR (&gpio_mbed_p22)
+
+/* Enable pins for stepper motors */
+#define PIN_STEPPER_0_STEP (&gpio_mbed_p8)
+#define PIN_STEPPER_1_STEP (&gpio_mbed_p13)
+#define PIN_STEPPER_2_STEP (&gpio_mbed_p21)
+
+
+/* Stepper controler parameters. */
 
 /* How many steppers will be managed? */
 #define STEPPER_NUM_MOTORS 3
@@ -19,23 +62,6 @@
 
 /* The hold time in ns of the direction/enable signals of a stepper controller */
 #define STEPPER_HOLD_NS 200
-
-
-
-/* Calculated values, do not change! */
-
-/* Prescaler for the timer counter (Do not change) */
-#define STEPPER_PRESCALER ((configCPU_CLOCK_HZ \
-                            / ((unsigned long) STEPPER_TIMER_HZ)) - 1)
-
-/* The period of the timer tick in ns (Do not change) */
-#define STEPPER_TIMER_PERIOD_NS (1000000000ul / STEPPER_TIMER_HZ)
-
-/* Hold time in timer ticks for setting direction/enabling (Do not change) */
-/* STEPPER_HOLD_TICKS = ceil(STEPPER_HOLD_NS / STEPPER_TIMER_PERIOD_NS) */
-#define STEPPER_HOLD_TICKS ((((unsigned long)STEPPER_HOLD_NS) \
-                             + STEPPER_TIMER_PERIOD_NS - 1ul) \
-                            / STEPPER_TIMER_PERIOD_NS)
 
 
 #endif

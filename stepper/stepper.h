@@ -57,6 +57,21 @@
 	#error "Invalid STEPPER_TIMER_NO selected"
 #endif
 
+/* Calculated values, do not change! */
+
+/* Prescaler for the timer counter (Do not change) */
+#define STEPPER_PRESCALER ((configCPU_CLOCK_HZ \
+                            / ((unsigned long) STEPPER_TIMER_HZ)) - 1)
+
+/* The period of the timer tick in ns (Do not change) */
+#define STEPPER_TIMER_PERIOD_NS (1000000000ul / STEPPER_TIMER_HZ)
+
+/* Hold time in timer ticks for setting direction/enabling (Do not change) */
+/* STEPPER_HOLD_TICKS = ceil(STEPPER_HOLD_NS / STEPPER_TIMER_PERIOD_NS) */
+#define STEPPER_HOLD_TICKS ((((unsigned long)STEPPER_HOLD_NS) \
+                             + STEPPER_TIMER_PERIOD_NS - 1ul) \
+                            / STEPPER_TIMER_PERIOD_NS)
+
 
 /**
  * Stepper motor direction.
