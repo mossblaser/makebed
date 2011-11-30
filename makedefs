@@ -99,9 +99,10 @@ LDFLAGS= -Map gcc/out.map
 LIBGCC=${shell ${CC} -mthumb -mcpu=cortex-m3 -print-libgcc-file-name}
 
 #
-# Get the location of libc.a from the GCC front-end.
+# Get the location of libc.a and libm.a from the GCC front-end.
 #
 LIBC=${shell ${CC} -mthumb -mcpu=cortex-m3 -print-file-name=libc.a}
+LIBM=${shell ${CC} -mthumb -mcpu=cortex-m3 -print-file-name=libm.a}
 
 #
 # The command for extracting images from the linked executables.
@@ -198,13 +199,13 @@ ifeq (${COMPILER}, gcc)
 	                --entry ${ENTRY_${notdir ${@:.axf=}}} \
 	                ${LDFLAGSgcc_${notdir ${@:.axf=}}}    \
 	                ${LDFLAGS} -o ${@} ${^}               \
-	                '${LIBC}' '${LIBGCC}';                \
+	                '${LIBM}' '${LIBC}' '${LIBGCC}';                \
 	 fi
 	@${LD} -T ${SCATTER_${notdir ${@:.axf=}}}    \
 	       --entry ${ENTRY_${notdir ${@:.axf=}}} \
 	       ${LDFLAGSgcc_${notdir ${@:.axf=}}}    \
 	       ${LDFLAGS} -o ${@} ${^}               \
-	       '${LIBC}' '${LIBGCC}' \
+	       '${LIBM}' '${LIBC}' '${LIBGCC}' \
 	       -L/home/jonathan/arm-cs-tools/lib/gcc/arm-none-eabi/4.5.1/thumb
 	@${OBJCOPY} -O binary ${@} ${@:.axf=.bin}
 endif
