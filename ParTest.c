@@ -93,6 +93,10 @@ void vParTestInitialise( void )
 
 void vParTestSetLED( unsigned portBASE_TYPE uxLED, signed portBASE_TYPE xValue )
 {
+	gpio_write(&gpio_mbed_p28, !xValue);
+	return;
+	
+	
 	if( uxLED < partstNUM_LEDS )
 	{
 		/* Set of clear the output. */
@@ -119,14 +123,7 @@ void vParTestToggleLED( unsigned portBASE_TYPE uxLED )
 
 unsigned portBASE_TYPE uxParTextGetLED( unsigned portBASE_TYPE uxLED )
 {
-	if( uxLED < partstNUM_LEDS )
-	{
-		return ( LPC_GPIO1->FIOPIN & ulLEDs[ uxLED ] );
-	}
-	else
-	{
-		return 0;
-	}
+	return gpio_read(&gpio_mbed_p28);
 }
 /*-----------------------------------------------------------*/
 
