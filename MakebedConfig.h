@@ -64,4 +64,30 @@
 #define STEPPER_HOLD_NS 200
 
 
+
+/*******************************************************************************
+ * Heater/Temperature Control Configuration
+ ******************************************************************************/
+
+/* Temperature Probe Pins */
+#define PIN_THERMISTOR_PLATFORM (&analog_in_mbed_p19)
+#define PIN_THERMISTOR_EXTRUDER (&analog_in_mbed_p20)
+
+/* Heater Pins */
+#define PIN_HEATER_PLATFORM (&gpio_mbed_p28)
+#define PIN_HEATER_EXTRUDER (&gpio_mbed_p27)
+
+/* Thermistor Calibration Data */
+#define THERMISTOR_PLATFORM_R  4400.0
+#define THERMISTOR_PLATFORM_R0 100000.0
+#define THERMISTOR_PLATFORM_B  4072.0
+#define THERMISTOR_PLATFORM_T0 (25.0 + 273.15)
+
+#define THERMISTOR_EXTRUDER_R  4400.0
+#define THERMISTOR_EXTRUDER_R0 100000.0
+#define THERMISTOR_EXTRUDER_B  4072.0
+#define THERMISTOR_EXTRUDER_T0 (25.0 + 273.15)
+
+
+
 #endif

@@ -14,6 +14,7 @@
 #include "analog_in.h"
 #include "stepper.h"
 #include "thermistor.h"
+#include "pid.h"
 
 /* Task priorities. */
 #define mainUIP_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
@@ -63,15 +64,65 @@ flash_task(void *pvParameters)
 		
 		vTaskDelayUntil(&last_flash, delay);
 		gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
+	}
+}
+
+extern bool enable_heater;
+
+void
+pid_task(void *pvParameters)
+{
+	portTickType last_update = xTaskGetTickCount();
+	portTickType delay      = 500 / portTICK_RATE_MS;
+	
+	thermistor_t thermistor;
+	thermistor_init(&thermistor, 4400.0, 100000.0, 4072.0, 25.0 + 273.15);
+	
+	pid_state_t pid;
+	//pid_init(&pid, 7.0, 0.3, 36.0, 0.0); // pid0
+	//pid_init(&pid, 6.25, 0.4140625, 100.0, 0.0); // pid1
+	//pid_init(&pid, 6.25, 0.4140625, 140.0, 0.0); // pid2
+	pid_init(&pid, 6.25, 0.4140625, 200.0, 0.0);
+	
+	// LED
+	gpio_set_mode(&gpio_mbed_led3, GPIO_OUTPUT);
+	gpio_write(&gpio_mbed_led3, GPIO_LOW);
+	
+	// Heater
+	gpio_set_mode(PIN_HEATER_EXTRUDER, GPIO_OUTPUT);
+	gpio_write(PIN_HEATER_EXTRUDER, GPIO_LOW);
+	
+	// Extruder
+	gpio_set_mode(&gpio_mbed_p29, GPIO_OUTPUT);
+	gpio_write(&gpio_mbed_p29, GPIO_LOW);
+	
+	for (;;) {
+		vTaskDelayUntil(&last_update, delay);
 		
-		sprintf(XXX_glbl_msg, "%d, %d, p20: %d, p19: %d",
-		        analog_in_read(&analog_in_mbed_p20),
-		        analog_in_read(&analog_in_mbed_p19),
-		        (int)thermistor_convert(&thermistor,
-		                                (double)analog_in_read(&analog_in_mbed_p20) / 4086.0) - 273,
-		        (int)thermistor_convert(&thermistor,
-		                                (double)analog_in_read(&analog_in_mbed_p19) / 4086.0) - 273
-		);
+		if (enable_heater) {
+			double temperature = thermistor_convert(&thermistor,
+			                                        (double)analog_in_read(PIN_THERMISTOR_EXTRUDER) / 4086.0) - 273.0;
+			double control = pid_update(&pid, 210.0, temperature, 500.0);
+			
+			sprintf(XXX_glbl_msg, "p19: %d, PID: %d, P: %d, I: %d, D:%d, Integral: %d",
+			        (int)(temperature*10),
+			        (int)control,
+			        (int)(pid.Kp * 100.0),
+			        (int)(pid.Ki * 100.0),
+			        (int)(pid.Kd * 100.0),
+			        (int)(pid.integral * 100.0)
+			);
+			
+			gpio_write(&gpio_mbed_led3, control > 0.0);
+			gpio_write(PIN_HEATER_EXTRUDER, control > 0.0);
+			gpio_write(&gpio_mbed_p29, control < 0.0);
+			gpio_write(&gpio_mbed_p24, GPIO_HIGH);
+		} else {
+			gpio_write(&gpio_mbed_led3, GPIO_LOW);
+			gpio_write(PIN_HEATER_EXTRUDER, GPIO_LOW);
+			gpio_write(&gpio_mbed_p29, GPIO_LOW);
+			gpio_write(&gpio_mbed_p24, GPIO_LOW);
+		}
 		
 	}
 }
@@ -91,10 +142,9 @@ main(void)
 	
 	// Make sure the PSU is off...
 	gpio_set_mode(&gpio_mbed_p24, GPIO_OUTPUT);
-	gpio_write(&gpio_mbed_p24, GPIO_HIGH);
+	gpio_write(&gpio_mbed_p24, GPIO_LOW);
 	
-	// Enable the high-power ports
-	gpio_set_mode(&gpio_mbed_p28, GPIO_OUTPUT);
+	enable_heater = false;
 	
 	analog_in_set_mode(&analog_in_mbed_p20);
 	analog_in_set_mode(&analog_in_mbed_p19);
@@ -119,7 +169,14 @@ main(void)
 	
 	xTaskCreate(flash_task,
 	            (signed char *) "flash",
-	            1024,
+	            configMINIMAL_STACK_SIZE,
+	            (void *) NULL,
+	            tskIDLE_PRIORITY,
+	            NULL);
+	
+	xTaskCreate(pid_task,
+	            (signed char *) "pid",
+	            configMINIMAL_STACK_SIZE * 8,
 	            (void *) NULL,
 	            tskIDLE_PRIORITY,
 	            NULL);

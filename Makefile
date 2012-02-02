@@ -27,10 +27,10 @@ include makedefs
 
 RTOS_SOURCE_DIR=/home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Source
 
-CFLAGS+=-I LPCUSB -I thermistor -I watchdog -I GPIO -I analog -I stepper -I /home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Demo/Common/include -I webserver
+CFLAGS+=-I LPCUSB -I pid -I thermistor -I watchdog -I GPIO -I analog -I stepper -I /home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Demo/Common/include -I webserver
 CFLAGS+=-I . -I ${RTOS_SOURCE_DIR}/include -I ${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3 -I /home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Demo/Common/include -D GCC_ARMCM3_LM3S102 -D inline=
 
-VPATH=${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3:$init:webserver:LPCUSB:GPIO:analog:stepper:watchdog:thermistor
+VPATH=${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3:$init:webserver:LPCUSB:GPIO:analog:stepper:watchdog:thermistor:pid
 
 OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/mbed_boot.o    \
@@ -55,6 +55,7 @@ OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/analog_in.o \
 	  ${COMPILER}/watchdog.o \
 	  ${COMPILER}/thermistor.o \
+	  ${COMPILER}/pid.o \
 	  ${COMPILER}/stepper.o
 
 
@@ -86,7 +87,7 @@ SCATTER_RTOSDemo=rtosdemo_rdb1768_Debug.ld
 ENTRY_RTOSDemo=ResetISR
 
 install: all
-	@cp ${COMPILER}/RTOSDemo.bin /media/mbed/freertos-lpc1768.bin
+	@cp ${COMPILER}/RTOSDemo.bin /media/MBED/freertos-lpc1768.bin
 
 #
 #

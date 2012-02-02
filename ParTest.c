@@ -54,6 +54,9 @@
 /* FreeRTOS.org includes. */
 #include "FreeRTOS.h"
 
+/* Standard includes. */
+#include "stdbool.h"
+
 /* IO Support includes. */
 #include "gpio.h"
 
@@ -77,6 +80,10 @@ static gpio_t *LEDs[] = {
 	&gpio_mbed_led4
 };
 
+
+bool enable_heater;
+
+
 /*-----------------------------------------------------------
  * Simple parallel port IO routines.
  *-----------------------------------------------------------*/
@@ -93,6 +100,9 @@ void vParTestInitialise( void )
 
 void vParTestSetLED( unsigned portBASE_TYPE uxLED, signed portBASE_TYPE xValue )
 {
+	enable_heater = !xValue;
+	return;
+	
 	gpio_write(&gpio_mbed_p28, !xValue);
 	return;
 	
@@ -123,6 +133,7 @@ void vParTestToggleLED( unsigned portBASE_TYPE uxLED )
 
 unsigned portBASE_TYPE uxParTextGetLED( unsigned portBASE_TYPE uxLED )
 {
+	return enable_heater;
 	return gpio_read(&gpio_mbed_p28);
 }
 /*-----------------------------------------------------------*/
