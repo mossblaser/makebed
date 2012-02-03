@@ -61,39 +61,15 @@ pid_task(void *pvParameters)
 		makerbot_set_power(true);
 		makerbot_set_origin((double[3]){0.0,0.0,0.0});
 		
-		vTaskDelayUntil(&last_update, delay);
+		last_update = xTaskGetTickCount();
+		vTaskDelayUntil(&last_update, delay*2);
 		
-		const double pi = 3.14159265358979323846;
-		const double speed = 63.0;
-		const double radius = 20.0;
-		const double height = -5.0;
-		const int segments = 10;
-		const int its = 10;
+		double temp0 = makerbot_get_temperature(0);
+		double temp1 = makerbot_get_temperature(1);
 		
-		const double x_off = -50.0;
-		const double y_off = 50.0;
-		
-		double x;
-		double y;
-		
-		makerbot_move_to((double[3]){0.0,0.0,0.0}, 2.0);
-		makerbot_move_to((double[3]){0.0,0.0,height}, 2.0);
-		makerbot_move_to((double[3]){x_off,y_off,height}, speed);
-		
-		int segment;
-		int i;
-		for (i = 0; i < its; i++) {
-			for (segment = 0; segment < segments; segment++) {
-				double theta = ((2.0*pi) / ((double)(segments))) * ((double)(segment));
-				x = radius * cos(theta);
-				y = radius * sin(theta);
-				makerbot_move_to((double[3]){x+x_off,y+y_off,height}, speed);
-			}
-		}
-		
-		makerbot_move_to((double[3]){x_off,y_off,height}, speed);
-		makerbot_move_to((double[3]){0.0,0.0,height}, speed);
-		makerbot_move_to((double[3]){0.0,0.0,0.0}, 2.0);
+		sprintf(XXX_glbl_msg, "Temps: %d, %d",
+		        (int)(temp0*10.0),
+		        (int)(temp1*10.0));
 		
 		makerbot_set_power(false);
 		
