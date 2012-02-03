@@ -63,6 +63,10 @@
 /* The hold time in ns of the direction/enable signals of a stepper controller */
 #define STEPPER_HOLD_NS 200
 
+/* Calibration steps/mm data */
+#define STEPPER_0_STEPS_PER_MM 10
+#define STEPPER_1_STEPS_PER_MM 10
+#define STEPPER_2_STEPS_PER_MM 10
 
 
 /*******************************************************************************
@@ -77,17 +81,49 @@
 #define PIN_HEATER_PLATFORM (&gpio_mbed_p28)
 #define PIN_HEATER_EXTRUDER (&gpio_mbed_p27)
 
+/* LED Pins */
+#define PIN_LED_PLATFORM (&gpio_mbed_led3)
+#define PIN_LED_EXTRUDER (&gpio_mbed_led2)
+
 /* Thermistor Calibration Data */
-#define THERMISTOR_PLATFORM_R  4400.0
-#define THERMISTOR_PLATFORM_R0 100000.0
-#define THERMISTOR_PLATFORM_B  4072.0
-#define THERMISTOR_PLATFORM_T0 (25.0 + 273.15)
+#define THERMISTOR_PLATFORM_V_VREF 3.3
+#define THERMISTOR_PLATFORM_R      4400.0
+#define THERMISTOR_PLATFORM_R0     100000.0
+#define THERMISTOR_PLATFORM_B      4072.0
+#define THERMISTOR_PLATFORM_T0     (25.0 + 273.15)
 
-#define THERMISTOR_EXTRUDER_R  4400.0
-#define THERMISTOR_EXTRUDER_R0 100000.0
-#define THERMISTOR_EXTRUDER_B  4072.0
-#define THERMISTOR_EXTRUDER_T0 (25.0 + 273.15)
+#define THERMISTOR_EXTRUDER_V_VREF 3.3
+#define THERMISTOR_EXTRUDER_R      4400.0
+#define THERMISTOR_EXTRUDER_R0     100000.0
+#define THERMISTOR_EXTRUDER_B      4072.0
+#define THERMISTOR_EXTRUDER_T0     (25.0 + 273.15)
 
+/* PID */
+#define THERMISTOR_EXTRUDER_P 6.25
+#define THERMISTOR_EXTRUDER_I 0.4140625
+#define THERMISTOR_EXTRUDER_D 200.0
+
+#define THERMISTOR_PLATFORM_P 6.25
+#define THERMISTOR_PLATFORM_I 0.4140625
+#define THERMISTOR_PLATFORM_D 200.0
+
+
+
+/*******************************************************************************
+ * Extruder
+ ******************************************************************************/
+
+/* Pin */
+#define PIN_EXTRUDER (&gpio_mbed_p29)
+
+
+
+/*******************************************************************************
+ * Automated Build Platform
+ ******************************************************************************/
+
+/* Pin */
+#define PIN_PLATFORM (&gpio_mbed_p30)
 
 
 #endif

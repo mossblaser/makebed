@@ -27,10 +27,10 @@ include makedefs
 
 RTOS_SOURCE_DIR=/home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Source
 
-CFLAGS+=-I LPCUSB -I pid -I thermistor -I watchdog -I GPIO -I analog -I stepper -I /home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Demo/Common/include -I webserver
+CFLAGS+=-I LPCUSB -I makerbot -I pid -I thermistor -I watchdog -I GPIO -I analog -I stepper -I /home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Demo/Common/include -I webserver
 CFLAGS+=-I . -I ${RTOS_SOURCE_DIR}/include -I ${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3 -I /home/jonathan/Programing/mbed/FreeRTOSv7.0.2/Demo/Common/include -D GCC_ARMCM3_LM3S102 -D inline=
 
-VPATH=${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3:$init:webserver:LPCUSB:GPIO:analog:stepper:watchdog:thermistor:pid
+VPATH=${RTOS_SOURCE_DIR}:${RTOS_SOURCE_DIR}/portable/MemMang:${RTOS_SOURCE_DIR}/portable/GCC/ARM_CM3:$init:webserver:LPCUSB:GPIO:analog:stepper:watchdog:thermistor:pid:makerbot
 
 OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/mbed_boot.o    \
@@ -56,6 +56,7 @@ OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/watchdog.o \
 	  ${COMPILER}/thermistor.o \
 	  ${COMPILER}/pid.o \
+	  ${COMPILER}/makerbot.o \
 	  ${COMPILER}/stepper.o
 
 
