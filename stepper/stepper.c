@@ -216,7 +216,7 @@ STEPPER_TIMER_IRQ_HANDLER(void)
 			steppers[s_num].next_toggle -= time_delta;
 			
 			// Due to toggle now
-			if (steppers[s_num].next_toggle <= 0) {
+			if (steppers[s_num].next_toggle <= STEPPER_MERGE_WINDOW_TICKS) {
 				// Toggle the step pin
 				gpio_value_t step_state = gpio_read(steppers[s_num].pin_step);
 				gpio_write(steppers[s_num].pin_step, !step_state);

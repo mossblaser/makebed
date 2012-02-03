@@ -205,9 +205,16 @@ makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s)
 	
 	// Calculate the distance the head will travel (pythagoras)
 	double sum_mm = 0.0;
-	for (i = 0; i < MAKERBOT_NUM_AXES; i++)
-		sum_mm += pos_mm[i] * pos_mm[i];
+	for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
+		double delta = pos_mm[i] - (((double)makerbot.axes[i].position)
+		                            / makerbot.axes[i].steps_per_mm);
+		sum_mm += delta * delta;
+	}
 	double distance_mm = sqrt(sum_mm);
+	
+	// Do nothing for 0-length line
+	if (distance_mm == 0.0)
+		return;
 	
 	// Calculate the time this should take
 	double time_s = distance_mm / speed_mm_s;
@@ -219,15 +226,19 @@ makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s)
 		int num_steps = (int)(pos_mm[i] * makerbot.axes[i].steps_per_mm)
 		                - makerbot.axes[i].position;
 		
-		// How long should steps take to make the move last time_ticks
-		int step_period = time_ticks / num_steps;
+		// Do nothing if no movement required
+		if (num_steps == 0)
+			continue;
 		
-		stepper_dir_t direction = num_steps >= 0 ? STEPPER_FORWARD
-		                                         : STEPPER_BACKWARD;
+		// How long should steps take to make the move last time_ticks
+		int step_period = time_ticks / abs(num_steps);
+		
+		stepper_dir_t direction = (num_steps >= 0) ? STEPPER_FORWARD
+		                                           : STEPPER_BACKWARD;
 		
 		// Enable and start the motor moving
 		stepper_set_action(makerbot.axes[i].stepper_num,
-		                   direction, num_steps, step_period);
+		                   direction, abs(num_steps), step_period);
 		
 		// Update position
 		makerbot.axes[i].position += num_steps;

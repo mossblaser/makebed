@@ -58,15 +58,22 @@
 #define STEPPER_TIMER_NO 1
 
 /* The frequency at which the timer increments (Hz) */
-#define STEPPER_TIMER_HZ 1000
+#define STEPPER_TIMER_HZ 1000000
+
+/* When the ISR runs, how far long should transitions be dealt with (ns). This
+ * will probably be at least the amount of time you estimate the ISR takes to
+ * enter, execute and leave. If this is too short the timer will be set for some
+ * time so soon in the future it will have already passed by the time the ISR is
+ * finished and so the whole thing breaks. */
+#define STEPPER_MERGE_WINDOW_NS 1000000ul
 
 /* The hold time in ns of the direction/enable signals of a stepper controller */
 #define STEPPER_HOLD_NS 200
 
 /* Calibration steps/mm data */
-#define STEPPER_0_STEPS_PER_MM 10
-#define STEPPER_1_STEPS_PER_MM 10
-#define STEPPER_2_STEPS_PER_MM 10
+#define STEPPER_0_STEPS_PER_MM 12
+#define STEPPER_1_STEPS_PER_MM 12
+#define STEPPER_2_STEPS_PER_MM 333.33333
 
 
 /*******************************************************************************

@@ -72,6 +72,11 @@
                              + STEPPER_TIMER_PERIOD_NS - 1ul) \
                             / STEPPER_TIMER_PERIOD_NS)
 
+/* Number of ticks into the future to deal with during an interrupt */
+#define STEPPER_MERGE_WINDOW_TICKS ((int)((((unsigned long long)(STEPPER_TIMER_HZ)) \
+                                           * ((unsigned long long)(STEPPER_MERGE_WINDOW_NS))) \
+                                          / 1000000000ull))
+
 
 /**
  * Stepper motor direction.
