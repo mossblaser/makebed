@@ -7,6 +7,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "LPC17xx.h"
+
 /* Peripheral support includes */
 #include "usb_cdc.h"
 #include "watchdog.h"
@@ -18,8 +20,8 @@
 #include "makerbot.h"
 
 /* Task priorities. */
-#define mainUIP_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
-#define mainMAKEBED_TASK_PRIORITY (tskIDLE_PRIORITY + 0)
+#define mainUIP_TASK_PRIORITY (tskIDLE_PRIORITY + 2)
+#define mainMAKEBED_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
 
 /* The WEB server has a larger stack as it utilises stack hungry string
 handling library calls. */
@@ -32,6 +34,7 @@ handling library calls. */
 extern void vuIP_Task( void *pvParameters );
 
 extern char XXX_glbl_msg[64];
+extern makerbot_command_t *XXX_cur_cmd;
 
 void
 flash_task(void *pvParameters)
@@ -42,15 +45,25 @@ flash_task(void *pvParameters)
 	/* FreeRTOS Flashing */
 	gpio_set_mode(&gpio_mbed_led4, GPIO_OUTPUT);
 	gpio_write(&gpio_mbed_led4, GPIO_HIGH);
+	
+	// Store and clear RESET
+	int rsid = LPC_SC->RSID;
+	LPC_SC->RSID = LPC_SC->RSID;
+	
 	for (;;) {
 		//watchdog_feed();
 		
 		double temp0 = makerbot_get_temperature(0);
 		double temp1 = makerbot_get_temperature(1);
 		
-		//sprintf(XXX_glbl_msg, "Temps: %d%c, %d%c",
-		//        (int)(temp0), makerbot_temperature_reached(0) ? '!' : ' ',
-		//        (int)(temp1), makerbot_temperature_reached(1) ? '!' : ' ');
+		sprintf(XXX_glbl_msg, "Size: %d, Temps: %d%c, %d%c, cmd.instr: %d, tmp:%d, rsid:%x",
+		        sizeof(makerbot_command_t),
+		        (int)(temp0), _makerbot_temperature_reached(0) ? '!' : ' ',
+		        (int)(temp1), _makerbot_temperature_reached(1) ? '!' : ' ',
+		        XXX_cur_cmd->instr,
+		        XXX_cur_cmd->arg.set_temperature.heater_num,
+		        rsid
+		        );
 		
 		vTaskDelayUntil(&last_flash, delay);
 		gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
@@ -67,17 +80,45 @@ pid_task(void *pvParameters)
 		vTaskDelayUntil(&last_update, delay);
 		
 		makerbot_set_power(true);
-		makerbot_set_origin((double[3]){0.0,0.0,0.0});
+		makerbot_set_origin((double[3]){0.0,0.0,-30.0});
 		
-		//makerbot_set_temperature(0, 210);
-		//makerbot_set_temperature(1, 0);
+		// Move up to a heating position
+		makerbot_move_to((double[3]){0.0,0.0,-30.0}, 2.0);
+		
+		// Heat up
+		makerbot_set_temperature(0, 210.0);
 		makerbot_wait_heaters();
 		
-		//last_update = xTaskGetTickCount();
-		//vTaskDelayUntil(&last_update, delay*120);
-		//
-		//makerbot_set_power(false);
+		// Move off to the side and squirt some plastic
+		makerbot_move_to((double[3]){-50.0,0.0,-30.0}, 10.0);
+		makerbot_set_extruder(true);
+		makerbot_sleep(3000);
+		makerbot_set_extruder(false);
+		makerbot_sleep(5000);
+		makerbot_move_to((double[3]){0.0,0.0,-30.0}, 10.0);
 		
+		// Descend onto the platform and squirt out a 2cm box.
+		makerbot_move_to((double[3]){0.0,0.0,0.5}, 2.0);
+		makerbot_set_extruder(true);
+		makerbot_move_to((double[3]){-10.0,-10.0,0.5}, 10.0);
+		makerbot_move_to((double[3]){ 10.0,-10.0,0.5}, 10.0);
+		makerbot_move_to((double[3]){ 10.0, 10.0,0.5}, 10.0);
+		makerbot_move_to((double[3]){-10.0, 10.0,0.5}, 10.0);
+		makerbot_move_to((double[3]){-10.0,-10.0,0.5}, 10.0);
+		makerbot_set_extruder(false);
+		makerbot_move_to((double[3]){0.0,0.0,-30.0}, 2.0);
+		
+		// Eject the print
+		makerbot_set_platform(true);
+		makerbot_sleep(5000);
+		makerbot_set_platform(false);
+		
+		// Turn off, done!
+		makerbot_set_power(false);
+		
+		// Done!
+		gpio_set_mode(&gpio_mbed_led1, GPIO_OUTPUT);
+		gpio_write(&gpio_mbed_led1, GPIO_HIGH);
 		for (;;)
 			;
 	}
@@ -125,8 +166,15 @@ main(void)
 	            tskIDLE_PRIORITY,
 	            NULL);
 	
-	xTaskCreate(makerbot_task,
-	            (signed char *) "makerbot",
+	xTaskCreate(makerbot_main_task,
+	            (signed char *) "mb_main",
+	            configMINIMAL_STACK_SIZE * 8,
+	            (void *) NULL,
+	            mainMAKEBED_TASK_PRIORITY,
+	            NULL);
+	
+	xTaskCreate(makerbot_pid_task,
+	            (signed char *) "mb_pid",
 	            configMINIMAL_STACK_SIZE * 8,
 	            (void *) NULL,
 	            mainMAKEBED_TASK_PRIORITY,

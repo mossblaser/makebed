@@ -11,6 +11,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
+#include "queue.h"
 
 /* Makebed stuff */
 #include "MakebedConfig.h"
@@ -33,6 +34,87 @@
 /* Period of the makerbot task mainloop */
 #define MAKERBOT_PERIOD_MS 500
 #define MAKERBOT_PERIOD (MAKERBOT_PERIOD_MS / portTICK_RATE_MS)
+
+/* Number of items to put into the command queue of the printer. */
+#define MAKERBOT_COMMAND_QUEUE_LENGTH ((MAKERBOT_COMMAND_QUEUE_SIZE) / sizeof(makerbot_command_t))
+
+
+/**
+ * Types of instructions which the makerbot can process.
+ */
+typedef enum {
+	MAKERBOT_NOP,
+	MAKERBOT_SET_ORIGIN,
+	MAKERBOT_MOVE_TO,
+	MAKERBOT_SET_TEMPERATURE,
+	MAKERBOT_WAIT_HEATERS,
+	MAKERBOT_SLEEP,
+	MAKERBOT_SET_EXTRUDER,
+	MAKERBOT_SET_PLATFORM,
+	MAKERBOT_SET_POWER,
+	MAKERBOT_SET_AXES_ENABLED,
+} makerbot_instr_t;
+
+
+/**
+ * Commands queued up by the printer
+ */
+typedef struct {
+	// The instruction
+	makerbot_instr_t instr;
+	
+	// Arguments
+	union {
+		// NOP
+		struct { } nop;
+		
+		// Set Origin
+		struct {
+			int offset_steps[MAKERBOT_NUM_AXES];
+		} set_origin;
+		
+		// Move To
+		struct {
+			stepper_dir_t directions  [MAKERBOT_NUM_AXES];
+			int           num_steps   [MAKERBOT_NUM_AXES];
+			int           step_periods[MAKERBOT_NUM_AXES];
+		} move_to;
+		
+		// Set Temperature
+		struct {
+			int    heater_num;
+			double temperature;
+		} set_temperature;
+		
+		// Wait for Heaters
+		struct { } wait_heaters;
+		
+		// Sleep
+		struct {
+			int duration;
+		} sleep;
+		
+		// Set Extruder
+		struct {
+			bool enabled;
+		} set_extruder;
+		
+		// Set Platform
+		struct {
+			bool enabled;
+		} set_platform;
+		
+		// Set Power
+		struct {
+			bool enabled;
+		} set_power;
+		
+		// Axes Enabled
+		struct {
+			bool enabled;
+		} set_axes_enabled;
+	} arg;
+} makerbot_command_t;
 
 
 /**
@@ -80,6 +162,10 @@ typedef struct makerbot_heater {
  * State of the makerbot.
  */
 typedef struct makerbot {
+	// Commands queued up for execution
+	xQueueHandle     command_queue;
+	xSemaphoreHandle command_queue_lock;
+	
 	// Axes of the platform/extruder
 	makerbot_axis_t axes[MAKERBOT_NUM_AXES];
 	
@@ -107,99 +193,89 @@ typedef struct makerbot {
 void makerbot_init(void);
 
 /**
+ * A task which processes instructions off the queue.
+ */
+void makerbot_main_task(void *pvParameters);
+
+/**
  * A task which maintains heater temperature and feeds the watchdog.
  */
-void makerbot_task(void *pvParameters);
+void makerbot_pid_task(void *pvParameters);
 
 /**
- * Run the PID controller for the heaters and set heaters as appropriate.
+ * Run the PID controller for the heaters and set heaters as appropriate. For
+ * internal use only.
  */
-void makerbot_pid(double dt);
+void _makerbot_pid(double dt);
 
 /**
- * Turn off all peripherals (leaves head in undefined position).
+ * Clear the queue of instructions and turn off all peripherals (leaves head in
+ * undefined position).
  */
 void makerbot_reset(void);
 
 /**
- * Set the current position (mm) - offset as the origin.
+ * Append an instruction to the queue to set the current position (mm) - offset
+ * as the origin.
  */
 void makerbot_set_origin(double offset_mm[MAKERBOT_NUM_AXES]);
 
 /**
- * Move to a given position at the speed specified.
+ * Append an instruction to the queue to move to a given position at the speed
+ * specified.
  */
 void makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s);
 
 /**
- * Get the position the print head is moving to/is at (mm)
- */
-double makerbot_get_position(int axis);
-
-/**
- * Set the temperature of one of the heaters (*c)
+ * Append an instruction to the queue to set the temperature of one of the
+ * heaters (*c)
  */
 void makerbot_set_temperature(int heater_num, double temperature);
-
+ 
 /**
- * Get the target temperature of one of the heaters (*c)
- */
-double makerbot_get_temperature_target(int heater_num);
-
-/**
- * Get the temperature of one of the heaters (*c)
+ * Get the current temperature of one of the heaters (*c)
  */
 double makerbot_get_temperature(int heater_num);
 
 /**
- * Are the heaters at the right temperature
+ * Are the heaters at the right temperature (for internal use)
  */
-bool makerbot_temperature_reached(int heater_num);
+bool _makerbot_temperature_reached(int heater_num);
 
 /**
- * Block until all heaters are up to temperature.
+ * Add an instruction to block until all heaters are up to temperature.
  */
 void makerbot_wait_heaters(void);
 
 /**
- * Turn the extruder on/off.
+ * Add an instruction to sleep for a certain amount of time (ms).
+ */
+void makerbot_sleep(int duration);
+
+/**
+ * Add an instruction to turn the extruder on/off.
  */
 void makerbot_set_extruder(bool enabled);
 
 /**
- * Get the state of the extruder
- */
-bool makerbot_get_extruder(void);
-
-/**
- * Turn the belt on/off.
+ * Add an instruction to turn the belt on/off.
  */
 void makerbot_set_platform(bool enabled);
 
 /**
- * Get the state of the belt
- */
-bool makerbot_get_platform(void);
-
-/**
- * Turn the power on/off -- resets the makerbot (leaving head in unknown
- * position).
+ * Add an instruction to the queue to turn the power on/off (leaving head in
+ * unknown position).
  */
 void makerbot_set_power(bool enabled);
 
 /**
- * Get the state of the belt
+ * Get the state of the PSU (internal use only)
  */
-bool makerbot_get_power(void);
+bool _makerbot_get_power(void);
 
 /**
- * Enable/Disable Axes
+ * Adds an instruction to the queue to enable/disable axes
  */
 void makerbot_set_axes_enabled(bool enabled);
-
-/**
- * Enable/Disable Axes
- */
-bool makerbot_get_axes_enabled(void);
 
 #endif // def MAKERBOT_H

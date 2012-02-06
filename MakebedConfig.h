@@ -7,6 +7,12 @@
 
 
 /*******************************************************************************
+ * General
+ ******************************************************************************/
+/* Size in bytes of command queue */
+#define MAKERBOT_COMMAND_QUEUE_SIZE 1024
+
+/*******************************************************************************
  * Watchdog Falisafe Configuration
  ******************************************************************************/
 
@@ -26,6 +32,9 @@
 
 /* Signal (active high) from PSU indicating normal power flow. */
 #define PIN_POWER_OK (&gpio_mbed_p5)
+
+/* Number of ms to delay after turning the PSU on/off for it to stabalise */
+#define MAKERBOT_PSU_DELAY 500
 
 
 

@@ -8,6 +8,17 @@ makerbot_init(void)
 {
 	int i;
 	
+	// Initialise the queue of commands to the printer
+	makerbot.command_queue = xQueueCreate(MAKERBOT_COMMAND_QUEUE_LENGTH,
+	                                      sizeof(makerbot_command_t));
+	vSemaphoreCreateBinary(makerbot.command_queue_lock);
+	
+	// Check the command_queue was successfully created
+	// XXX: Do something better than infini-looping
+	if (makerbot.command_queue == 0)
+		while (true)
+			;
+	
 	#if MAKERBOT_NUM_AXES != 3
 		#error "makerbot_init can't handle MAKERBOT_NUM_AXES many axes"
 	#endif
@@ -101,23 +112,121 @@ makerbot_init(void)
 	gpio_write(makerbot.psu,      GPIO_LOW);
 }
 
+makerbot_command_t *XXX_cur_cmd = NULL;
 
-extern char XXX_glbl_msg[64];
+void
+makerbot_main_task(void *pvParameters)
+{
+	int i;
+	bool moved;
+	
+	for (;;) {
+		// Get the next command
+		makerbot_command_t cmd;
+		while(!xQueueReceive(makerbot.command_queue, &cmd, portMAX_DELAY))
+			;
+		
+		XXX_cur_cmd = &cmd;
+		
+		// Timer for PSU operations
+		portTickType last_update = xTaskGetTickCount();
+	
+		switch (cmd.instr) {
+			case MAKERBOT_NOP:
+				// Do nothing
+				break;
+			
+			case MAKERBOT_SET_ORIGIN:
+				// Do nothing
+				break;
+			
+			case MAKERBOT_MOVE_TO:
+				moved = false;
+				
+				for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
+					if (cmd.arg.move_to.step_periods[i] > 0) {
+						moved = true;
+						stepper_set_action(makerbot.axes[i].stepper_num,
+						                   cmd.arg.move_to.directions[i],
+						                   cmd.arg.move_to.num_steps[i],
+						                   cmd.arg.move_to.step_periods[i]);
+					}
+				}
+				if (moved)
+					stepper_wait_until_idle();
+				break;
+			
+			case MAKERBOT_SET_TEMPERATURE:
+				makerbot.heaters[cmd.arg.set_temperature.heater_num].set_point
+					= cmd.arg.set_temperature.temperature;
+				makerbot.heaters[cmd.arg.set_temperature.heater_num].reached = false;
+				break;
+			
+			case MAKERBOT_WAIT_HEATERS:
+				// Prevent the haters from being updated while we're checking
+				xSemaphoreTake(makerbot.heaters_reached, portMAX_DELAY);
+				
+				for (i = 0; i < MAKERBOT_NUM_HEATERS; i++) {
+					// If a heater hasn't warmed up, wait until all heaters are warm
+					if (!_makerbot_temperature_reached(i)) {
+						// Clear the semaphore (if its set)
+						xSemaphoreTake(makerbot.heaters_on_reach, ( portTickType ) 0);
+						
+						// Allow the heater routine checking to run
+						xSemaphoreGive(makerbot.heaters_reached);
+						
+						// Wait for the heaters to warm up
+						xSemaphoreTake(makerbot.heaters_on_reach, portMAX_DELAY);
+						return;
+					}
+				}
+				
+				// Allow the heater routine checking to run
+				xSemaphoreGive(makerbot.heaters_reached);
+				break;
+			
+			case MAKERBOT_SLEEP:
+				vTaskDelayUntil(&last_update, cmd.arg.sleep.duration/portTICK_RATE_MS);
+				break;
+			
+			case MAKERBOT_SET_EXTRUDER:
+				gpio_write(makerbot.extruder, cmd.arg.set_extruder.enabled);
+				break;
+			
+			case MAKERBOT_SET_PLATFORM:
+				gpio_write(makerbot.platform, cmd.arg.set_platform.enabled);
+				break;
+			
+			case MAKERBOT_SET_POWER:
+				gpio_write(makerbot.psu, cmd.arg.set_power.enabled);
+				vTaskDelayUntil(&last_update, MAKERBOT_PSU_DELAY/portTICK_RATE_MS);
+				break;
+			
+			case MAKERBOT_SET_AXES_ENABLED:
+				for (i = 0; i < MAKERBOT_NUM_AXES; i++)
+					stepper_set_enabled(makerbot.axes[i].stepper_num,
+					                    cmd.arg.set_axes_enabled.enabled);
+				break;
+			
+			default:
+				// XXX: Do something a bit more sensible than this
+				while (true)
+					;
+				break;
+		}
+	}
+}
 
 
 void
-makerbot_task(void *pvParameters)
+makerbot_pid_task(void *pvParameters)
 {
 	portTickType last_update = xTaskGetTickCount();
 	portTickType delay       = MAKERBOT_PERIOD;
 	
-	int loop_count = 0;
-	
 	// Mainloop
 	for (;;) {
-		makerbot_pid((double)MAKERBOT_PERIOD_MS);
-		
-		sprintf(XXX_glbl_msg, "loops:%d", loop_count++);
+		_makerbot_pid((double)MAKERBOT_PERIOD_MS);
 		
 		watchdog_feed();
 		
@@ -127,7 +236,7 @@ makerbot_task(void *pvParameters)
 
 
 void
-makerbot_pid(double dt)
+_makerbot_pid(double dt)
 {
 	int i;
 	
@@ -136,7 +245,7 @@ makerbot_pid(double dt)
 	// Note if the heaters have warmed up previously
 	bool temperature_reached = true;
 	for (i = 0; i < MAKERBOT_NUM_HEATERS; i++)
-		temperature_reached &= makerbot_temperature_reached(i);
+		temperature_reached &= _makerbot_temperature_reached(i);
 	
 	// Run the PID routine for all heaters
 	for (i = 0; i < MAKERBOT_NUM_HEATERS; i++) {
@@ -145,7 +254,7 @@ makerbot_pid(double dt)
 		                            makerbot.heaters[i].set_point,
 		                            temp_c,
 		                            dt);
-		bool heater_on = (control > 0.0) && makerbot_get_power();
+		bool heater_on = (control > 0.0) && _makerbot_get_power();
 		bool reached = makerbot.heaters[i].set_point <= temp_c;
 		
 		// Turn on heater (and LED) if needed
@@ -160,7 +269,7 @@ makerbot_pid(double dt)
 	if (!temperature_reached) {
 		bool now_reached = true;
 		for (i = 0; i < MAKERBOT_NUM_HEATERS; i++)
-			now_reached &= makerbot_temperature_reached(i);
+			now_reached &= _makerbot_temperature_reached(i);
 		
 		if (now_reached)
 			xSemaphoreGive(makerbot.heaters_on_reach);
@@ -175,7 +284,17 @@ makerbot_reset(void)
 {
 	int i;
 	
-	// Power off motors & stop any movements
+	// Empty the queue
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	
+	makerbot_command_t cmd_buffer;
+	while (uxQueueMessagesWaiting(makerbot.command_queue) != 0)
+		xQueueReceive(makerbot.command_queue, &cmd_buffer, portMAX_DELAY);
+	
+	xSemaphoreGive(makerbot.command_queue_lock);
+	
+	// Power off motors & stop any movements (which releases the semaphore
+	// indicating motion has finished)
 	for (i = 0; i < MAKERBOT_NUM_AXES; i++)
 		stepper_set_enabled(makerbot.axes[i].stepper_num, false);
 	
@@ -200,6 +319,7 @@ void
 makerbot_set_origin(double offset_mm[MAKERBOT_NUM_AXES])
 {
 	int i;
+	
 	for (i = 0; i < MAKERBOT_NUM_AXES; i++)
 		makerbot.axes[i].position = offset_mm[i] * makerbot.axes[i].steps_per_mm;
 }
@@ -209,6 +329,9 @@ void
 makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s)
 {
 	int i;
+	
+	makerbot_command_t cmd;
+	cmd.instr = MAKERBOT_MOVE_TO;
 	
 	// Calculate the distance the head will travel (pythagoras)
 	double sum_mm = 0.0;
@@ -234,8 +357,11 @@ makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s)
 		                - makerbot.axes[i].position;
 		
 		// Do nothing if no movement required
-		if (num_steps == 0)
+		if (num_steps == 0) {
+			cmd.arg.move_to.num_steps[i] = 0;
+			cmd.arg.move_to.step_periods[i] = 0;
 			continue;
+		}
 		
 		// How long should steps take to make the move last time_ticks
 		int step_period = time_ticks / abs(num_steps);
@@ -243,39 +369,33 @@ makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s)
 		stepper_dir_t direction = (num_steps >= 0) ? STEPPER_FORWARD
 		                                           : STEPPER_BACKWARD;
 		
-		// Enable and start the motor moving
-		stepper_set_action(makerbot.axes[i].stepper_num,
-		                   direction, abs(num_steps), step_period);
+		// Record the action required
+		cmd.arg.move_to.directions[i]   = direction;
+		cmd.arg.move_to.num_steps[i]    = abs(num_steps);
+		cmd.arg.move_to.step_periods[i] = step_period;
 		
 		// Update position
 		makerbot.axes[i].position += num_steps;
 	}
 	
-	// Wait for the steppers to come to a halt
-	stepper_wait_until_idle();
-}
-
-
-double
-makerbot_get_position(int axis)
-{
-	return ((double)makerbot.axes[axis].position)
-	       / makerbot.axes[axis].steps_per_mm;
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
+	xSemaphoreGive(makerbot.command_queue_lock);
 }
 
 
 void
 makerbot_set_temperature(int heater_num, double temperature)
 {
-	makerbot.heaters[heater_num].set_point = temperature;
-	makerbot.heaters[heater_num].reached = false;
-}
-
-
-double
-makerbot_get_temperature_target(int heater_num)
-{
-	return makerbot.heaters[heater_num].set_point;
+	makerbot_command_t cmd;
+	cmd.instr = MAKERBOT_SET_TEMPERATURE;
+	
+	cmd.arg.set_temperature.heater_num  = heater_num;
+	cmd.arg.set_temperature.temperature = temperature;
+	
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
+	xSemaphoreGive(makerbot.command_queue_lock);
 }
 
 
@@ -289,7 +409,7 @@ makerbot_get_temperature(int heater_num)
 
 
 bool
-makerbot_temperature_reached(int heater_num)
+_makerbot_temperature_reached(int heater_num)
 {
 	return makerbot.heaters[heater_num].reached;
 }
@@ -298,47 +418,71 @@ makerbot_temperature_reached(int heater_num)
 void
 makerbot_wait_heaters(void)
 {
-	int i;
+	makerbot_command_t cmd;
+	cmd.instr = MAKERBOT_WAIT_HEATERS;
 	
-	// Prevent the haters from being updated while we're checking
-	xSemaphoreTake(makerbot.heaters_reached, portMAX_DELAY);
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
+	xSemaphoreGive(makerbot.command_queue_lock);
+}
+
+void
+makerbot_sleep(int duration)
+{
+	makerbot_command_t cmd;
+	cmd.instr = MAKERBOT_SLEEP;
 	
-	for (i = 0; i < MAKERBOT_NUM_HEATERS; i++) {
-		// If a heater hasn't warmed up, wait until all heaters are warm
-		if (!makerbot_temperature_reached(i)) {
-			// Clear the semaphore (if its set)
-			xSemaphoreTake(makerbot.heaters_on_reach, ( portTickType ) 0);
-			
-			// Allow the heater routine checking to run
-			xSemaphoreGive(makerbot.heaters_reached);
-			
-			// Wait for the heaters to warm up
-			xSemaphoreTake(makerbot.heaters_on_reach, portMAX_DELAY);
-			return;
-		}
-	}
+	cmd.arg.sleep.duration = duration;
 	
-	// Allow the heater routine checking to run
-	xSemaphoreGive(makerbot.heaters_reached);
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
+	xSemaphoreGive(makerbot.command_queue_lock);
 }
 
 
-void makerbot_set_extruder(bool enabled){gpio_write(makerbot.extruder,enabled);}
-bool makerbot_get_extruder(void)        {return gpio_read(makerbot.extruder);}
+void
+makerbot_set_extruder(bool enabled)
+{
+	makerbot_command_t cmd;
+	cmd.instr = MAKERBOT_SET_EXTRUDER;
+	
+	cmd.arg.set_extruder.enabled = enabled;
+	
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
+	xSemaphoreGive(makerbot.command_queue_lock);
+}
 
-void makerbot_set_platform(bool enabled){gpio_write(makerbot.platform,enabled);}
-bool makerbot_get_platform(void)        {return gpio_read(makerbot.platform);}
+
+void
+makerbot_set_platform(bool enabled)
+{
+	makerbot_command_t cmd;
+	cmd.instr = MAKERBOT_SET_PLATFORM;
+	
+	cmd.arg.set_platform.enabled = enabled;
+	
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
+	xSemaphoreGive(makerbot.command_queue_lock);
+}
 
 
 void
 makerbot_set_power(bool enabled)
 {
-	makerbot_reset();
-	gpio_write(makerbot.psu, enabled);
+	makerbot_command_t cmd;
+	cmd.instr = MAKERBOT_SET_POWER;
+	
+	cmd.arg.set_power.enabled = enabled;
+	
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
+	xSemaphoreGive(makerbot.command_queue_lock);
 }
 
 bool
-makerbot_get_power(void)
+_makerbot_get_power(void)
 {
 	return gpio_read(makerbot.psu);
 }
@@ -347,16 +491,12 @@ makerbot_get_power(void)
 void
 makerbot_set_axes_enabled(bool enabled)
 {
-	int i;
-	for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
-		stepper_set_enabled(makerbot.axes[i].stepper_num, enabled);
-	}
-}
-
-
-bool
-makerbot_get_axes_enabled(void)
-{
-	// Assume that the first stepper is in the same state as the others
-	return stepper_get_enabled(makerbot.axes[0].stepper_num);
+	makerbot_command_t cmd;
+	cmd.instr = MAKERBOT_SET_AXES_ENABLED;
+	
+	cmd.arg.set_axes_enabled.enabled = enabled;
+	
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
+	xSemaphoreGive(makerbot.command_queue_lock);
 }
