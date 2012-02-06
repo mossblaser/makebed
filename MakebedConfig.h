@@ -89,8 +89,8 @@
 #define PIN_HEATER_EXTRUDER (&gpio_mbed_p27)
 
 /* LED Pins */
-#define PIN_LED_PLATFORM (&gpio_mbed_led3)
-#define PIN_LED_EXTRUDER (&gpio_mbed_led2)
+#define PIN_LED_PLATFORM (&gpio_mbed_led2)
+#define PIN_LED_EXTRUDER (&gpio_mbed_led3)
 
 /* Thermistor Calibration Data */
 #define THERMISTOR_PLATFORM_V_VREF 3.3

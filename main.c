@@ -19,6 +19,7 @@
 
 /* Task priorities. */
 #define mainUIP_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
+#define mainMAKEBED_TASK_PRIORITY (tskIDLE_PRIORITY + 0)
 
 /* The WEB server has a larger stack as it utilises stack hungry string
 handling library calls. */
@@ -44,6 +45,13 @@ flash_task(void *pvParameters)
 	for (;;) {
 		//watchdog_feed();
 		
+		double temp0 = makerbot_get_temperature(0);
+		double temp1 = makerbot_get_temperature(1);
+		
+		//sprintf(XXX_glbl_msg, "Temps: %d%c, %d%c",
+		//        (int)(temp0), makerbot_temperature_reached(0) ? '!' : ' ',
+		//        (int)(temp1), makerbot_temperature_reached(1) ? '!' : ' ');
+		
 		vTaskDelayUntil(&last_flash, delay);
 		gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
 	}
@@ -61,17 +69,14 @@ pid_task(void *pvParameters)
 		makerbot_set_power(true);
 		makerbot_set_origin((double[3]){0.0,0.0,0.0});
 		
-		last_update = xTaskGetTickCount();
-		vTaskDelayUntil(&last_update, delay*2);
+		//makerbot_set_temperature(0, 210);
+		//makerbot_set_temperature(1, 0);
+		makerbot_wait_heaters();
 		
-		double temp0 = makerbot_get_temperature(0);
-		double temp1 = makerbot_get_temperature(1);
-		
-		sprintf(XXX_glbl_msg, "Temps: %d, %d",
-		        (int)(temp0*10.0),
-		        (int)(temp1*10.0));
-		
-		makerbot_set_power(false);
+		//last_update = xTaskGetTickCount();
+		//vTaskDelayUntil(&last_update, delay*120);
+		//
+		//makerbot_set_power(false);
 		
 		for (;;)
 			;
@@ -124,7 +129,7 @@ main(void)
 	            (signed char *) "makerbot",
 	            configMINIMAL_STACK_SIZE * 8,
 	            (void *) NULL,
-	            tskIDLE_PRIORITY,
+	            mainMAKEBED_TASK_PRIORITY,
 	            NULL);
 	
 	/* Start the scheduler. */

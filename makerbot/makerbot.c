@@ -102,15 +102,22 @@ makerbot_init(void)
 }
 
 
+extern char XXX_glbl_msg[64];
+
+
 void
 makerbot_task(void *pvParameters)
 {
 	portTickType last_update = xTaskGetTickCount();
 	portTickType delay       = MAKERBOT_PERIOD;
 	
+	int loop_count = 0;
+	
 	// Mainloop
 	for (;;) {
 		makerbot_pid((double)MAKERBOT_PERIOD_MS);
+		
+		sprintf(XXX_glbl_msg, "loops:%d", loop_count++);
 		
 		watchdog_feed();
 		
@@ -133,13 +140,13 @@ makerbot_pid(double dt)
 	
 	// Run the PID routine for all heaters
 	for (i = 0; i < MAKERBOT_NUM_HEATERS; i++) {
-		double temp_k = makerbot_get_temperature(i) - 273.0;
+		double temp_c = makerbot_get_temperature(i);
 		double control = pid_update(&(makerbot.heaters[i].pid),
 		                            makerbot.heaters[i].set_point,
-		                            temp_k,
+		                            temp_c,
 		                            dt);
-		bool heater_on = control > 0.0;
-		bool reached = makerbot.heaters[i].set_point <= temp_k;
+		bool heater_on = (control > 0.0) && makerbot_get_power();
+		bool reached = makerbot.heaters[i].set_point <= temp_c;
 		
 		// Turn on heater (and LED) if needed
 		gpio_write(makerbot.heaters[i].heater_pin, heater_on);
@@ -277,7 +284,7 @@ makerbot_get_temperature(int heater_num)
 {
 	int reading = analog_in_read(makerbot.heaters[heater_num].thermistor_pin);
 	return thermistor_convert(&makerbot.heaters[heater_num].thermistor,
-	                          ((double)reading) / 4086.0);
+	                          ((double)reading) / 4086.0) - 273.0;
 }
 
 

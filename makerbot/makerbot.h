@@ -21,6 +21,7 @@
 #include "stepper.h"
 #include "thermistor.h"
 #include "pid.h"
+#include "watchdog.h"
 
 
 /* Number of axes the print head moves */
