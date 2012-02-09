@@ -37,10 +37,30 @@ extern char XXX_glbl_msg[64];
 extern makerbot_command_t *XXX_cur_cmd;
 
 void
+flash_task2(void *pvParameters)
+{
+	portTickType last_flash = xTaskGetTickCount();
+	portTickType delay      = 1 / portTICK_RATE_MS;
+	
+	/* FreeRTOS Flashing */
+	gpio_set_mode(&gpio_mbed_led1, GPIO_OUTPUT);
+	gpio_write(&gpio_mbed_led1, GPIO_LOW);
+	
+	for (;;) {
+		double temp0 = makerbot_get_temperature(0);
+		double temp1 = makerbot_get_temperature(1);
+		
+		//vTaskDelayUntil(&last_flash, delay);
+		//gpio_write(&gpio_mbed_led1, !gpio_read(&gpio_mbed_led1));
+	}
+}
+
+
+void
 flash_task(void *pvParameters)
 {
 	portTickType last_flash = xTaskGetTickCount();
-	portTickType delay      = 500 / portTICK_RATE_MS;
+	portTickType delay      = 150 / portTICK_RATE_MS;
 	
 	/* FreeRTOS Flashing */
 	gpio_set_mode(&gpio_mbed_led4, GPIO_OUTPUT);
@@ -56,14 +76,14 @@ flash_task(void *pvParameters)
 		double temp0 = makerbot_get_temperature(0);
 		double temp1 = makerbot_get_temperature(1);
 		
-		sprintf(XXX_glbl_msg, "Size: %d, Temps: %d%c, %d%c, cmd.instr: %d, tmp:%d, rsid:%x",
-		        sizeof(makerbot_command_t),
-		        (int)(temp0), _makerbot_temperature_reached(0) ? '!' : ' ',
-		        (int)(temp1), _makerbot_temperature_reached(1) ? '!' : ' ',
-		        XXX_cur_cmd->instr,
-		        XXX_cur_cmd->arg.set_temperature.heater_num,
-		        rsid
-		        );
+		//sprintf(XXX_glbl_msg, "Size: %d, Temps: %d%c, %d%c, cmd.instr: %d, tmp:%d, rsid:%x",
+		//        sizeof(makerbot_command_t),
+		//        (int)(temp0), _makerbot_temperature_reached(0) ? '!' : ' ',
+		//        (int)(temp1), _makerbot_temperature_reached(1) ? '!' : ' ',
+		//        XXX_cur_cmd->instr,
+		//        XXX_cur_cmd->arg.set_temperature.heater_num,
+		//        rsid
+		//        );
 		
 		vTaskDelayUntil(&last_flash, delay);
 		gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
@@ -80,33 +100,65 @@ pid_task(void *pvParameters)
 		vTaskDelayUntil(&last_update, delay);
 		
 		makerbot_set_power(true);
-		makerbot_set_origin((double[3]){0.0,0.0,-30.0});
+		makerbot_set_origin((double[3]){0.0,0.0,-10.0});
+		
+		makerbot_set_temperature(0, 220.0);
+		makerbot_set_temperature(1, 60.0);
 		
 		// Move up to a heating position
-		makerbot_move_to((double[3]){0.0,0.0,-30.0}, 2.0);
+		makerbot_move_to((double[3]){0.0,0.0,-10.0}, 2.0);
 		
 		// Heat up
-		makerbot_set_temperature(0, 210.0);
 		makerbot_wait_heaters();
 		
-		// Move off to the side and squirt some plastic
-		makerbot_move_to((double[3]){-50.0,0.0,-30.0}, 10.0);
-		makerbot_set_extruder(true);
-		makerbot_sleep(3000);
-		makerbot_set_extruder(false);
-		makerbot_sleep(5000);
-		makerbot_move_to((double[3]){0.0,0.0,-30.0}, 10.0);
+		const double pi = 3.14159265358979323846;
+		const double speed = 20.0;
+		double radius = 30.0;
+		const double height = -0.7;
+		const int segments = 100;
+		const int its = 10;
 		
-		// Descend onto the platform and squirt out a 2cm box.
-		makerbot_move_to((double[3]){0.0,0.0,0.5}, 2.0);
+		const double x_off = 0.0;
+		const double y_off = 0.0;
+		
+		double x;
+		double y;
+		
+		makerbot_move_to((double[3]){x_off,y_off,height}, 2.0);
 		makerbot_set_extruder(true);
-		makerbot_move_to((double[3]){-10.0,-10.0,0.5}, 10.0);
-		makerbot_move_to((double[3]){ 10.0,-10.0,0.5}, 10.0);
-		makerbot_move_to((double[3]){ 10.0, 10.0,0.5}, 10.0);
-		makerbot_move_to((double[3]){-10.0, 10.0,0.5}, 10.0);
-		makerbot_move_to((double[3]){-10.0,-10.0,0.5}, 10.0);
+		
+		int segment;
+		int i;
+		while (radius > 5.0) {
+			for (segment = 0; segment < segments; segment++) {
+				double theta = ((2.0*pi) / ((double)(segments))) * ((double)(segment));
+				x = radius * cos(theta);
+				y = radius * sin(theta);
+				makerbot_move_to((double[3]){x+x_off,y+y_off,height}, speed);
+				makerbot_set_extruder(true);
+				radius -= 0.7 / ((double)segments);
+			}
+		}
+		
+		// Move off to the side and squirt some plastic
+		//makerbot_move_to((double[3]){-50.0,0.0,-30.0}, 10.0);
+		//makerbot_set_extruder(true);
+		//makerbot_sleep(3000);
+		//makerbot_set_extruder(false);
+		//makerbot_sleep(5000);
+		//makerbot_move_to((double[3]){0.0,0.0,-30.0}, 10.0);
+		
+		//// Descend onto the platform and squirt out a 2cm box.
+		//makerbot_move_to((double[3]){0.0,0.0,2.0}, 2.0);
+		//makerbot_set_extruder(true);
+		//makerbot_move_to((double[3]){-20.0,-20.0,2.0}, 16.0);
+		//makerbot_move_to((double[3]){ 20.0,-20.0,2.0}, 16.0);
+		//makerbot_move_to((double[3]){ 20.0, 20.0,2.0}, 16.0);
+		//makerbot_move_to((double[3]){-20.0, 20.0,2.0}, 16.0);
+		//makerbot_move_to((double[3]){-20.0,-20.0,2.0}, 16.0);
+		
 		makerbot_set_extruder(false);
-		makerbot_move_to((double[3]){0.0,0.0,-30.0}, 2.0);
+		makerbot_move_to((double[3]){0.0,0.0,-10.0}, 2.0);
 		
 		// Eject the print
 		makerbot_set_platform(true);
@@ -115,10 +167,6 @@ pid_task(void *pvParameters)
 		
 		// Turn off, done!
 		makerbot_set_power(false);
-		
-		// Done!
-		gpio_set_mode(&gpio_mbed_led1, GPIO_OUTPUT);
-		gpio_write(&gpio_mbed_led1, GPIO_HIGH);
 		for (;;)
 			;
 	}
@@ -150,6 +198,13 @@ main(void)
 	            mainBASIC_WEB_STACK_SIZE,
 	            (void *) NULL,
 	            mainUIP_TASK_PRIORITY,
+	            NULL);
+	
+	xTaskCreate(flash_task2,
+	            (signed char *) "flash2",
+	            configMINIMAL_STACK_SIZE,
+	            (void *) NULL,
+	            tskIDLE_PRIORITY,
 	            NULL);
 	
 	xTaskCreate(flash_task,

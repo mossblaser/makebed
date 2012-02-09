@@ -177,7 +177,7 @@ makerbot_main_task(void *pvParameters)
 						
 						// Wait for the heaters to warm up
 						xSemaphoreTake(makerbot.heaters_on_reach, portMAX_DELAY);
-						return;
+						break;
 					}
 				}
 				
