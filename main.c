@@ -99,74 +99,97 @@ pid_task(void *pvParameters)
 	for (;;) {
 		vTaskDelayUntil(&last_update, delay);
 		
-		makerbot_set_power(true);
-		makerbot_set_origin((double[3]){0.0,0.0,-10.0});
+		gpio_write(PIN_POWER_EN, GPIO_HIGH);
 		
-		makerbot_set_temperature(0, 220.0);
-		makerbot_set_temperature(1, 60.0);
+		vTaskDelayUntil(&last_update, delay);
 		
-		// Move up to a heating position
-		makerbot_move_to((double[3]){0.0,0.0,-10.0}, 2.0);
+		stepper_set_action(2, STEPPER_FORWARD, 700, STEPPER_TIMER_HZ / 261);
+		stepper_wait_until_idle();
+		stepper_set_action(2, STEPPER_BACKWARD, 700, STEPPER_TIMER_HZ / 293);
+		stepper_wait_until_idle();
+		stepper_set_action(2, STEPPER_FORWARD, 700, STEPPER_TIMER_HZ / 329);
+		stepper_wait_until_idle();
+		stepper_set_action(2, STEPPER_BACKWARD, 700, STEPPER_TIMER_HZ / 349);
+		stepper_wait_until_idle();
+		stepper_set_action(2, STEPPER_FORWARD, 700, STEPPER_TIMER_HZ / 392);
+		stepper_wait_until_idle();
+		stepper_set_action(2, STEPPER_BACKWARD, 700, STEPPER_TIMER_HZ / 440);
+		stepper_wait_until_idle();
+		stepper_set_action(2, STEPPER_FORWARD, 700, STEPPER_TIMER_HZ / 493);
+		stepper_wait_until_idle();
+		stepper_set_action(2, STEPPER_BACKWARD, 700, STEPPER_TIMER_HZ / 523);
+		stepper_wait_until_idle();
+		stepper_set_action(2, STEPPER_FORWARD, 700, STEPPER_TIMER_HZ / 261);
+		stepper_wait_until_idle();
 		
-		// Heat up
-		makerbot_wait_heaters();
-		
-		const double pi = 3.14159265358979323846;
-		const double speed = 20.0;
-		double radius = 30.0;
-		const double height = -0.7;
-		const int segments = 100;
-		const int its = 10;
-		
-		const double x_off = 0.0;
-		const double y_off = 0.0;
-		
-		double x;
-		double y;
-		
-		makerbot_move_to((double[3]){x_off,y_off,height}, 2.0);
-		makerbot_set_extruder(true);
-		
-		int segment;
-		int i;
-		while (radius > 5.0) {
-			for (segment = 0; segment < segments; segment++) {
-				double theta = ((2.0*pi) / ((double)(segments))) * ((double)(segment));
-				x = radius * cos(theta);
-				y = radius * sin(theta);
-				makerbot_move_to((double[3]){x+x_off,y+y_off,height}, speed);
-				makerbot_set_extruder(true);
-				radius -= 0.7 / ((double)segments);
-			}
-		}
-		
-		// Move off to the side and squirt some plastic
-		//makerbot_move_to((double[3]){-50.0,0.0,-30.0}, 10.0);
+		//makerbot_set_power(true);
+		//makerbot_set_origin((double[3]){0.0,0.0,-10.0});
+		//
+		//makerbot_set_temperature(0, 220.0);
+		//makerbot_set_temperature(1, 60.0);
+		//
+		//// Move up to a heating position
+		//makerbot_move_to((double[3]){0.0,0.0,-10.0}, 2.0);
+		//
+		//// Heat up
+		//makerbot_wait_heaters();
+		//
+		//const double pi = 3.14159265358979323846;
+		//const double speed = 20.0;
+		//double radius = 30.0;
+		//const double height = -0.7;
+		//const int segments = 100;
+		//const int its = 10;
+		//
+		//const double x_off = 0.0;
+		//const double y_off = 0.0;
+		//
+		//double x;
+		//double y;
+		//
+		//makerbot_move_to((double[3]){x_off,y_off,height}, 2.0);
 		//makerbot_set_extruder(true);
-		//makerbot_sleep(3000);
+		//
+		//int segment;
+		//int i;
+		//while (radius > 5.0) {
+		//	for (segment = 0; segment < segments; segment++) {
+		//		double theta = ((2.0*pi) / ((double)(segments))) * ((double)(segment));
+		//		x = radius * cos(theta);
+		//		y = radius * sin(theta);
+		//		makerbot_move_to((double[3]){x+x_off,y+y_off,height}, speed);
+		//		makerbot_set_extruder(true);
+		//		radius -= 0.7 / ((double)segments);
+		//	}
+		//}
+		//
+		//// Move off to the side and squirt some plastic
+		////makerbot_move_to((double[3]){-50.0,0.0,-30.0}, 10.0);
+		////makerbot_set_extruder(true);
+		////makerbot_sleep(3000);
+		////makerbot_set_extruder(false);
+		////makerbot_sleep(5000);
+		////makerbot_move_to((double[3]){0.0,0.0,-30.0}, 10.0);
+		//
+		////// Descend onto the platform and squirt out a 2cm box.
+		////makerbot_move_to((double[3]){0.0,0.0,2.0}, 2.0);
+		////makerbot_set_extruder(true);
+		////makerbot_move_to((double[3]){-20.0,-20.0,2.0}, 16.0);
+		////makerbot_move_to((double[3]){ 20.0,-20.0,2.0}, 16.0);
+		////makerbot_move_to((double[3]){ 20.0, 20.0,2.0}, 16.0);
+		////makerbot_move_to((double[3]){-20.0, 20.0,2.0}, 16.0);
+		////makerbot_move_to((double[3]){-20.0,-20.0,2.0}, 16.0);
+		//
 		//makerbot_set_extruder(false);
+		//makerbot_move_to((double[3]){0.0,0.0,-10.0}, 2.0);
+		//
+		//// Eject the print
+		//makerbot_set_platform(true);
 		//makerbot_sleep(5000);
-		//makerbot_move_to((double[3]){0.0,0.0,-30.0}, 10.0);
-		
-		//// Descend onto the platform and squirt out a 2cm box.
-		//makerbot_move_to((double[3]){0.0,0.0,2.0}, 2.0);
-		//makerbot_set_extruder(true);
-		//makerbot_move_to((double[3]){-20.0,-20.0,2.0}, 16.0);
-		//makerbot_move_to((double[3]){ 20.0,-20.0,2.0}, 16.0);
-		//makerbot_move_to((double[3]){ 20.0, 20.0,2.0}, 16.0);
-		//makerbot_move_to((double[3]){-20.0, 20.0,2.0}, 16.0);
-		//makerbot_move_to((double[3]){-20.0,-20.0,2.0}, 16.0);
-		
-		makerbot_set_extruder(false);
-		makerbot_move_to((double[3]){0.0,0.0,-10.0}, 2.0);
-		
-		// Eject the print
-		makerbot_set_platform(true);
-		makerbot_sleep(5000);
-		makerbot_set_platform(false);
-		
-		// Turn off, done!
-		makerbot_set_power(false);
+		//makerbot_set_platform(false);
+		//
+		//// Turn off, done!
+		//makerbot_set_power(false);
 		for (;;)
 			;
 	}
@@ -200,19 +223,19 @@ main(void)
 	            mainUIP_TASK_PRIORITY,
 	            NULL);
 	
-	xTaskCreate(flash_task2,
-	            (signed char *) "flash2",
-	            configMINIMAL_STACK_SIZE,
-	            (void *) NULL,
-	            tskIDLE_PRIORITY,
-	            NULL);
-	
-	xTaskCreate(flash_task,
-	            (signed char *) "flash",
-	            configMINIMAL_STACK_SIZE,
-	            (void *) NULL,
-	            tskIDLE_PRIORITY,
-	            NULL);
+	//xTaskCreate(flash_task2,
+	//            (signed char *) "flash2",
+	//            configMINIMAL_STACK_SIZE,
+	//            (void *) NULL,
+	//            tskIDLE_PRIORITY,
+	//            NULL);
+	//
+	//xTaskCreate(flash_task,
+	//            (signed char *) "flash",
+	//            configMINIMAL_STACK_SIZE,
+	//            (void *) NULL,
+	//            tskIDLE_PRIORITY,
+	//            NULL);
 	
 	xTaskCreate(pid_task,
 	            (signed char *) "pid",
