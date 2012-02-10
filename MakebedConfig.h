@@ -12,6 +12,9 @@
 /* Size in bytes of command queue */
 #define MAKERBOT_COMMAND_QUEUE_SIZE 1024
 
+/* Size in bytes of the gcode interpreter buffer */
+#define GCODE_BUFFER_LENGTH 128
+
 /*******************************************************************************
  * Watchdog Falisafe Configuration
  ******************************************************************************/
@@ -34,7 +37,7 @@
 #define PIN_POWER_OK (&gpio_mbed_p5)
 
 /* Number of ms to delay after turning the PSU on/off for it to stabalise */
-#define MAKERBOT_PSU_DELAY 500
+#define MAKERBOT_PSU_DELAY 10
 
 
 

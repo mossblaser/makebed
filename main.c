@@ -18,6 +18,7 @@
 #include "thermistor.h"
 #include "pid.h"
 #include "makerbot.h"
+#include "gcode.h"
 
 /* Task priorities. */
 #define mainUIP_TASK_PRIORITY (tskIDLE_PRIORITY + 2)
@@ -34,33 +35,12 @@ handling library calls. */
 extern void vuIP_Task( void *pvParameters );
 
 extern char XXX_glbl_msg[64];
-extern makerbot_command_t *XXX_cur_cmd;
-
-void
-flash_task2(void *pvParameters)
-{
-	portTickType last_flash = xTaskGetTickCount();
-	portTickType delay      = 1 / portTICK_RATE_MS;
-	
-	/* FreeRTOS Flashing */
-	gpio_set_mode(&gpio_mbed_led1, GPIO_OUTPUT);
-	gpio_write(&gpio_mbed_led1, GPIO_LOW);
-	
-	for (;;) {
-		double temp0 = makerbot_get_temperature(0);
-		double temp1 = makerbot_get_temperature(1);
-		
-		//vTaskDelayUntil(&last_flash, delay);
-		//gpio_write(&gpio_mbed_led1, !gpio_read(&gpio_mbed_led1));
-	}
-}
-
 
 void
 flash_task(void *pvParameters)
 {
 	portTickType last_flash = xTaskGetTickCount();
-	portTickType delay      = 150 / portTICK_RATE_MS;
+	portTickType delay      = 500 / portTICK_RATE_MS;
 	
 	/* FreeRTOS Flashing */
 	gpio_set_mode(&gpio_mbed_led4, GPIO_OUTPUT);
@@ -73,123 +53,36 @@ flash_task(void *pvParameters)
 	for (;;) {
 		//watchdog_feed();
 		
-		double temp0 = makerbot_get_temperature(0);
-		double temp1 = makerbot_get_temperature(1);
-		
-		//sprintf(XXX_glbl_msg, "Size: %d, Temps: %d%c, %d%c, cmd.instr: %d, tmp:%d, rsid:%x",
-		//        sizeof(makerbot_command_t),
-		//        (int)(temp0), _makerbot_temperature_reached(0) ? '!' : ' ',
-		//        (int)(temp1), _makerbot_temperature_reached(1) ? '!' : ' ',
-		//        XXX_cur_cmd->instr,
-		//        XXX_cur_cmd->arg.set_temperature.heater_num,
-		//        rsid
-		//        );
-		
 		vTaskDelayUntil(&last_flash, delay);
 		gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
 	}
 }
 
+char test_gcode[] = "G4 P10000      \r\n" // Sleep for 10 seconds
+                    "G21            \r\n" // Use mm
+                    "G92 X0 Y0 Z0   \r\n" // Zero the positions
+                    "G1 X10 F3000   \r\n" // Move to 10,0,0
+                    "G4 P1000       \r\n" // Wait 1000ms
+                    "G1 X0 F2000    \r\n" // Move back to 0,0,0
+                    "M109 S50       \r\n" // Heat bed to 50*c
+                    "M6             \r\n" // Wait for heaters
+                    "G1 Y10 F3000   \r\n" // Move to 0,10,0
+                    "G4 P1000       \r\n" // Wait 1000ms
+                    "G1 Y0 F2000    \r\n" // Move back to 0,0,0
+                    ;
+
 void
-pid_task(void *pvParameters)
+my_task(void *pvParameters)
 {
 	portTickType last_update = xTaskGetTickCount();
 	portTickType delay      = 500 / portTICK_RATE_MS;
 	
 	for (;;) {
+		makerbot_set_power(true);
 		vTaskDelayUntil(&last_update, delay);
 		
-		gpio_write(PIN_POWER_EN, GPIO_HIGH);
+		gcode_interpret(test_gcode, sizeof(test_gcode));
 		
-		vTaskDelayUntil(&last_update, delay);
-		
-		stepper_set_action(2, STEPPER_FORWARD, 700, STEPPER_TIMER_HZ / 261);
-		stepper_wait_until_idle();
-		stepper_set_action(2, STEPPER_BACKWARD, 700, STEPPER_TIMER_HZ / 293);
-		stepper_wait_until_idle();
-		stepper_set_action(2, STEPPER_FORWARD, 700, STEPPER_TIMER_HZ / 329);
-		stepper_wait_until_idle();
-		stepper_set_action(2, STEPPER_BACKWARD, 700, STEPPER_TIMER_HZ / 349);
-		stepper_wait_until_idle();
-		stepper_set_action(2, STEPPER_FORWARD, 700, STEPPER_TIMER_HZ / 392);
-		stepper_wait_until_idle();
-		stepper_set_action(2, STEPPER_BACKWARD, 700, STEPPER_TIMER_HZ / 440);
-		stepper_wait_until_idle();
-		stepper_set_action(2, STEPPER_FORWARD, 700, STEPPER_TIMER_HZ / 493);
-		stepper_wait_until_idle();
-		stepper_set_action(2, STEPPER_BACKWARD, 700, STEPPER_TIMER_HZ / 523);
-		stepper_wait_until_idle();
-		stepper_set_action(2, STEPPER_FORWARD, 700, STEPPER_TIMER_HZ / 261);
-		stepper_wait_until_idle();
-		
-		//makerbot_set_power(true);
-		//makerbot_set_origin((double[3]){0.0,0.0,-10.0});
-		//
-		//makerbot_set_temperature(0, 220.0);
-		//makerbot_set_temperature(1, 60.0);
-		//
-		//// Move up to a heating position
-		//makerbot_move_to((double[3]){0.0,0.0,-10.0}, 2.0);
-		//
-		//// Heat up
-		//makerbot_wait_heaters();
-		//
-		//const double pi = 3.14159265358979323846;
-		//const double speed = 20.0;
-		//double radius = 30.0;
-		//const double height = -0.7;
-		//const int segments = 100;
-		//const int its = 10;
-		//
-		//const double x_off = 0.0;
-		//const double y_off = 0.0;
-		//
-		//double x;
-		//double y;
-		//
-		//makerbot_move_to((double[3]){x_off,y_off,height}, 2.0);
-		//makerbot_set_extruder(true);
-		//
-		//int segment;
-		//int i;
-		//while (radius > 5.0) {
-		//	for (segment = 0; segment < segments; segment++) {
-		//		double theta = ((2.0*pi) / ((double)(segments))) * ((double)(segment));
-		//		x = radius * cos(theta);
-		//		y = radius * sin(theta);
-		//		makerbot_move_to((double[3]){x+x_off,y+y_off,height}, speed);
-		//		makerbot_set_extruder(true);
-		//		radius -= 0.7 / ((double)segments);
-		//	}
-		//}
-		//
-		//// Move off to the side and squirt some plastic
-		////makerbot_move_to((double[3]){-50.0,0.0,-30.0}, 10.0);
-		////makerbot_set_extruder(true);
-		////makerbot_sleep(3000);
-		////makerbot_set_extruder(false);
-		////makerbot_sleep(5000);
-		////makerbot_move_to((double[3]){0.0,0.0,-30.0}, 10.0);
-		//
-		////// Descend onto the platform and squirt out a 2cm box.
-		////makerbot_move_to((double[3]){0.0,0.0,2.0}, 2.0);
-		////makerbot_set_extruder(true);
-		////makerbot_move_to((double[3]){-20.0,-20.0,2.0}, 16.0);
-		////makerbot_move_to((double[3]){ 20.0,-20.0,2.0}, 16.0);
-		////makerbot_move_to((double[3]){ 20.0, 20.0,2.0}, 16.0);
-		////makerbot_move_to((double[3]){-20.0, 20.0,2.0}, 16.0);
-		////makerbot_move_to((double[3]){-20.0,-20.0,2.0}, 16.0);
-		//
-		//makerbot_set_extruder(false);
-		//makerbot_move_to((double[3]){0.0,0.0,-10.0}, 2.0);
-		//
-		//// Eject the print
-		//makerbot_set_platform(true);
-		//makerbot_sleep(5000);
-		//makerbot_set_platform(false);
-		//
-		//// Turn off, done!
-		//makerbot_set_power(false);
 		for (;;)
 			;
 	}
@@ -207,6 +100,7 @@ main(void)
 	analog_in_init();
 	stepper_init();
 	makerbot_init();
+	gcode_init();
 	//usb_init();
 	
 	//xTaskCreate(vUSBTask,                 // Task entry function
@@ -223,22 +117,15 @@ main(void)
 	            mainUIP_TASK_PRIORITY,
 	            NULL);
 	
-	//xTaskCreate(flash_task2,
-	//            (signed char *) "flash2",
-	//            configMINIMAL_STACK_SIZE,
-	//            (void *) NULL,
-	//            tskIDLE_PRIORITY,
-	//            NULL);
-	//
-	//xTaskCreate(flash_task,
-	//            (signed char *) "flash",
-	//            configMINIMAL_STACK_SIZE,
-	//            (void *) NULL,
-	//            tskIDLE_PRIORITY,
-	//            NULL);
+	xTaskCreate(flash_task,
+	            (signed char *) "flash",
+	            configMINIMAL_STACK_SIZE,
+	            (void *) NULL,
+	            tskIDLE_PRIORITY,
+	            NULL);
 	
-	xTaskCreate(pid_task,
-	            (signed char *) "pid",
+	xTaskCreate(my_task,
+	            (signed char *) "my",
 	            configMINIMAL_STACK_SIZE * 8,
 	            (void *) NULL,
 	            tskIDLE_PRIORITY,
@@ -256,6 +143,13 @@ main(void)
 	            configMINIMAL_STACK_SIZE * 8,
 	            (void *) NULL,
 	            mainMAKEBED_TASK_PRIORITY,
+	            NULL);
+	
+	xTaskCreate(gcode_task,
+	            (signed char *) "gcode",
+	            configMINIMAL_STACK_SIZE * 2,
+	            (void *) NULL,
+	            mainUIP_TASK_PRIORITY,
 	            NULL);
 	
 	/* Start the scheduler. */

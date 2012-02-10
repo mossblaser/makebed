@@ -181,8 +181,9 @@ typedef struct makerbot {
 	// Pin the platform-belt is on
 	gpio_t *platform;
 	
-	// Pin the PSU is on
+	// Pins the PSU & PSU status signal are on
 	gpio_t *psu;
+	gpio_t *psu_ok;
 } makerbot_t;
 
 /**
@@ -225,6 +226,11 @@ void makerbot_set_origin(double offset_mm[MAKERBOT_NUM_AXES]);
  * specified.
  */
 void makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s);
+
+/**
+ * Get the position of the makerbot after all queued commands have been executed
+ */
+double makerbot_get_position(int axis);
 
 /**
  * Append an instruction to the queue to set the temperature of one of the

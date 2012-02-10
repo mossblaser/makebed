@@ -100,11 +100,13 @@ makerbot_init(void)
 	makerbot.extruder = PIN_EXTRUDER;
 	makerbot.platform = PIN_PLATFORM;
 	makerbot.psu      = PIN_POWER_EN;
+	makerbot.psu_ok   = PIN_POWER_OK;
 	
 	// Set up ports
 	gpio_set_mode(makerbot.extruder, GPIO_OUTPUT);
 	gpio_set_mode(makerbot.platform, GPIO_OUTPUT);
 	gpio_set_mode(makerbot.psu,      GPIO_OUTPUT);
+	gpio_set_mode(makerbot.psu_ok,   GPIO_INPUT);
 	
 	// Start with everything off
 	gpio_write(makerbot.extruder, GPIO_LOW);
@@ -112,7 +114,6 @@ makerbot_init(void)
 	gpio_write(makerbot.psu,      GPIO_LOW);
 }
 
-makerbot_command_t *XXX_cur_cmd = NULL;
 
 void
 makerbot_main_task(void *pvParameters)
@@ -125,8 +126,6 @@ makerbot_main_task(void *pvParameters)
 		makerbot_command_t cmd;
 		while(!xQueueReceive(makerbot.command_queue, &cmd, portMAX_DELAY))
 			;
-		
-		XXX_cur_cmd = &cmd;
 		
 		// Timer for PSU operations
 		portTickType last_update = xTaskGetTickCount();
@@ -199,7 +198,8 @@ makerbot_main_task(void *pvParameters)
 			
 			case MAKERBOT_SET_POWER:
 				gpio_write(makerbot.psu, cmd.arg.set_power.enabled);
-				vTaskDelayUntil(&last_update, MAKERBOT_PSU_DELAY/portTICK_RATE_MS);
+				while (!gpio_read(makerbot.psu_ok))
+					vTaskDelayUntil(&last_update, MAKERBOT_PSU_DELAY/portTICK_RATE_MS);
 				break;
 			
 			case MAKERBOT_SET_AXES_ENABLED:
@@ -324,7 +324,6 @@ makerbot_set_origin(double offset_mm[MAKERBOT_NUM_AXES])
 		makerbot.axes[i].position = offset_mm[i] * makerbot.axes[i].steps_per_mm;
 }
 
-
 void
 makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s)
 {
@@ -381,6 +380,13 @@ makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s)
 	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
 	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
 	xSemaphoreGive(makerbot.command_queue_lock);
+}
+
+
+double
+makerbot_get_position(int axis)
+{
+	return ((double)makerbot.axes[axis].position) / makerbot.axes[axis].steps_per_mm;
 }
 
 
