@@ -92,9 +92,10 @@ void gcode_task(void *pvParameters);
 
 
 /**
- * Push a string onto the gcode interpreter queue
+ * Push as much of a a string onto the gcode interpreter queue as possible
+ * (returns how much was actually read).
  */
-void gcode_interpret(char *code, size_t len);
+size_t gcode_interpret(char *code, size_t len);
 
 
 /* Internal Use Only **********************************************************/

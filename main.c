@@ -19,6 +19,7 @@
 #include "pid.h"
 #include "makerbot.h"
 #include "gcode.h"
+#include "network.h"
 
 /* Task priorities. */
 #define mainUIP_TASK_PRIORITY (tskIDLE_PRIORITY + 2)
@@ -54,7 +55,7 @@ flash_task(void *pvParameters)
 		//watchdog_feed();
 		
 		vTaskDelayUntil(&last_flash, delay);
-		gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
+		//gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
 	}
 }
 
@@ -81,10 +82,10 @@ my_task(void *pvParameters)
 		makerbot_set_power(true);
 		vTaskDelayUntil(&last_update, delay);
 		
-		gcode_interpret(test_gcode, sizeof(test_gcode));
-		
-		for (;;)
-			;
+		//gcode_interpret(test_gcode, sizeof(test_gcode));
+		//
+		//for (;;)
+		//	;
 	}
 }
 
@@ -110,8 +111,8 @@ main(void)
 	//            tskIDLE_PRIORITY,         // Priority
 	//            NULL);                    // Write refrence to a task handle
 	
-	xTaskCreate(vuIP_Task,
-	            (signed char *) "uIP",
+	xTaskCreate(uip_task,
+	            (signed char *) "network",
 	            mainBASIC_WEB_STACK_SIZE,
 	            (void *) NULL,
 	            mainUIP_TASK_PRIORITY,

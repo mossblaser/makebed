@@ -108,12 +108,14 @@ _gcode_error(gcode_error_t error)
 }
 
 
-void
+size_t
 gcode_interpret(char *code, size_t len)
 {
 	size_t i;
 	for (i = 0; i < len; i++)
-		xQueueSend(gcode.queue, code++, portMAX_DELAY);
+		if (xQueueSend(gcode.queue, code++, (portTickType) 0) == errQUEUE_FULL)
+			break;
+	return i;
 }
 
 
