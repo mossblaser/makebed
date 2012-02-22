@@ -118,7 +118,6 @@ gcode_interpret(char *code, size_t len)
 	return i;
 }
 
-
 void
 gcode_task(void *pvParameters)
 {
@@ -150,6 +149,7 @@ gcode_task(void *pvParameters)
 			case '\n':
 			case '\r':
 				xQueueReceive(gcode.queue, &c, portMAX_DELAY);
+				
 				// If the line wasn't empty, process the system registers
 				if (!line_empty) {
 					_gcode_step();

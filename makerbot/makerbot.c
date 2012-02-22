@@ -115,6 +115,11 @@ makerbot_init(void)
 }
 
 
+// XXX
+#include "network_debug.h"
+static int XXX_count = 0;
+
+
 void
 makerbot_main_task(void *pvParameters)
 {
@@ -151,8 +156,18 @@ makerbot_main_task(void *pvParameters)
 						                   cmd.arg.move_to.step_periods[i]);
 					}
 				}
+				sprintf(network_debug_str(), "Wait started %d (%d, %d, %d)\n",
+				        XXX_count,
+				        (int)(cmd.arg.move_to.num_steps[0] * 100.0),
+				        (int)(cmd.arg.move_to.num_steps[1] * 100.0),
+				        (int)(cmd.arg.move_to.num_steps[2] * 100.0));
 				if (moved)
 					stepper_wait_until_idle();
+				sprintf(network_debug_str(), "Wait done %d (%d, %d, %d)\n",
+				        XXX_count++,
+				        (int)(cmd.arg.move_to.num_steps[0] * 100.0),
+				        (int)(cmd.arg.move_to.num_steps[1] * 100.0),
+				        (int)(cmd.arg.move_to.num_steps[2] * 100.0));
 				break;
 			
 			case MAKERBOT_SET_TEMPERATURE:

@@ -51,6 +51,7 @@ OBJS=${COMPILER}/main.o	\
 	  ${COMPILER}/uip.o \
 	  ${COMPILER}/network.o \
 	  ${COMPILER}/network_gcode.o \
+	  ${COMPILER}/network_debug.o \
 	  ${COMPILER}/usbcontrol.o \
 	  ${COMPILER}/USB_CDC.o \
 	  ${COMPILER}/usbhw_lpc.o \

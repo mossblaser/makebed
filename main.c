@@ -20,6 +20,7 @@
 #include "makerbot.h"
 #include "gcode.h"
 #include "network.h"
+#include "network_debug.h"
 
 /* Task priorities. */
 #define mainUIP_TASK_PRIORITY (tskIDLE_PRIORITY + 2)
@@ -77,9 +78,9 @@ my_task(void *pvParameters)
 {
 	portTickType last_update = xTaskGetTickCount();
 	portTickType delay      = 500 / portTICK_RATE_MS;
+	makerbot_set_power(true);
 	
 	for (;;) {
-		makerbot_set_power(true);
 		vTaskDelayUntil(&last_update, delay);
 		
 		//gcode_interpret(test_gcode, sizeof(test_gcode));
@@ -102,6 +103,7 @@ main(void)
 	stepper_init();
 	makerbot_init();
 	gcode_init();
+	network_debug_init();
 	//usb_init();
 	
 	//xTaskCreate(vUSBTask,                 // Task entry function

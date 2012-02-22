@@ -13,7 +13,7 @@
 #define MAKERBOT_COMMAND_QUEUE_SIZE 1024
 
 /* Size in bytes of the gcode interpreter buffer */
-#define GCODE_BUFFER_LENGTH 128
+#define GCODE_BUFFER_LENGTH 2048
 
 
 /*******************************************************************************
@@ -21,6 +21,9 @@
  ******************************************************************************/
 /* Port used to recieve gcode. */
 #define NETWORK_PORT_GCODE 1818
+
+/* Port used for debugging. */
+#define NETWORK_PORT_DEBUG 2777
 
 
 /*******************************************************************************

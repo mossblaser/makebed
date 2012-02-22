@@ -17,6 +17,7 @@ network_gcode_appcall(void)
 	if (uip_connected()) {
 		state->start = NULL;
 		state->len = 0;
+		gpio_set_mode(&gpio_mbed_led4, GPIO_OUTPUT);
 	}
 	
 	

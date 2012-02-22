@@ -4,8 +4,8 @@
 void
 network_init(void)
 {
-	// Listen for gcode connections
 	uip_listen(HTONS(NETWORK_PORT_GCODE));
+	uip_listen(HTONS(NETWORK_PORT_DEBUG));
 }
 
 void
@@ -22,6 +22,11 @@ network_appcall(void)
 				s->type = NETWORK_CON_GCODE;
 				break;
 			
+			case HTONS(NETWORK_PORT_DEBUG):
+				// Debugger Port
+				s->type = NETWORK_CON_DEBUG;
+				break;
+			
 			default:
 				// Unknown port
 				s->type = NETWORK_CON_UNKNOWN;
@@ -32,6 +37,10 @@ network_appcall(void)
 	switch (s->type) {
 		case NETWORK_CON_GCODE:
 			network_gcode_appcall();
+			break;
+		
+		case NETWORK_CON_DEBUG:
+			network_debug_appcall();
 			break;
 		
 		default:
