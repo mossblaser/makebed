@@ -1,7 +1,7 @@
 #include "network_debug.h"
 
 
-static char network_debug_message[NETWORK_DEBUG_BUFFER_SIZE];
+static char network_debug_message[NETWORK_DEBUG_BUFFER_SIZE] = "Debug.";
 
 
 void

@@ -123,7 +123,7 @@ extern void ( vEMAC_ISR_Wrapper )( void );
 	( void ) pvParameters;
 
 	/* Initialise the uIP stack. */
-	timer_set( &periodic_timer, configTICK_RATE_HZ / 2 );
+	timer_set( &periodic_timer, configTICK_RATE_HZ / 10 );
 	timer_set( &arp_timer, configTICK_RATE_HZ * 10 );
 	uip_init();
 	uip_ipaddr( xIPAddr, configIP_ADDR0, configIP_ADDR1, configIP_ADDR2, configIP_ADDR3 );
@@ -223,7 +223,7 @@ extern void ( vEMAC_ISR_Wrapper )( void );
 				processing to perform.  Block for a fixed period.  If a packet
 				is received during this period we will be woken by the ISR
 				giving us the Semaphore. */
-				xSemaphoreTake( xEMACSemaphore, configTICK_RATE_HZ / 2 );
+				xSemaphoreTake( xEMACSemaphore, configTICK_RATE_HZ / 10 );
 			}
 		}
 	}

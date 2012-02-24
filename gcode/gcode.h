@@ -97,6 +97,11 @@ void gcode_task(void *pvParameters);
  */
 size_t gcode_interpret(char *code, size_t len);
 
+/**
+ * Find out how much space is left on the gcode interpreter queue.
+ */
+size_t gcode_queue_space(void);
+
 
 /* Internal Use Only **********************************************************/
 

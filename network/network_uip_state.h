@@ -21,12 +21,7 @@ typedef struct {
  * State of a gcode processing connection.
  */
 typedef struct {
-	// Buffer to store incoming data
-	char buf[UIP_CONF_BUFFER_SIZE];
 	
-	// Start and end of useful data in our buffer
-	char *start;
-	size_t len;
 } network_gcode_t;
 
 

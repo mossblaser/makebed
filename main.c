@@ -28,7 +28,7 @@
 
 /* The WEB server has a larger stack as it utilises stack hungry string
 handling library calls. */
-#define mainBASIC_WEB_STACK_SIZE ( configMINIMAL_STACK_SIZE * 4 )
+#define mainBASIC_WEB_STACK_SIZE ( configMINIMAL_STACK_SIZE * 16 )
 
 /*
  * The task that handles the uIP stack.  All TCP/IP processing is performed in

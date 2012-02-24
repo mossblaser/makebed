@@ -118,6 +118,14 @@ gcode_interpret(char *code, size_t len)
 	return i;
 }
 
+
+size_t
+gcode_queue_space(void)
+{
+	return GCODE_BUFFER_LENGTH - uxQueueMessagesWaiting(gcode.queue);
+}
+
+
 void
 gcode_task(void *pvParameters)
 {

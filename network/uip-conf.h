@@ -145,6 +145,9 @@ typedef unsigned short uip_stats_t;
 
 /* Project settings. */
 
+// Small windowsize
+#define UIP_CONF_RECEIVE_WINDOW UIP_CONF_BUFFER_SIZE
+
 #include "network_uip_state.h"
 
 #endif /* __UIP_CONF_H__ */
