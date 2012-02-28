@@ -473,7 +473,7 @@ unsigned long ulAttempts = 0UL;
 
 	/* Check to see if the Tx descriptor is free, indicated by its buffer being
 	NULL. */
-	while( TX_DESC_PACKET( emacTX_DESC_INDEX ) != ( unsigned long ) NULL )
+	while( TX_DESC_PACKET( LPC_EMAC->TxProduceIndex ^ 1 ) != ( unsigned long ) NULL )
 	{
 		/* Wait for the Tx descriptor to become available. */
 		vTaskDelay( emacBUFFER_WAIT_DELAY );
@@ -484,7 +484,7 @@ unsigned long ulAttempts = 0UL;
 			/* Something has gone wrong as the Tx descriptor is still in use.
 			Clear it down manually, the data it was sending will probably be
 			lost. */
-			prvReturnBuffer( ( unsigned char * ) TX_DESC_PACKET( emacTX_DESC_INDEX ) );
+			prvReturnBuffer( ( unsigned char * ) TX_DESC_PACKET( LPC_EMAC->TxProduceIndex ^ 1 ) );
 			break;
 		}
 	}
@@ -492,10 +492,10 @@ unsigned long ulAttempts = 0UL;
 	/* Setup the Tx descriptor for transmission.  Remember the length of the
 	data being sent so the second descriptor can be used to send it again from
 	within the ISR. */
-	usSendLen = usTxDataLen;
-	TX_DESC_PACKET( emacTX_DESC_INDEX ) = ( unsigned long ) uip_buf;
-	TX_DESC_CTRL( emacTX_DESC_INDEX ) = ( usTxDataLen | TCTRL_LAST | TCTRL_INT );
-	LPC_EMAC->TxProduceIndex = ( emacTX_DESC_INDEX + 1 );
+	//usSendLen = usTxDataLen;
+	TX_DESC_PACKET( LPC_EMAC->TxProduceIndex ) = ( unsigned long ) uip_buf;
+	TX_DESC_CTRL( LPC_EMAC->TxProduceIndex ) = ( usTxDataLen | TCTRL_LAST | TCTRL_INT );
+	LPC_EMAC->TxProduceIndex ^= 1;
 
 	/* uip_buf is being sent by the Tx descriptor.  Allocate a new buffer. */
 	uip_buf = prvGetNextBuffer();
@@ -581,24 +581,9 @@ long lHigherPriorityTaskWoken = pdFALSE;
 
 	if( ulStatus & INT_TX_DONE )
 	{
-		if( usSendLen > 0 )
-		{
-			/* Send the data again, using the second descriptor.  As there are
-			only two descriptors the index is set back to 0. */
-			TX_DESC_PACKET( ( emacTX_DESC_INDEX + 1 ) ) = TX_DESC_PACKET( emacTX_DESC_INDEX );
-			TX_DESC_CTRL( ( emacTX_DESC_INDEX + 1 ) ) = ( usSendLen | TCTRL_LAST | TCTRL_INT );
-			LPC_EMAC->TxProduceIndex = ( emacTX_DESC_INDEX );
-
-			/* This is the second Tx so set usSendLen to 0 to indicate that the
-			Tx descriptors will be free again. */
-			usSendLen = 0UL;
-		}
-		else
-		{
-			/* The Tx buffer is no longer required. */
-			prvReturnBuffer( ( unsigned char * ) TX_DESC_PACKET( emacTX_DESC_INDEX ) );
-            TX_DESC_PACKET( emacTX_DESC_INDEX ) = ( unsigned long ) NULL;
-		}
+		/* The Tx buffer is no longer required. */
+		prvReturnBuffer( ( unsigned char * ) TX_DESC_PACKET( emacTX_DESC_INDEX ) );
+		TX_DESC_PACKET( LPC_EMAC->TxProduceIndex ^ 1 ) = ( unsigned long ) NULL;
 	}
 
 	portEND_SWITCHING_ISR( lHigherPriorityTaskWoken );
