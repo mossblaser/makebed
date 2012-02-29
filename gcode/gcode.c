@@ -385,6 +385,14 @@ _gcode_step_m(void)
 			makerbot_set_temperature(0, gcode.registers[S].value.d);
 			break;
 		
+		// Conveyer on/off
+		case 106:
+			makerbot_set_platform(true);
+			break;
+		case 107:
+			makerbot_set_platform(false);
+			break;
+		
 		// Set extruder speed
 		case 108:
 			// Deal with unspecified registers

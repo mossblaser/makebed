@@ -106,7 +106,7 @@ typedef unsigned short uip_stats_t;
  *
  * \hideinitializer
  */
-#define UIP_CONF_BUFFER_SIZE     1480
+#define UIP_CONF_BUFFER_SIZE     1500
 
 /**
  * CPU byte order.

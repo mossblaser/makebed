@@ -235,6 +235,11 @@ makerbot_pid_task(void *pvParameters)
 }
 
 
+// XXX
+#include <stdio.h>
+#include "network_debug.h"
+double XXX_temps[2];
+
 void
 _makerbot_pid(double dt)
 {
@@ -250,6 +255,13 @@ _makerbot_pid(double dt)
 	// Run the PID routine for all heaters
 	for (i = 0; i < MAKERBOT_NUM_HEATERS; i++) {
 		double temp_c = makerbot_get_temperature(i);
+		
+		// XXX
+		XXX_temps[i] = temp_c;
+		if (i == 1)
+			sprintf(network_debug_str(), "Temp: %d %d\n",
+			        (int)(XXX_temps[0]*100.0),
+			        (int)(XXX_temps[1]*100.0));
 		double control = pid_update(&(makerbot.heaters[i].pid),
 		                            makerbot.heaters[i].set_point,
 		                            temp_c,

@@ -10,7 +10,6 @@ thermistor_init(thermistor_t *thermistor,
 	thermistor->t0_ = 1.0 / t0;
 }
 
-
 double
 thermistor_convert(thermistor_t *thermistor, double v_vref)
 {
