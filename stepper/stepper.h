@@ -82,8 +82,8 @@
  * Stepper motor direction.
  */
 typedef enum stepper_dir {
-	STEPPER_BACKWARD = GPIO_LOW,
-	STEPPER_FORWARD  = GPIO_HIGH
+	STEPPER_FORWARD  = GPIO_LOW,
+	STEPPER_BACKWARD = GPIO_HIGH,
 } stepper_dir_t;
 
 
