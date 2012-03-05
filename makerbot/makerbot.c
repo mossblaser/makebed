@@ -258,10 +258,10 @@ _makerbot_pid(double dt)
 		
 		// XXX
 		XXX_temps[i] = temp_c;
-		if (i == 1)
-			sprintf(network_debug_str(), "Temp: %d %d\n",
-			        (int)(XXX_temps[0]*100.0),
-			        (int)(XXX_temps[1]*100.0));
+		//if (i == 1)
+		//	sprintf(network_debug_str(), "Temp: %d %d\n",
+		//	        (int)(XXX_temps[0]*100.0),
+		//	        (int)(XXX_temps[1]*100.0));
 		double control = pid_update(&(makerbot.heaters[i].pid),
 		                            makerbot.heaters[i].set_point,
 		                            temp_c,

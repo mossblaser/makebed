@@ -209,6 +209,20 @@ extern void ( vEMAC_ISR_Wrapper )( void );
 						vSendEMACTxData( uip_len );
 					}
 				}
+				
+				for( i = 0; i < UIP_UDP_CONNS; i++ )
+				{
+					uip_udp_periodic( i );
+
+					/* If the above function invocation resulted in data that
+					should be sent out on the network, the global variable
+					uip_len is set to a value > 0. */
+					if( uip_len > 0 )
+					{
+						uip_arp_out();
+						vSendEMACTxData( uip_len );
+					}
+				}
 
 				/* Call the ARP timer function every 10 seconds. */
 				if( timer_expired( &arp_timer ) )

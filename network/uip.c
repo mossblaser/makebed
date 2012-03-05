@@ -1157,11 +1157,23 @@ uip_process(u8_t flag)
   UDPBUF->udplen = HTONS(uip_slen + UIP_UDPH_LEN);
   UDPBUF->udpchksum = 0;
 
+  /* If "any" remote port allowed, respond to sender */
+  if (uip_udp_conn->rport == 0) {   
+     BUF->destport = BUF->srcport;
+  }
+  else {
+     BUF->destport = uip_udp_conn->rport;
+  }
   BUF->srcport  = uip_udp_conn->lport;
-  BUF->destport = uip_udp_conn->rport;
 
+  /* If "any" remote addr allowed, respond to sender */
+  if (uip_ipaddr_cmp(uip_udp_conn->ripaddr, all_zeroes_addr)) {
+     uip_ipaddr_copy(BUF->destipaddr, BUF->srcipaddr);
+  }
+  else {
+     uip_ipaddr_copy(BUF->destipaddr, uip_udp_conn->ripaddr);
+  }
   uip_ipaddr_copy(BUF->srcipaddr, uip_hostaddr);
-  uip_ipaddr_copy(BUF->destipaddr, uip_udp_conn->ripaddr);
 
   uip_appdata = &uip_buf[UIP_LLH_LEN + UIP_IPTCPH_LEN];
 

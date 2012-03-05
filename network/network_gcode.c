@@ -31,3 +31,27 @@ network_gcode_appcall(void)
 	}
 }
 
+void
+network_udp_gcode_appcall(void)
+{
+	// State of uip connection
+	uip_udp_appstate_t *s = &(uip_udp_conn->appstate);
+	
+	// State of gcode app
+	network_udp_gcode_t *state = &(s->state.gcode);
+	
+	// Accept new data
+	if (uip_newdata()) {
+		gcode_interpret(uip_appdata, uip_datalen());
+		
+		// How big is the window?
+		uint32_t windowsize = gcode_queue_space();
+		if (windowsize > UIP_BUFSIZE - 96)
+			windowsize = UIP_BUFSIZE - 96;
+		
+		// Report back
+		memcpy(uip_appdata, &windowsize, sizeof(uint32_t));
+		uip_udp_send(sizeof(uint32_t));
+	}
+}
+
