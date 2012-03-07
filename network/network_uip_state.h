@@ -29,7 +29,7 @@ typedef struct {
  * State of a UDP gcode processing connection.
  */
 typedef struct {
-	
+	uint32_t seq_num;
 } network_udp_gcode_t;
 
 

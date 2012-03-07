@@ -98,6 +98,9 @@
 #define STEPPER_1_STEPS_PER_MM 12
 #define STEPPER_2_STEPS_PER_MM 333.33333
 
+/* Minimum Step Period for Steppers */
+#define STEPPER_MIN_PERIOD ((int)((1.0/555.5555) * ((double)STEPPER_TIMER_HZ)))
+
 
 /*******************************************************************************
  * Heater/Temperature Control Configuration

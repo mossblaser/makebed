@@ -42,7 +42,15 @@ network_udp_gcode_appcall(void)
 	
 	// Accept new data
 	if (uip_newdata()) {
-		gcode_interpret(uip_appdata, uip_datalen());
+		// Get the seq number
+		uint32_t seq_num;
+		memcpy(&seq_num, uip_appdata, sizeof(uint32_t));
+		
+		// Only interpret the data if its new
+		if (seq_num != state->seq_num)
+			gcode_interpret(uip_appdata + sizeof(uint32_t), uip_datalen() - sizeof(uint32_t));
+		
+		state->seq_num = seq_num;
 		
 		// How big is the window?
 		uint32_t windowsize = gcode_queue_space();
@@ -50,8 +58,9 @@ network_udp_gcode_appcall(void)
 			windowsize = UIP_BUFSIZE - 96;
 		
 		// Report back
-		memcpy(uip_appdata, &windowsize, sizeof(uint32_t));
-		uip_udp_send(sizeof(uint32_t));
+		memcpy(uip_appdata, &(state->seq_num), sizeof(uint32_t));
+		memcpy(uip_appdata + sizeof(uint32_t), &windowsize, sizeof(uint32_t));
+		uip_udp_send(sizeof(uint32_t) * 2);
 	}
 }
 

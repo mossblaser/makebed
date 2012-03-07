@@ -46,7 +46,8 @@ stepper_init(void)
 
 
 void
-stepper_init_motor(size_t s_num, gpio_t *nen, gpio_t *dir, gpio_t *step)
+stepper_init_motor(size_t s_num, gpio_t *nen, gpio_t *dir, gpio_t *step,
+                   int min_step_period)
 {
 	// TODO: Handle error condition more gracefully
 	while (s_num >= STEPPER_NUM_MOTORS)
@@ -56,6 +57,7 @@ stepper_init_motor(size_t s_num, gpio_t *nen, gpio_t *dir, gpio_t *step)
 	steppers[s_num].steps_remaining = 0;
 	steppers[s_num].step_period = 0;
 	steppers[s_num].next_toggle = 0;
+	steppers[s_num].min_step_period = min_step_period;
 	
 	// Set IO pins
 	steppers[s_num].pin_nen  = nen;
@@ -135,7 +137,8 @@ stepper_set_action(size_t        s_num,
 	gpio_write(steppers[s_num].pin_dir, direction);
 	
 	// The duration of a step
-	steppers[s_num].step_period = step_period;
+	steppers[s_num].step_period = MAX(step_period,
+	                                  steppers[s_num].min_step_period);
 	
 	// Set up the number of steps remaining
 	steppers[s_num].steps_remaining = num_steps;

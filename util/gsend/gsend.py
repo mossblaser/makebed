@@ -21,18 +21,40 @@ class GSender(object):
 		
 		# Open a UDP socket
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		#self.sock.bind(("127.0.0.1", port + 1))
+		self.sock.settimeout(zero_window_poll_rate)
 		
 		# Internal state
 		self.window_size = 0
+		self.seq_num = 10
 	
 	def send(self, data):
 		while data:
-			packet, data = data[:self.window_size], data[self.window_size:]
+			packet = data[:max(self.window_size-4,0)]
+			data   = data[max(self.window_size-4,0):]
 			
-			self.sock.sendto(packet, self.target)
-			response, _ = self.sock.recvfrom(4)
-			self.window_size = from_bytes(ctypes.c_uint32(), response).value
+			# Prepend the sequence number
+			packet = buffer(ctypes.c_uint32(self.seq_num)) + packet
+			
+			# Transmit until ack'd
+			while True:
+				self.sock.sendto(packet, self.target)
+				
+				try:
+					response, _ = self.sock.recvfrom(8)
+					seq_num     = from_bytes(ctypes.c_uint32(), response[0:4])
+					window_size = from_bytes(ctypes.c_uint32(), response[4:8])
+				except socket.timeout:
+					# Retransmit
+					continue
+				
+				if seq_num.value == self.seq_num:
+					self.window_size = window_size.value
+					seq_num.value += 1
+					self.seq_num = seq_num.value
+					break
+				else:
+					# Retransmit
+					pass
 			
 			if self.window_size == 0:
 				time.sleep(zero_window_poll_rate)

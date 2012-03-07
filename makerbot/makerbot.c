@@ -40,9 +40,9 @@ makerbot_init(void)
 	makerbot.axes[2].position = 0;
 	
 	// Set up the stepper motors and disable them
-	stepper_init_motor(0, PIN_STEPPER_0_NEN, PIN_STEPPER_0_DIR, PIN_STEPPER_0_STEP);
-	stepper_init_motor(1, PIN_STEPPER_1_NEN, PIN_STEPPER_1_DIR, PIN_STEPPER_1_STEP);
-	stepper_init_motor(2, PIN_STEPPER_2_NEN, PIN_STEPPER_2_DIR, PIN_STEPPER_2_STEP);
+	stepper_init_motor(0, PIN_STEPPER_0_NEN, PIN_STEPPER_0_DIR, PIN_STEPPER_0_STEP, STEPPER_MIN_PERIOD);
+	stepper_init_motor(1, PIN_STEPPER_1_NEN, PIN_STEPPER_1_DIR, PIN_STEPPER_1_STEP, STEPPER_MIN_PERIOD);
+	stepper_init_motor(2, PIN_STEPPER_2_NEN, PIN_STEPPER_2_DIR, PIN_STEPPER_2_STEP, STEPPER_MIN_PERIOD);
 	
 	#if MAKERBOT_NUM_HEATERS != 2
 		#error "makerbot_init can't handle MAKERBOT_NUM_HEATERS many heaters"
@@ -258,10 +258,10 @@ _makerbot_pid(double dt)
 		
 		// XXX
 		XXX_temps[i] = temp_c;
-		//if (i == 1)
-		//	sprintf(network_debug_str(), "Temp: %d %d\n",
-		//	        (int)(XXX_temps[0]*100.0),
-		//	        (int)(XXX_temps[1]*100.0));
+		if (i == 1)
+			sprintf(network_debug_str(), "Temp: %d %d\n",
+			        (int)(XXX_temps[0]*100.0),
+			        (int)(XXX_temps[1]*100.0));
 		double control = pid_update(&(makerbot.heaters[i].pid),
 		                            makerbot.heaters[i].set_point,
 		                            temp_c,

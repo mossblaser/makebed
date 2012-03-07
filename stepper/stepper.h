@@ -100,6 +100,8 @@ typedef struct stepper {
 	gpio_t *pin_nen;  // Stepper controller !enable pin
 	gpio_t *pin_dir;  // Stepper controller direction pin
 	gpio_t *pin_step; // Stepper controller step pin
+	
+	int min_step_period; // Minimum period of a step
 } stepper_t;
 
 
@@ -112,12 +114,14 @@ void stepper_init(void);
 /**
  * Initialise a stepper motor in the system.
  *
- * @param s_num The index of the motor to init
- * @param nen   The !enable GPIO pin for this motor
- * @param dir   The direction GPIO pin for this motor
- * @param step  The step GPIO pin for this motor
+ * @param s_num           The index of the motor to init
+ * @param nen             The !enable GPIO pin for this motor
+ * @param dir             The direction GPIO pin for this motor
+ * @param step            The step GPIO pin for this motor
+ * @param min_step_period The minimum duration of a step
  */
-void stepper_init_motor(size_t s_num, gpio_t *nen, gpio_t *dir, gpio_t *step);
+void stepper_init_motor(size_t s_num, gpio_t *nen, gpio_t *dir, gpio_t *step,
+                        int min_step_period);
 
 
 /**
