@@ -4,7 +4,7 @@ import socket
 import time
 import ctypes
 
-zero_window_poll_rate = 0.05
+zero_window_poll_rate = 0.5
 
 # Unpack data from bytes into a given ctype
 def from_bytes(container, bytes):
@@ -25,12 +25,25 @@ class GSender(object):
 		
 		# Internal state
 		self.window_size = 0
-		self.seq_num = 10
+		self.seq_num = 0
 	
 	def send(self, data):
+		data_size = len(data)
+		progress_blobs = -1
+		
+		# Save cursor position
+		print "\033[s"
+		
 		while data:
 			packet = data[:max(self.window_size-4,0)]
 			data   = data[max(self.window_size-4,0):]
+			
+			data_remain = len(data)
+			new_progress_blobs = int((float(data_size - data_remain) / float(data_size)) * 78)
+			if new_progress_blobs != progress_blobs:
+				progress_blobs = new_progress_blobs
+				print "\033[u[" + "#"*progress_blobs + " "*(78-progress_blobs) + "]"
+			
 			
 			# Prepend the sequence number
 			packet = buffer(ctypes.c_uint32(self.seq_num)) + packet
@@ -47,7 +60,9 @@ class GSender(object):
 					# Retransmit
 					continue
 				
-				if seq_num.value == self.seq_num:
+				if seq_num.value == 0 and window_size.value == 0:
+					raise Exception("Device rejected data!")
+				elif seq_num.value == self.seq_num:
 					self.window_size = window_size.value
 					seq_num.value += 1
 					self.seq_num = seq_num.value

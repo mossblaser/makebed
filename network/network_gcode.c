@@ -44,18 +44,29 @@ network_udp_gcode_appcall(void)
 	if (uip_newdata()) {
 		// Get the seq number
 		uint32_t seq_num;
+		uint32_t windowsize;
 		memcpy(&seq_num, uip_appdata, sizeof(uint32_t));
 		
-		// Only interpret the data if its new
-		if (seq_num != state->seq_num)
-			gcode_interpret(uip_appdata + sizeof(uint32_t), uip_datalen() - sizeof(uint32_t));
-		
-		state->seq_num = seq_num;
-		
-		// How big is the window?
-		uint32_t windowsize = gcode_queue_space();
-		if (windowsize > UIP_BUFSIZE - 96)
-			windowsize = UIP_BUFSIZE - 96;
+		// Is this an expected sequence number?
+		if (seq_num == 0 /* Start */
+		    || seq_num == state->seq_num /* Retransmission */
+		    || seq_num == state->seq_num + 1 /* Next Packet */) {
+			// Only interpret the data if its new
+			if (seq_num != state->seq_num)
+				gcode_interpret(uip_appdata + sizeof(uint32_t), uip_datalen() - sizeof(uint32_t));
+			
+			state->seq_num = seq_num;
+			
+			// How big is the window?
+			windowsize = gcode_queue_space();
+			if (windowsize > UIP_BUFSIZE - 96)
+				windowsize = UIP_BUFSIZE - 96;
+		} else {
+			// Unexpected sequence number. Send back error (zero window, zero seq) and
+			// discard data.
+			state->seq_num = 0;
+			windowsize = 0;
+		}
 		
 		// Report back
 		memcpy(uip_appdata, &(state->seq_num), sizeof(uint32_t));
