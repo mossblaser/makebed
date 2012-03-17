@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # Front-end for controling the printer
 
-import os, sys, gsend, optparse
+import os, sys, time, optparse
+import gsend, debug
 
 
 def makebed_send(ip, *args):
@@ -26,11 +27,64 @@ def makebed_send(ip, *args):
 	gsend.GSender(ip).send(f, poll_rate = options.poll_rate, verbose = options.verbose)
 
 
-def makebed_get(ip, args):
-	print "TODO"
+def makebed_get(ip, *args):
+	# Get options
+	parser = optparse.OptionParser(usage="[-p] [temp|gcode|buf|pow|pos|msg]...")
+	parser.add_option("-p", "--poll_rate",
+	                  action="store", type="float", dest="poll_rate",
+	                  default = None,
+	                  help="Repeatedly request data.")
+	options, args = parser.parse_args(list(args))
+	
+	# Connect
+	d = debug.Debugger(ip)
+	
+	commands = {
+		"temp": (
+			"extruder_c	extruder_target_c	platform_c	platform_target_c",
+			d.get_temperatures
+		),
+		"gcode": (
+			"gcode_cmds_parsed",
+			d.get_instructions_parsed
+		),
+		"buf": (
+			"gcode_buf	gcode_buf_size	cmd_buf	cmd_buf_size	cmd_buf_underruns",
+			d.get_buffer_stats
+		),
+		"pow": (
+			"power_on",
+			d.get_power
+		),
+		"pos": (
+			"X	Y	Z",
+			d.get_position
+		),
+		"msg": (
+			"message",
+			d.get_message
+		),
+	}
+	
+	selected = []
+	for arg in args:
+		if arg in commands:
+			selected.append(commands[arg])
+		else:
+			raise Exception("Unknown field: '%s'"%arg)
+	
+	print "#" + "\t".join(map((lambda c:c[0]), selected))
+	
+	while True:
+		print "\t".join(map((lambda (_,f): "\t".join(map(str, f()))), selected))
+		
+		if options.poll_rate is None:
+			break
+		else:
+			time.sleep(options.poll_rate)
 
 
-def makebed_reset(ip, args):
+def makebed_reset(ip, *args):
 	print "TODO"
 
 
