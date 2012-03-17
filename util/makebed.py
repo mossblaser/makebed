@@ -73,10 +73,12 @@ def makebed_get(ip, *args):
 		else:
 			raise Exception("Unknown field: '%s'"%arg)
 	
-	print "#" + "\t".join(map((lambda c:c[0]), selected))
+	sys.stdout.write("#" + "\t".join(map((lambda c:c[0]), selected)) + "\n")
+	sys.stdout.flush()
 	
 	while True:
-		print "\t".join(map((lambda (_,f): "\t".join(map(str, f()))), selected))
+		sys.stdout.write("\t".join(map((lambda (_,f): "\t".join(map(str, f()))), selected)) + "\n")
+		sys.stdout.flush()
 		
 		if options.poll_rate is None:
 			break
