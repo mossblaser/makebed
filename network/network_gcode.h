@@ -5,6 +5,7 @@
 
 #include "MakebedConfig.h"
 #include "network.h"
+#include "gcode.h"
 
 void network_gcode_appcall(void);
 

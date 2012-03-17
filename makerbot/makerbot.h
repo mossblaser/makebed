@@ -153,6 +153,9 @@ typedef struct makerbot_heater {
 	// The target temperature
 	double set_point;
 	
+	// The current temperature
+	double temperature;
+	
 	// Heater has reached the target temperature
 	bool reached;
 } makerbot_heater_t;
@@ -165,6 +168,9 @@ typedef struct makerbot {
 	// Commands queued up for execution
 	xQueueHandle     command_queue;
 	xSemaphoreHandle command_queue_lock;
+	
+	// Buffer Underrun Counter
+	int buffer_underruns;
 	
 	// Axes of the platform/extruder
 	makerbot_axis_t axes[MAKERBOT_NUM_AXES];
@@ -216,6 +222,21 @@ void _makerbot_pid(double dt);
 void makerbot_reset(void);
 
 /**
+ * Reset the buffer underrun counter.
+ */
+void makerbot_reset_underruns(void);
+
+/**
+ * Get the number of buffer underruns.
+ */
+int makerbot_buffer_underruns(void);
+
+/**
+ * Get the number of commands in the buffer.
+ */
+size_t makerbot_queue_length(void);
+
+/**
  * Append an instruction to the queue to set the current position (mm) - offset
  * as the origin.
  */
@@ -241,7 +262,17 @@ void makerbot_set_temperature(int heater_num, double temperature);
 /**
  * Get the current temperature of one of the heaters (*c)
  */
+double makerbot_read_temperature(int heater_num);
+ 
+/**
+ * Get the last-read temperature of one of the heaters (*c)
+ */
 double makerbot_get_temperature(int heater_num);
+ 
+/**
+ * Get the current target temperature of one of the heaters (*c)
+ */
+double makerbot_get_set_point(int heater_num);
 
 /**
  * Are the heaters at the right temperature (for internal use)
@@ -277,7 +308,7 @@ void makerbot_set_power(bool enabled);
 /**
  * Get the state of the PSU (internal use only)
  */
-bool _makerbot_get_power(void);
+bool makerbot_get_power(void);
 
 /**
  * Adds an instruction to the queue to enable/disable axes

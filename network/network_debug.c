@@ -1,20 +1,90 @@
 #include "network_debug.h"
 
 
-static char network_debug_message[NETWORK_DEBUG_BUFFER_SIZE] = "Debug.";
+// General debugging
+static char message_dbg[NETWORK_DEBUG_BUFFER_SIZE] = "Debug.";
+char *
+function_dbg(void)
+{
+	return message_dbg;
+}
+
+// Temperatures
+static char message_tmp[NETWORK_DEBUG_BUFFER_SIZE] = "";
+char *
+function_tmp(void)
+{
+	sprintf(message_tmp, "%d %d %d %d\n",
+	        (int)(100*makerbot_get_temperature(0)),
+	        (int)(100*makerbot_get_set_point(0)),
+	        (int)(100*makerbot_get_temperature(1)),
+	        (int)(100*makerbot_get_set_point(1)));
+	return message_tmp;
+}
+
+// Gcode Stats
+static char message_gcd[NETWORK_DEBUG_BUFFER_SIZE] = "";
+char *
+function_gcd(void)
+{
+	sprintf(message_gcd, "%d\n", gcode_instructions_handled());
+	return message_gcd;
+}
+
+// Buffer usage
+static char message_buf[NETWORK_DEBUG_BUFFER_SIZE] = "";
+char *
+function_buf(void)
+{
+	sprintf(message_buf, "%d %d %d %d %d\n",
+	        gcode_queue_length(),
+	        GCODE_BUFFER_LENGTH,
+	        makerbot_queue_length(),
+	        MAKERBOT_COMMAND_QUEUE_LENGTH,
+	        makerbot_buffer_underruns());
+	return message_buf;
+}
+
+// Power Status
+static char message_pow[NETWORK_DEBUG_BUFFER_SIZE] = "";
+char *
+function_pow(void)
+{
+	sprintf(message_pow, "%d\n", makerbot_get_power());
+	return message_pow;
+}
+
+// Position of axes
+static char message_pos[NETWORK_DEBUG_BUFFER_SIZE] = "";
+char *
+function_pos(void)
+{
+	sprintf(message_pos, "%d %d %d\n",
+	        (int)(100*makerbot_get_position(0)),
+	        (int)(100*makerbot_get_position(1)),
+	        (int)(100*makerbot_get_position(2)));
+	return message_pos;
+}
 
 
 void
 network_debug_init(void)
 {
-	network_debug_message[0] = '\0';
+	// Do nothing.
 }
 
 
 char *
-network_debug_str(void)
+network_debug_str(char *key)
 {
-	return network_debug_message;
+	if (strcmp(key, "tmp") == 0) return function_tmp();
+	if (strcmp(key, "gcd") == 0) return function_gcd();
+	if (strcmp(key, "buf") == 0) return function_buf();
+	if (strcmp(key, "pow") == 0) return function_pow();
+	if (strcmp(key, "pos") == 0) return function_pos();
+	
+	// If the key is unknown, return the default debug string
+	return function_dbg();
 }
 
 
@@ -43,7 +113,8 @@ PT_THREAD(network_debug_thread)(network_debug_t *s)
 	
 	while (1) {
 		PSOCK_READTO(&s->p, '\n');
-		strncpy(s->buf, network_debug_message, NETWORK_DEBUG_BUFFER_SIZE);
+		s->buf[3] = '\0';
+		strncpy(s->buf, network_debug_str(s->buf), NETWORK_DEBUG_BUFFER_SIZE);
 		PSOCK_SEND_STR(&s->p, s->buf);
 	}
 	

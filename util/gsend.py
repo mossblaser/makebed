@@ -6,7 +6,7 @@ import time
 import ctypes
 import sys
 
-ZERO_WINDOW_POLL_RATE = 0.5
+DEFAULT_POLL_RATE = 0.1
 
 class Rejected(Exception):
 	pass
@@ -20,7 +20,6 @@ class GSender(object):
 		
 		# Open a UDP socket
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.sock.settimeout(ZERO_WINDOW_POLL_RATE)
 		
 		# Connection state
 		self.window_size = 0
@@ -55,7 +54,9 @@ class GSender(object):
 		return self.from_bytes(ctypes.c_uint32(), dat).value
 	
 	
-	def send(self, f, verbose = False):
+	def send(self, f, poll_rate = DEFAULT_POLL_RATE, verbose = False):
+		self.sock.settimeout(poll_rate)
+		
 		eof = False
 		
 		if verbose:
@@ -121,7 +122,7 @@ class GSender(object):
 			
 			# If a zero windowsize was reported, wait a while and try again
 			if self.window_size == 0:
-				time.sleep(ZERO_WINDOW_POLL_RATE)
+				time.sleep(poll_rate)
 		
 		if verbose:
 			sys.stderr.write("\nDone! Total: %0.1fkB.\n"%(self.data_sent / 1024.0))

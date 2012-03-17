@@ -10,6 +10,10 @@ def makebed_send(ip, *args):
 	parser.add_option("-f", "--file",
 	                  action="store", type="string", dest="filename",
 	                  help="File to send to the printer (default stdin)")
+	parser.add_option("-p", "--poll_rate",
+	                  action="store", type="float", dest="poll_rate",
+	                  default = gsend.DEFAULT_POLL_RATE,
+	                  help="Rate at which to poll the printer when busy (sec).")
 	parser.add_option("-v", "--verbose",
 	                  action="store_true", dest="verbose", default=False,
 	                  help="Show detailed information about the connection")
@@ -19,7 +23,7 @@ def makebed_send(ip, *args):
 	f = open(options.filename, "r") if options.filename else sys.stdin
 	
 	# Start the transfer
-	gsend.GSender(ip).send(f, verbose = options.verbose)
+	gsend.GSender(ip).send(f, poll_rate = options.poll_rate, verbose = options.verbose)
 
 
 def makebed_get(ip, args):

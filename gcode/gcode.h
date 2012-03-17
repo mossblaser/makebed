@@ -75,6 +75,9 @@ typedef struct {
 	
 	// The conversion from the current unit to mm
 	double unit_per_mm;
+	
+	// Number of instructions handled
+	int instructions_handled;
 } gcode_t;
 
 
@@ -98,9 +101,24 @@ void gcode_task(void *pvParameters);
 size_t gcode_interpret(char *code, size_t len);
 
 /**
+ * Find out how many items are in the queue
+ */
+size_t gcode_queue_length(void);
+
+/**
  * Find out how much space is left on the gcode interpreter queue.
  */
 size_t gcode_queue_space(void);
+
+/**
+ * How many instructions have been handled?
+ */
+int gcode_instructions_handled(void);
+
+/**
+ * Reset the instruction counter
+ */
+void gcode_reset_counter(void);
 
 
 /* Internal Use Only **********************************************************/

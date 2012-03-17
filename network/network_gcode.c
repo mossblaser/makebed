@@ -12,7 +12,9 @@ network_gcode_appcall(void)
 	
 	// Initialise the socket on connect
 	if (uip_connected()) {
-		// Do nothing
+		// Reset the gcode counter
+		gcode_reset_counter();
+		makerbot_reset_underruns();
 	} else if (uip_stopped(uip_conn)) {
 		// If the buffer has room again, continue!!
 		if (gcode_queue_space() >= UIP_BUFSIZE)
@@ -51,6 +53,12 @@ network_udp_gcode_appcall(void)
 		if (seq_num == 0 /* Start */
 		    || seq_num == state->seq_num /* Retransmission */
 		    || seq_num == state->seq_num + 1 /* Next Packet */) {
+			// Reset the gcode counter
+			if (seq_num == 0) {
+				gcode_reset_counter();
+				makerbot_reset_underruns();
+			}
+			
 			// Only interpret the data if its new
 			if (seq_num != state->seq_num)
 				gcode_interpret(uip_appdata + sizeof(uint32_t), uip_datalen() - sizeof(uint32_t));

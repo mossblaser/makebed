@@ -19,6 +19,8 @@ makerbot_init(void)
 		while (true)
 			;
 	
+	makerbot.buffer_underruns = 0;
+	
 	#if MAKERBOT_NUM_AXES != 3
 		#error "makerbot_init can't handle MAKERBOT_NUM_AXES many axes"
 	#endif
@@ -124,8 +126,11 @@ makerbot_main_task(void *pvParameters)
 	for (;;) {
 		// Get the next command
 		makerbot_command_t cmd;
-		while(!xQueueReceive(makerbot.command_queue, &cmd, portMAX_DELAY))
-			;
+		if(!xQueueReceive(makerbot.command_queue, &cmd, 0)) {
+			makerbot.buffer_underruns ++;
+			while(!xQueueReceive(makerbot.command_queue, &cmd, portMAX_DELAY))
+				;
+		}
 		
 		// Timer for PSU operations
 		portTickType last_update = xTaskGetTickCount();
@@ -156,9 +161,13 @@ makerbot_main_task(void *pvParameters)
 				break;
 			
 			case MAKERBOT_SET_TEMPERATURE:
+				// Reset the "reached" flag if changing temperature
+				if (makerbot.heaters[cmd.arg.set_temperature.heater_num].set_point
+					  != cmd.arg.set_temperature.temperature)
+					makerbot.heaters[cmd.arg.set_temperature.heater_num].reached = false;
+				
 				makerbot.heaters[cmd.arg.set_temperature.heater_num].set_point
 					= cmd.arg.set_temperature.temperature;
-				makerbot.heaters[cmd.arg.set_temperature.heater_num].reached = false;
 				break;
 			
 			case MAKERBOT_WAIT_HEATERS:
@@ -235,11 +244,6 @@ makerbot_pid_task(void *pvParameters)
 }
 
 
-// XXX
-#include <stdio.h>
-#include "network_debug.h"
-double XXX_temps[2];
-
 void
 _makerbot_pid(double dt)
 {
@@ -254,20 +258,15 @@ _makerbot_pid(double dt)
 	
 	// Run the PID routine for all heaters
 	for (i = 0; i < MAKERBOT_NUM_HEATERS; i++) {
-		double temp_c = makerbot_get_temperature(i);
+		makerbot.heaters[i].temperature = makerbot_read_temperature(i);
 		
-		// XXX
-		XXX_temps[i] = temp_c;
-		if (i == 1)
-			sprintf(network_debug_str(), "Temp: %d %d\n",
-			        (int)(XXX_temps[0]*100.0),
-			        (int)(XXX_temps[1]*100.0));
 		double control = pid_update(&(makerbot.heaters[i].pid),
 		                            makerbot.heaters[i].set_point,
-		                            temp_c,
+		                            makerbot.heaters[i].temperature,
 		                            dt);
-		bool heater_on = (control > 0.0) && _makerbot_get_power();
-		bool reached = makerbot.heaters[i].set_point <= temp_c;
+		bool heater_on = (control > 0.0) && makerbot_get_power();
+		bool reached = makerbot.heaters[i].set_point
+		               <= makerbot.heaters[i].temperature;
 		
 		// Turn on heater (and LED) if needed
 		gpio_write(makerbot.heaters[i].heater_pin, heater_on);
@@ -328,6 +327,27 @@ makerbot_reset(void)
 
 
 void
+makerbot_reset_underruns(void)
+{
+	makerbot.buffer_underruns = 0;
+}
+
+
+int
+makerbot_buffer_underruns(void)
+{
+	return makerbot.buffer_underruns;
+}
+
+
+size_t
+makerbot_queue_length(void)
+{
+	return uxQueueMessagesWaiting(makerbot.command_queue);
+}
+
+
+void
 makerbot_set_origin(double offset_mm[MAKERBOT_NUM_AXES])
 {
 	int i;
@@ -335,6 +355,7 @@ makerbot_set_origin(double offset_mm[MAKERBOT_NUM_AXES])
 	for (i = 0; i < MAKERBOT_NUM_AXES; i++)
 		makerbot.axes[i].position = offset_mm[i] * makerbot.axes[i].steps_per_mm;
 }
+
 
 void
 makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s)
@@ -418,11 +439,25 @@ makerbot_set_temperature(int heater_num, double temperature)
 
 
 double
-makerbot_get_temperature(int heater_num)
+makerbot_read_temperature(int heater_num)
 {
 	int reading = analog_in_read(makerbot.heaters[heater_num].thermistor_pin);
 	return thermistor_convert(&makerbot.heaters[heater_num].thermistor,
 	                          ((double)reading) / 4086.0) - 273.0;
+}
+
+
+double
+makerbot_get_temperature(int heater_num)
+{
+	return makerbot.heaters[heater_num].temperature;
+}
+
+
+double
+makerbot_get_set_point(int heater_num)
+{
+	return makerbot.heaters[heater_num].set_point;
 }
 
 
@@ -499,8 +534,9 @@ makerbot_set_power(bool enabled)
 	xSemaphoreGive(makerbot.command_queue_lock);
 }
 
+
 bool
-_makerbot_get_power(void)
+makerbot_get_power(void)
 {
 	return gpio_read(makerbot.psu);
 }

@@ -37,6 +37,8 @@ gcode_init(void)
 	
 	gcode.unit_per_mm = GCODE_IN_PER_MM;
 	
+	gcode.instructions_handled = 0;
+	
 	// Set up registers
 	gcode.registers[A].is_integer = false;
 	gcode.registers[B].is_integer = false;
@@ -120,9 +122,30 @@ gcode_interpret(char *code, size_t len)
 
 
 size_t
+gcode_queue_length(void)
+{
+	return uxQueueMessagesWaiting(gcode.queue);
+}
+
+
+size_t
 gcode_queue_space(void)
 {
-	return GCODE_BUFFER_LENGTH - uxQueueMessagesWaiting(gcode.queue);
+	return GCODE_BUFFER_LENGTH - gcode_queue_length();
+}
+
+
+int
+gcode_instructions_handled(void)
+{
+	return gcode.instructions_handled;
+}
+
+
+void
+gcode_reset_counter(void)
+{
+	gcode.instructions_handled = 0;
 }
 
 
@@ -161,6 +184,7 @@ gcode_task(void *pvParameters)
 				// If the line wasn't empty, process the system registers
 				if (!line_empty) {
 					_gcode_step();
+					gcode.instructions_handled ++;
 					line_empty = true;
 				}
 				break;
