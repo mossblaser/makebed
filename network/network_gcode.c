@@ -64,12 +64,12 @@ network_udp_gcode_appcall(void)
 		} else {
 			// Unexpected sequence number. Send back error (zero window, zero seq) and
 			// discard data.
-			state->seq_num = 0;
+			seq_num = 0;
 			windowsize = 0;
 		}
 		
 		// Report back
-		memcpy(uip_appdata, &(state->seq_num), sizeof(uint32_t));
+		memcpy(uip_appdata, &seq_num, sizeof(uint32_t));
 		memcpy(uip_appdata + sizeof(uint32_t), &windowsize, sizeof(uint32_t));
 		uip_udp_send(sizeof(uint32_t) * 2);
 	}
