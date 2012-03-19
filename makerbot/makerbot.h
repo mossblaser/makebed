@@ -273,6 +273,11 @@ double makerbot_get_temperature(int heater_num);
  * Get the current target temperature of one of the heaters (*c)
  */
 double makerbot_get_set_point(int heater_num);
+ 
+/**
+ * Is the heater turned on?
+ */
+bool makerbot_get_heater_on(int heater_num);
 
 /**
  * Are the heaters at the right temperature (for internal use)

@@ -384,9 +384,25 @@ void
 _gcode_step_m(void)
 {
 	switch (gcode.registers[M].value.i) {
+		// PSU Power on/off
+		case -1:
+			makerbot_set_power(true);
+			break;
+		case 0:
+			makerbot_set_power(false);
+			break;
+		
 		// Wait for heaters
 		case 6:
 			makerbot_wait_heaters();
+			break;
+		
+		// Power on/off steppers
+		case 17:
+			makerbot_set_axes_enabled(true);
+			break;
+		case 18:
+			makerbot_set_axes_enabled(false);
 			break;
 		
 		// Extruder-Forward/Backward/Off

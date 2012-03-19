@@ -462,6 +462,13 @@ makerbot_get_set_point(int heater_num)
 
 
 bool
+makerbot_get_heater_on(int heater_num)
+{
+	return gpio_read(makerbot.heaters[heater_num].heater_pin);
+}
+
+
+bool
 _makerbot_temperature_reached(int heater_num)
 {
 	return makerbot.heaters[heater_num].reached;

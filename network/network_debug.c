@@ -14,11 +14,13 @@ static char message_tmp[NETWORK_DEBUG_BUFFER_SIZE] = "";
 char *
 function_tmp(void)
 {
-	sprintf(message_tmp, "%d %d %d %d\n",
+	sprintf(message_tmp, "%d %d %d %d %d %d\n",
 	        (int)(100*makerbot_get_temperature(0)),
 	        (int)(100*makerbot_get_set_point(0)),
+	        makerbot_get_heater_on(0),
 	        (int)(100*makerbot_get_temperature(1)),
-	        (int)(100*makerbot_get_set_point(1)));
+	        (int)(100*makerbot_get_set_point(1)),
+	        makerbot_get_heater_on(1));
 	return message_tmp;
 }
 

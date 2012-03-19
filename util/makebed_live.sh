@@ -26,14 +26,17 @@ set ylabel "Temperature (C)"
 set xrange [0:$DURATION]
 set yrange [0:10]
 set autoscale ymax
+set cbrange [0:1]
+set palette defined (0 "black", 1 "red")
+unset colorbox
 
 set title "Extruder Temperature"
-plot "$TRUNK_LOGFILE" using 1 title "Current" with lines, \
+plot "$TRUNK_LOGFILE" using 0:1:3 title "Current" with lines palette, \
      "$TRUNK_LOGFILE" using 2 title "Target" with lines
 
 set title "Platform Temperature"
-plot "$TRUNK_LOGFILE" using 3 title "Current" with lines, \
-     "$TRUNK_LOGFILE" using 4 title "Target" with lines
+plot "$TRUNK_LOGFILE" using 0:4:6 title "Current" with lines palette, \
+     "$TRUNK_LOGFILE" using 5 title "Target" with lines
 
 set title "Platform Position"
 set xlabel "X (mm)"
@@ -42,10 +45,11 @@ set zlabel "Z (mm)"
 set xrange [-30:30]
 set yrange [-30:30]
 set zrange [0:50]
+set autoscale cb
 set palette defined (0 "white", 0.2 "yellow", 1 "red")
 unset colorbox
-splot "$TRUNK_LOGFILE" using 10:11:12:0 notitle with lines palette, \
-      "$LAST_LOGFILE" using 10:11:12:0 notitle
+splot "$TRUNK_LOGFILE" using 12:13:14:0 notitle with lines palette, \
+      "$LAST_LOGFILE" using 12:13:14:0 notitle
 
 set title "Buffer Usage"
 set xlabel "Time (Seconds)"
@@ -56,8 +60,8 @@ set yrange [0:$GCODE_BUF_SIZE]
 set y2range [0:$CMD_BUF_SIZE]
 set ytics nomirror
 set y2tics
-plot "$TRUNK_LOGFILE" using 5 title "Gcode" with lines, \
-     "$TRUNK_LOGFILE" using 7 title "Commands" with lines axes x1y2
+plot "$TRUNK_LOGFILE" using 7 title "Gcode" with lines, \
+     "$TRUNK_LOGFILE" using 9 title "Commands" with lines axes x1y2
 
 EOF
 )"

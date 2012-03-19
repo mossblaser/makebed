@@ -41,7 +41,7 @@ def makebed_get(ip, *args):
 	
 	commands = {
 		"temp": (
-			"extruder_c	extruder_target_c	platform_c	platform_target_c",
+			"extruder_c	extruder_target_c	extruder_heater_on	platform_c platform_target_c	platform_heater_on",
 			d.get_temperatures
 		),
 		"gcode": (
