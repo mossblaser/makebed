@@ -19,6 +19,7 @@ EOF
 )"
 
 CMDS="$(cat <<EOF
+reset
 set multiplot layout 2,2
 
 set xlabel "Time (Seconds)"
