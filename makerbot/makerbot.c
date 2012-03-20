@@ -150,6 +150,10 @@ makerbot_main_task(void *pvParameters)
 				for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
 					if (cmd.arg.move_to.step_periods[i] > 0) {
 						moved = true;
+						if (cmd.arg.move_to.directions[i])
+							makerbot.axes[i].cur_position += cmd.arg.move_to.num_steps[i];
+						else
+							makerbot.axes[i].cur_position -= cmd.arg.move_to.num_steps[i];
 						stepper_set_action(makerbot.axes[i].stepper_num,
 						                   cmd.arg.move_to.directions[i],
 						                   cmd.arg.move_to.num_steps[i],
@@ -352,8 +356,10 @@ makerbot_set_origin(double offset_mm[MAKERBOT_NUM_AXES])
 {
 	int i;
 	
-	for (i = 0; i < MAKERBOT_NUM_AXES; i++)
-		makerbot.axes[i].position = offset_mm[i] * makerbot.axes[i].steps_per_mm;
+	for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
+		makerbot.axes[i].position     = offset_mm[i] * makerbot.axes[i].steps_per_mm;
+		makerbot.axes[i].cur_position = offset_mm[i] * makerbot.axes[i].steps_per_mm;
+	}
 }
 
 
@@ -420,6 +426,13 @@ double
 makerbot_get_position(int axis)
 {
 	return ((double)makerbot.axes[axis].position) / makerbot.axes[axis].steps_per_mm;
+}
+
+
+double
+makerbot_get_cur_position(int axis)
+{
+	return ((double)makerbot.axes[axis].cur_position) / makerbot.axes[axis].steps_per_mm;
 }
 
 

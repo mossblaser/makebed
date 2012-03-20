@@ -62,9 +62,9 @@ char *
 function_pos(void)
 {
 	sprintf(message_pos, "%d %d %d\n",
-	        (int)(100*makerbot_get_position(0)),
-	        (int)(100*makerbot_get_position(1)),
-	        (int)(100*makerbot_get_position(2)));
+	        (int)(100*makerbot_get_cur_position(0)),
+	        (int)(100*makerbot_get_cur_position(1)),
+	        (int)(100*makerbot_get_cur_position(2)));
 	return message_pos;
 }
 

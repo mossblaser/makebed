@@ -129,6 +129,9 @@ typedef struct makerbot_axis {
 	
 	// Position (in steps) of the axis
 	int position;
+	
+	// Current Position (in steps) of the axis
+	int cur_position;
 } makerbot_axis_t;
 
 
@@ -252,6 +255,11 @@ void makerbot_move_to(double pos_mm[MAKERBOT_NUM_AXES], double speed_mm_s);
  * Get the position of the makerbot after all queued commands have been executed
  */
 double makerbot_get_position(int axis);
+
+/**
+ * Get the current position of the makerbot
+ */
+double makerbot_get_cur_position(int axis);
 
 /**
  * Append an instruction to the queue to set the temperature of one of the
