@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # How long to look back through the data
-DURATION="$(( 60 * 2 ))"
+DURATION="$(( 60 * 10 ))"
 
 # Buffer sizes
 GCODE_BUF_SIZE=$(( (2048 * 110) / 100 ))
@@ -43,11 +43,11 @@ set title "Platform Position"
 set xlabel "X (mm)"
 set ylabel "Y (mm)"
 set zlabel "Z (mm)"
-set xrange [-30:30]
-set yrange [-30:30]
-set zrange [0:50]
+set xrange [-100:100]
+set yrange [-100:100]
+set zrange [0:100]
 set autoscale cb
-set palette defined (0 "white", 0.2 "yellow", 1 "red")
+set palette defined (0 "white", 0.9 "yellow", 1 "red")
 unset colorbox
 splot "$TRUNK_LOGFILE" using 12:13:14:0 notitle with lines palette, \
       "$LAST_LOGFILE" using 12:13:14:0 notitle
@@ -73,10 +73,25 @@ python makebed.py get -p 1 temp buf pos | (
 	
 	while read line; do
 		echo "$line" >> "$LOGFILE"
+		
+		# After the "key", insert zeros for the first DURATION samples
+		if echo "$line" | grep -qREx "#.*"; then
+			zeros="$(echo "$line" | tr -d "#" | sed -re "s/[a-zA-Z_]+/0/g")"
+			
+			echo "# *** Begin initial zero padding ***" >> "$LOGFILE"
+			for i in `seq $DURATION`; do
+				echo $zeros >> "$LOGFILE"
+			done
+			echo "# *** End initial zero padding ***" >> "$LOGFILE"
+			
+			echo "# Mark discontinuity" >> "$LOGFILE"
+			echo >> "$LOGFILE"
+		fi
+		
 		echo "$line" > /dev/stderr
 		echo "$CMDS"
 		
 	done
-)| gnuplot
+) | gnuplot
 
 rm "$LOGFILE"
