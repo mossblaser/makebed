@@ -47,7 +47,7 @@ stepper_init(void)
 
 void
 stepper_init_motor(size_t s_num, gpio_t *nen, gpio_t *dir, gpio_t *step,
-                   int min_step_period)
+                   bool inverted, int min_step_period)
 {
 	// TODO: Handle error condition more gracefully
 	while (s_num >= STEPPER_NUM_MOTORS)
@@ -64,6 +64,8 @@ stepper_init_motor(size_t s_num, gpio_t *nen, gpio_t *dir, gpio_t *step,
 	steppers[s_num].pin_dir  = dir;
 	steppers[s_num].pin_step = step;
 	
+	steppers[s_num].inverted = inverted;
+	
 	// Set up the pins
 	gpio_set_mode(steppers[s_num].pin_nen,  GPIO_OUTPUT);
 	gpio_set_mode(steppers[s_num].pin_dir,  GPIO_OUTPUT);
@@ -71,7 +73,7 @@ stepper_init_motor(size_t s_num, gpio_t *nen, gpio_t *dir, gpio_t *step,
 	
 	// Set default pin states (disabled)
 	gpio_write(steppers[s_num].pin_nen,  GPIO_HIGH);
-	gpio_write(steppers[s_num].pin_dir,  STEPPER_FORWARD);
+	gpio_write(steppers[s_num].pin_dir,  STEPPER_FORWARD ^ steppers[s_num].inverted);
 	gpio_write(steppers[s_num].pin_step, GPIO_LOW);
 }
 
@@ -134,7 +136,7 @@ stepper_set_action(size_t        s_num,
 	gpio_write(steppers[s_num].pin_step, GPIO_LOW);
 	
 	// Set the direction of the stepper
-	gpio_write(steppers[s_num].pin_dir, direction);
+	gpio_write(steppers[s_num].pin_dir, direction ^ steppers[s_num].inverted);
 	
 	// The duration of a step
 	steppers[s_num].step_period = MAX(step_period,

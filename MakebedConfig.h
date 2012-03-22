@@ -71,6 +71,11 @@
 #define PIN_STEPPER_1_STEP (&gpio_mbed_p13)
 #define PIN_STEPPER_2_STEP (&gpio_mbed_p21)
 
+/* Which steppers direction should be inverted? */
+#define STEPPER_0_INVERTED false
+#define STEPPER_1_INVERTED true
+#define STEPPER_2_INVERTED false
+
 /* End-stop pins */
 #define PIN_ENDSTOP_0_MIN (&gpio_mbed_p6)
 #define PIN_ENDSTOP_1_MIN (&gpio_mbed_p11)
