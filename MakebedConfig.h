@@ -71,6 +71,15 @@
 #define PIN_STEPPER_1_STEP (&gpio_mbed_p13)
 #define PIN_STEPPER_2_STEP (&gpio_mbed_p21)
 
+/* End-stop pins */
+#define PIN_ENDSTOP_0_MIN (&gpio_mbed_p6)
+#define PIN_ENDSTOP_1_MIN (&gpio_mbed_p11)
+#define PIN_ENDSTOP_2_MIN (&gpio_mbed_p16)
+
+#define PIN_ENDSTOP_0_MAX (&gpio_mbed_p7)
+#define PIN_ENDSTOP_1_MAX (&gpio_mbed_p12)
+#define PIN_ENDSTOP_2_MAX (&gpio_mbed_p17)
+
 
 /* Stepper controler parameters. */
 
