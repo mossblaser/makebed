@@ -76,6 +76,12 @@
 #define STEPPER_1_INVERTED true
 #define STEPPER_2_INVERTED false
 
+/* Should endstops be used?? */
+#define USE_ENDSTOPS true
+
+/* Endstops are active high? */
+#define ENDSTOP_ACTIVE_HIGH false
+
 /* End-stop pins */
 #define PIN_ENDSTOP_0_MIN (&gpio_mbed_p6)
 #define PIN_ENDSTOP_1_MIN (&gpio_mbed_p11)
@@ -84,6 +90,15 @@
 #define PIN_ENDSTOP_0_MAX (&gpio_mbed_p7)
 #define PIN_ENDSTOP_1_MAX (&gpio_mbed_p12)
 #define PIN_ENDSTOP_2_MAX (&gpio_mbed_p17)
+
+/* End-stop positions */
+#define ENDSTOP_0_MIN_POS 0.0
+#define ENDSTOP_1_MIN_POS 0.0
+#define ENDSTOP_2_MIN_POS 0.0
+
+#define ENDSTOP_0_MAX_POS 0.0
+#define ENDSTOP_1_MAX_POS 0.0
+#define ENDSTOP_2_MAX_POS 0.0
 
 
 /* Stepper controler parameters. */

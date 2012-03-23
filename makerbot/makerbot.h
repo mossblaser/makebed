@@ -53,6 +53,7 @@ typedef enum {
 	MAKERBOT_SET_PLATFORM,
 	MAKERBOT_SET_POWER,
 	MAKERBOT_SET_AXES_ENABLED,
+	MAKERBOT_HOME_AXIS,
 } makerbot_instr_t;
 
 
@@ -113,6 +114,11 @@ typedef struct {
 		struct {
 			bool enabled;
 		} set_axes_enabled;
+		
+		// Home Axes
+		struct {
+			int axes;
+		} home_axes;
 	} arg;
 } makerbot_command_t;
 
@@ -132,6 +138,13 @@ typedef struct makerbot_axis {
 	
 	// Current Position (in steps) of the axis
 	int cur_position;
+	
+	// Endstop support
+	bool    endstop_active_high; // Is the endstop high when broken
+	gpio_t *endstop_min;
+	gpio_t *endstop_max;
+	int endstop_min_position;
+	int endstop_max_position;
 } makerbot_axis_t;
 
 
@@ -177,6 +190,9 @@ typedef struct makerbot {
 	
 	// Axes of the platform/extruder
 	makerbot_axis_t axes[MAKERBOT_NUM_AXES];
+	
+	// Is endstop support enabled?
+	bool use_endstops;
 	
 	// Heaters in the platform/extruder
 	makerbot_heater_t heaters[MAKERBOT_NUM_HEATERS];
@@ -327,5 +343,10 @@ bool makerbot_get_power(void);
  * Adds an instruction to the queue to enable/disable axes
  */
 void makerbot_set_axes_enabled(bool enabled);
+
+/**
+ * Adds an instruction to the queue to enable/disable axes
+ */
+void makerbot_home_axis(int axes);
 
 #endif // def MAKERBOT_H

@@ -61,6 +61,32 @@ makerbot_init(void)
 	                   STEPPER_2_INVERTED,
 	                   STEPPER_MIN_PERIOD);
 	
+	// Set up endstops
+	makerbot.use_endstops = USE_ENDSTOPS;
+	
+	makerbot.axes[0].endstop_active_high = ENDSTOP_ACTIVE_HIGH;
+	makerbot.axes[0].endstop_min = PIN_ENDSTOP_0_MIN;
+	makerbot.axes[0].endstop_max = PIN_ENDSTOP_0_MAX;
+	makerbot.axes[0].endstop_min_position = (ENDSTOP_0_MIN_POS * makerbot.axes[0].steps_per_mm);
+	makerbot.axes[0].endstop_max_position = (ENDSTOP_0_MAX_POS * makerbot.axes[0].steps_per_mm);
+	
+	makerbot.axes[1].endstop_active_high = ENDSTOP_ACTIVE_HIGH;
+	makerbot.axes[1].endstop_min = PIN_ENDSTOP_1_MIN;
+	makerbot.axes[1].endstop_max = PIN_ENDSTOP_1_MAX;
+	makerbot.axes[1].endstop_min_position = (ENDSTOP_1_MIN_POS * makerbot.axes[1].steps_per_mm);
+	makerbot.axes[1].endstop_max_position = (ENDSTOP_1_MAX_POS * makerbot.axes[1].steps_per_mm);
+	
+	makerbot.axes[2].endstop_active_high = ENDSTOP_ACTIVE_HIGH;
+	makerbot.axes[2].endstop_min = PIN_ENDSTOP_2_MIN;
+	makerbot.axes[2].endstop_max = PIN_ENDSTOP_2_MAX;
+	makerbot.axes[2].endstop_min_position = (ENDSTOP_2_MIN_POS * makerbot.axes[2].steps_per_mm);
+	makerbot.axes[2].endstop_max_position = (ENDSTOP_2_MAX_POS * makerbot.axes[2].steps_per_mm);
+	
+	for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
+		gpio_set_mode(makerbot.axes[i].endstop_min, GPIO_INPUT);
+		gpio_set_mode(makerbot.axes[i].endstop_max, GPIO_INPUT);
+	}
+	
 	#if MAKERBOT_NUM_HEATERS != 2
 		#error "makerbot_init can't handle MAKERBOT_NUM_HEATERS many heaters"
 	#endif
@@ -234,6 +260,25 @@ makerbot_main_task(void *pvParameters)
 				for (i = 0; i < MAKERBOT_NUM_AXES; i++)
 					stepper_set_enabled(makerbot.axes[i].stepper_num,
 					                    cmd.arg.set_axes_enabled.enabled);
+				break;
+			
+			case MAKERBOT_HOME_AXIS:
+				for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
+					if (makerbot.use_endstops
+					    && cmd.arg.home_axes.axes & (1 << i)) {
+						
+						// Move the axis forward until it hits its max endstop.
+						while (gpio_read(makerbot.axes[i].endstop_max)
+						       != makerbot.axes[i].endstop_active_high) {
+							stepper_set_action(makerbot.axes[i].stepper_num, STEPPER_FORWARD,
+							                   1, STEPPER_MIN_PERIOD);
+							stepper_wait_until_idle();
+						}
+						
+						// We're now at this positon
+						makerbot.axes[i].position = makerbot.axes[i].endstop_max_position;
+					}
+				}
 				break;
 			
 			default:
@@ -584,6 +629,20 @@ makerbot_set_axes_enabled(bool enabled)
 	cmd.instr = MAKERBOT_SET_AXES_ENABLED;
 	
 	cmd.arg.set_axes_enabled.enabled = enabled;
+	
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
+	xSemaphoreGive(makerbot.command_queue_lock);
+}
+
+
+void
+makerbot_home_axis(int axes)
+{
+	makerbot_command_t cmd;
+	cmd.instr = MAKERBOT_HOME_AXIS;
+	
+	cmd.arg.home_axes.axes = axes;
 	
 	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
 	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);

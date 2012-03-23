@@ -384,6 +384,11 @@ void
 _gcode_step_m(void)
 {
 	switch (gcode.registers[M].value.i) {
+		// Home Axes
+		case -2:
+			makerbot_home_axis(gcode.registers[A].value.i);
+			break;
+		
 		// PSU Power on/off
 		case -1:
 			makerbot_set_power(true);

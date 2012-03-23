@@ -35,15 +35,16 @@ void
 flash_task(void *pvParameters)
 {
 	portTickType last_flash = xTaskGetTickCount();
-	portTickType delay      = 500 / portTICK_RATE_MS;
+	portTickType delay      = 100 / portTICK_RATE_MS;
 	
 	/* FreeRTOS Flashing */
 	gpio_set_mode(&gpio_mbed_led4, GPIO_OUTPUT);
+	gpio_set_mode(PIN_ENDSTOP_2_MAX, GPIO_INPUT);
 	gpio_write(&gpio_mbed_led4, GPIO_HIGH);
 	
 	for (;;) {
 		vTaskDelayUntil(&last_flash, delay);
-		gpio_write(&gpio_mbed_led4, !gpio_read(&gpio_mbed_led4));
+		gpio_write(&gpio_mbed_led4, !gpio_read(PIN_ENDSTOP_2_MAX));
 	}
 }
 
