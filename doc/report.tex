@@ -1,0 +1,56 @@
+\documentclass[12pt]{third-rep}
+
+%\includeonly{chapter1}
+
+% Add draft header
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}  % left head
+\chead{Draft: \today} % centre head
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+
+\usepackage{url}
+
+\title{3D Printer ARM-Based Electronics Replacement}
+\author{Jonathan Heathcote}
+\supervisor{Alasdair Rawsthorne}
+\reportyear{2012}
+
+%% this defines the file that contains the text of the abstract, there
+%% must be one of these by the time you submit your report.
+\abstractfile{abstract.tex}
+
+%% this defines the file that contains the acknowledgements (it can be
+%% omitted if you don't feel like thanking anyone
+\thanksfile{thanks.tex}
+
+% Uncomment the following line if you want to change the name of the
+% Bibliography to References
+\renewcommand{\bibname}{References}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+	% Front matter
+	\dotitleandabstract
+	
+	\tableofcontents
+	\listoffigures
+	\listoftables
+	
+	% Chapters
+	\include{chapter1}
+	
+	% End matter
+	\bibliography{refs}
+	
+	% this determines the style in which the references are printed, other
+	% possible values are plain and abbrv
+	\bibliographystyle{alpha}
+	
+	% Appendices
+	\appendix
+	\include{appendix1}
+\end{document}
