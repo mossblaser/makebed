@@ -29,7 +29,9 @@ static char message_gcd[NETWORK_DEBUG_BUFFER_SIZE] = "";
 char *
 function_gcd(void)
 {
-	sprintf(message_gcd, "%d\n", gcode_instructions_handled());
+	sprintf(message_gcd, "%d %d\n",
+	        gcode_instructions_handled(),
+	        gcode_get_error());
 	return message_gcd;
 }
 

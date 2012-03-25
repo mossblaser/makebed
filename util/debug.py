@@ -48,7 +48,7 @@ class Debugger(object):
 	
 	
 	def get_instructions_parsed(self):
-		return [int(self.send_command("gcd"))]
+		return map(int, self.send_command("gcd").split(" "))
 	
 	
 	def get_buffer_stats(self):

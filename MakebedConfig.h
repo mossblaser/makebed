@@ -96,8 +96,8 @@
 #define ENDSTOP_1_MIN_POS 0.0
 #define ENDSTOP_2_MIN_POS 0.0
 
-#define ENDSTOP_0_MAX_POS 0.0
-#define ENDSTOP_1_MAX_POS 0.0
+#define ENDSTOP_0_MAX_POS 46.0
+#define ENDSTOP_1_MAX_POS 43.0
 #define ENDSTOP_2_MAX_POS 0.0
 
 
@@ -129,6 +129,9 @@
 
 /* Minimum Step Period for Steppers */
 #define STEPPER_MIN_PERIOD ((int)((1.0/555.5555) * ((double)STEPPER_TIMER_HZ)))
+
+/* Period between steps for homing */
+#define STEPPER_HOME_PERIOD (STEPPER_MIN_PERIOD * 4)
 
 
 /*******************************************************************************

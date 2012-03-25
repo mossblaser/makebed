@@ -40,7 +40,7 @@ gcode_init(void)
 	gcode.instructions_handled = 0;
 	
 	// Set up registers
-	gcode.registers[A].is_integer = false;
+	gcode.registers[A].is_integer = true;
 	gcode.registers[B].is_integer = false;
 	gcode.registers[C].is_integer = false;
 	gcode.registers[D].is_integer = false;
@@ -67,7 +67,7 @@ gcode_init(void)
 	gcode.registers[Y].is_integer = false;
 	gcode.registers[Z].is_integer = false;
 	
-	gcode.registers[A].value.d = NAN;
+	gcode.registers[A].value.i = 0;
 	gcode.registers[B].value.d = NAN;
 	gcode.registers[C].value.d = NAN;
 	gcode.registers[D].value.d = NAN;
@@ -146,6 +146,13 @@ void
 gcode_reset_counter(void)
 {
 	gcode.instructions_handled = 0;
+}
+
+
+gcode_error_t
+gcode_get_error(void)
+{
+	return gcode.error;
 }
 
 

@@ -120,6 +120,11 @@ int gcode_instructions_handled(void);
  */
 void gcode_reset_counter(void);
 
+/**
+ * Get the last error number reported
+ */
+gcode_error_t gcode_get_error(void);
+
 
 /* Internal Use Only **********************************************************/
 

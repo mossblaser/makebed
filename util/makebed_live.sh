@@ -43,9 +43,9 @@ set title "Platform Position"
 set xlabel "X (mm)"
 set ylabel "Y (mm)"
 set zlabel "Z (mm)"
-set xrange [-100:100]
-set yrange [-100:100]
-set zrange [0:100]
+set xrange [-60:60]
+set yrange [-60:60]
+set zrange [0:120]
 set autoscale cb
 set palette defined (0 "white", 0.9 "yellow", 1 "red")
 unset colorbox

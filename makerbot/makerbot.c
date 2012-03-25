@@ -163,6 +163,7 @@ makerbot_main_task(void *pvParameters)
 {
 	int i;
 	bool moved;
+	bool home_done;
 	
 	for (;;) {
 		// Get the next command
@@ -182,7 +183,8 @@ makerbot_main_task(void *pvParameters)
 				break;
 			
 			case MAKERBOT_SET_ORIGIN:
-				// Do nothing
+				for (i = 0; i < MAKERBOT_NUM_AXES; i++)
+					makerbot.axes[i].cur_position = cmd.arg.set_origin.offset_steps[i];
 				break;
 			
 			case MAKERBOT_MOVE_TO:
@@ -191,7 +193,7 @@ makerbot_main_task(void *pvParameters)
 				for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
 					if (cmd.arg.move_to.step_periods[i] > 0) {
 						moved = true;
-						if (cmd.arg.move_to.directions[i])
+						if (cmd.arg.move_to.directions[i] == STEPPER_FORWARD)
 							makerbot.axes[i].cur_position += cmd.arg.move_to.num_steps[i];
 						else
 							makerbot.axes[i].cur_position -= cmd.arg.move_to.num_steps[i];
@@ -263,21 +265,28 @@ makerbot_main_task(void *pvParameters)
 				break;
 			
 			case MAKERBOT_HOME_AXIS:
-				for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
-					if (makerbot.use_endstops
-					    && cmd.arg.home_axes.axes & (1 << i)) {
-						
-						// Move the axis forward until it hits its max endstop.
-						while (gpio_read(makerbot.axes[i].endstop_max)
-						       != makerbot.axes[i].endstop_active_high) {
-							stepper_set_action(makerbot.axes[i].stepper_num, STEPPER_FORWARD,
-							                   1, STEPPER_MIN_PERIOD);
-							stepper_wait_until_idle();
+				home_done = false;
+				while (!home_done) {
+					home_done = true;
+					
+					for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
+						if (makerbot.use_endstops
+						    && (cmd.arg.home_axes.axes & (1 << i))) {
+							// Move the axis forward until it hits its max endstop.
+							if ((gpio_read(makerbot.axes[i].endstop_max) != GPIO_HIGH)
+							       ^ makerbot.axes[i].endstop_active_high) {
+								stepper_set_action(makerbot.axes[i].stepper_num, STEPPER_FORWARD,
+								                   1, STEPPER_HOME_PERIOD);
+								home_done = false;
+								
+								makerbot.axes[i].cur_position = makerbot.axes[i].endstop_max_position;
+							}
 						}
-						
-						// We're now at this positon
-						makerbot.axes[i].position = makerbot.axes[i].endstop_max_position;
 					}
+					
+					// Wait for the steps if any were done
+					if (!home_done)
+						stepper_wait_until_idle();
 				}
 				break;
 			
@@ -415,11 +424,17 @@ void
 makerbot_set_origin(double offset_mm[MAKERBOT_NUM_AXES])
 {
 	int i;
+	makerbot_command_t cmd;
+	cmd.instr = MAKERBOT_SET_ORIGIN;
 	
 	for (i = 0; i < MAKERBOT_NUM_AXES; i++) {
-		makerbot.axes[i].position     = offset_mm[i] * makerbot.axes[i].steps_per_mm;
-		makerbot.axes[i].cur_position = offset_mm[i] * makerbot.axes[i].steps_per_mm;
+		makerbot.axes[i].position = offset_mm[i] * makerbot.axes[i].steps_per_mm;
+		cmd.arg.set_origin.offset_steps[i] = makerbot.axes[i].position;
 	}
+	
+	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
+	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);
+	xSemaphoreGive(makerbot.command_queue_lock);
 }
 
 
@@ -643,6 +658,12 @@ makerbot_home_axis(int axes)
 	cmd.instr = MAKERBOT_HOME_AXIS;
 	
 	cmd.arg.home_axes.axes = axes;
+	
+	// We'll be at this position when we're done
+	int i;
+	for (i = 0; i < MAKERBOT_NUM_AXES; i++)
+		if (axes & (1<<i))
+			makerbot.axes[i].position = makerbot.axes[i].endstop_max_position;
 	
 	xSemaphoreTake(makerbot.command_queue_lock, portMAX_DELAY);
 	xQueueSend(makerbot.command_queue, &cmd, portMAX_DELAY);

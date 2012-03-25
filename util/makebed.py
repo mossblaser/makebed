@@ -45,7 +45,7 @@ def makebed_get(ip, *args):
 			d.get_temperatures
 		),
 		"gcode": (
-			"gcode_cmds_parsed",
+			"gcode_cmds_parsed	gcode_error_num",
 			d.get_instructions_parsed
 		),
 		"buf": (
