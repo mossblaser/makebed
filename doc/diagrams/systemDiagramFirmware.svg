@@ -131,247 +131,219 @@
        id="rect7347"
        width="566.92914"
        height="131.71242"
-       x="88.58268"
-       y="20.72056" />
+       x="88.582672"
+       y="20.051968" />
+    <rect
+       y="23.369694"
+       x="285.23212"
+       height="126.16758"
+       width="107.10603"
+       id="rect3681"
+       style="font-size:13px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text3683"
+       y="102.27344"
+       x="331.83948"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+       xml:space="preserve"><tspan
+         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         id="tspan3685"
+         y="102.27344"
+         x="331.83948"
+         sodipodi:role="line">Printer</tspan><tspan
+         id="tspan4237"
+         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         y="121.02344"
+         x="331.83948"
+         sodipodi:role="line">Controller</tspan></text>
     <g
-       id="g7300"
-       transform="translate(24.255991,-31.635006)">
-      <g
-         id="g6669">
-        <g
-           transform="translate(-6.7895631,0)"
-           id="g4257">
-          <rect
-             style="font-size:13px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-             id="rect3681"
-             width="159.25612"
-             height="126.16758"
-             x="267.76569"
-             y="55.0047" />
-          <text
-             xml:space="preserve"
-             style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-             x="314.37305"
-             y="133.90845"
-             id="text3683"
-             sodipodi:linespacing="125%"><tspan
-               sodipodi:role="line"
-               x="314.37305"
-               y="133.90845"
-               id="tspan3685"
-               style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12">Printer</tspan><tspan
-               sodipodi:role="line"
-               x="314.37305"
-               y="152.65845"
-               style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-               id="tspan4237">Controller</tspan></text>
-          <g
-             id="g4227"
-             transform="translate(-68.864655,0)">
-            <rect
-               y="54.979504"
-               x="431.69263"
-               height="42.065739"
-               width="64.193832"
-               id="rect3771"
-               style="font-size:13px;fill:none;stroke:#000000;stroke-width:0.875;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
-            <rect
-               style="font-size:13px;fill:none;stroke:#000000;stroke-width:0.875;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-               id="rect3895"
-               width="64.193832"
-               height="42.065739"
-               x="431.6926"
-               y="97.055618" />
-            <text
-               sodipodi:linespacing="125%"
-               id="text3749"
-               y="72.326874"
-               x="463.59753"
-               style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-               xml:space="preserve"><tspan
-                 id="tspan3753"
-                 style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-                 y="72.326874"
-                 x="463.59753"
-                 sodipodi:role="line">Stepper</tspan><tspan
-                 style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-                 y="88.576874"
-                 x="463.59753"
-                 sodipodi:role="line"
-                 id="tspan3757">Control</tspan></text>
-            <text
-               xml:space="preserve"
-               style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-               x="463.59119"
-               y="114.26649"
-               id="text3763"
-               sodipodi:linespacing="125%"><tspan
-                 sodipodi:role="line"
-                 x="463.59119"
-                 y="114.26649"
-                 style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-                 id="tspan3765">Heater</tspan><tspan
-                 id="tspan3767"
-                 sodipodi:role="line"
-                 x="463.59119"
-                 y="130.51648"
-                 style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12">Control</tspan></text>
-          </g>
-          <g
-             id="g4239">
-            <rect
-               style="font-size:13px;fill:none;stroke:#000000;stroke-width:0.875;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-               id="rect3629"
-               width="78.376747"
-               height="42.015343"
-               x="267.76569"
-               y="55.0047" />
-            <text
-               xml:space="preserve"
-               style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-               x="305.46658"
-               y="71.140663"
-               id="text3631"
-               sodipodi:linespacing="125%"><tspan
-                 sodipodi:role="line"
-                 x="305.46658"
-                 y="71.140663"
-                 id="tspan3635"
-                 style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12">G-Code</tspan><tspan
-                 sodipodi:role="line"
-                 x="305.46658"
-                 y="87.390663"
-                 style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-                 id="tspan3743">Interpreter</tspan></text>
-          </g>
-        </g>
-        <g
-           transform="translate(-50.812939,-0.48059654)"
-           id="g3957"
-           style="opacity:1">
-          <rect
-             y="55.472698"
-             x="264.44974"
-             height="126.16758"
-             width="33.253597"
-             id="rect3947"
-             style="font-size:13px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25000000000000000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
-          <text
-             sodipodi:linespacing="125%"
-             id="text3949"
-             y="121.59849"
-             x="281.25214"
-             style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-             xml:space="preserve"><tspan
-               style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-               id="tspan3951"
-               y="121.59849"
-               x="281.25214"
-               sodipodi:role="line"><tspan
+       id="g4239"
+       transform="translate(17.466428,-31.635006)">
+      <rect
+         y="55.0047"
+         x="267.76569"
+         height="42.015343"
+         width="78.376747"
+         id="rect3629"
+         style="font-size:13px;fill:none;stroke:#000000;stroke-width:0.875;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3631"
+         y="71.140663"
+         x="305.46658"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         xml:space="preserve"><tspan
+           style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           id="tspan3635"
+           y="71.140663"
+           x="305.46658"
+           sodipodi:role="line">G-Code</tspan><tspan
+           id="tspan3743"
+           style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           y="87.390663"
+           x="305.46658"
+           sodipodi:role="line">Interpreter</tspan></text>
+    </g>
+    <g
+       transform="translate(-26.556948,-32.115603)"
+       id="g3957">
+      <rect
+         y="55.472698"
+         x="264.44974"
+         height="126.16758"
+         width="33.253597"
+         id="rect3947"
+         style="font-size:13px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3949"
+         y="121.59849"
+         x="281.25214"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         xml:space="preserve"><tspan
+           style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           id="tspan3951"
+           y="121.59849"
+           x="281.25214"
+           sodipodi:role="line"><tspan
    style="font-size:13px;font-family:LMMathItalic12;-inkscape-font-specification:LMMathItalic12"
    id="tspan3953">μ</tspan>IP</tspan></text>
-        </g>
-        <g
-           id="g4245"
-           transform="translate(170.16212,-0.48059654)">
-          <rect
-             style="font-size:13px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-             id="rect4247"
-             width="46.625416"
-             height="126.16758"
-             x="264.44974"
-             y="55.472698" />
-          <text
-             xml:space="preserve"
-             style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-             x="287.71512"
-             y="115.24149"
-             id="text4249"
-             sodipodi:linespacing="125%"><tspan
-               sodipodi:role="line"
-               x="287.71512"
-               y="115.24149"
-               id="tspan4251"
-               style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12">I/O</tspan><tspan
-               id="tspan4255"
-               sodipodi:role="line"
-               x="287.71512"
-               y="131.49149"
-               style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12">Drivers</tspan></text>
-        </g>
-        <path
-           sodipodi:nodetypes="cc"
-           style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-           d="m 246.88102,87.35886 11.97833,0"
-           id="path5700" />
-        <path
-           id="path5702"
-           d="m 260.55487,157.328 -11.97833,0"
-           style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-           sodipodi:nodetypes="cc" />
-        <path
-           id="path5704"
-           d="m 420.71467,76.012373 11.97833,0"
-           style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-           sodipodi:nodetypes="cc" />
-        <g
-           transform="translate(-4.668591,-1.2549424)"
-           id="g5712">
-          <path
-             id="path5706"
-             d="m 439.05711,125.328 -11.97833,0"
-             style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-             sodipodi:nodetypes="cc" />
-          <path
-             id="path5708"
-             d="m 425.38326,113.35886 11.97833,0"
-             style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-             sodipodi:nodetypes="cc" />
-        </g>
-        <g
-           transform="translate(-4.668591,40)"
-           id="g5716">
-          <path
-             sodipodi:nodetypes="cc"
-             style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-             d="m 439.05711,125.328 -11.97833,0"
-             id="path5718" />
-          <path
-             sodipodi:nodetypes="cc"
-             style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-             d="m 425.38326,113.35886 11.97833,0"
-             id="path5720" />
-        </g>
-      </g>
-      <g
-         transform="translate(56.31812,-1.2675385)"
-         id="g5722">
-        <path
-           id="path5724"
-           d="m 445.05711,125.328 -17.97833,0"
-           style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-           sodipodi:nodetypes="cc" />
-        <path
-           id="path5726"
-           d="m 425.38326,113.35886 17.97833,0"
-           style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-           sodipodi:nodetypes="cc" />
-      </g>
-      <g
-         id="g7294"
-         transform="translate(-231.17599,-1.2675385)">
-        <path
-           sodipodi:nodetypes="cc"
-           style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-           d="m 445.05711,125.328 -17.97833,0"
-           id="path7296" />
-        <path
-           sodipodi:nodetypes="cc"
-           style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-           d="m 425.38326,113.35886 17.97833,0"
-           id="path7298" />
-      </g>
     </g>
+    <rect
+       y="23.357096"
+       x="406.71774"
+       height="126.16758"
+       width="98.775513"
+       id="rect4247"
+       style="font-size:13px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text4249"
+       y="131.26443"
+       x="456.09717"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+       xml:space="preserve"><tspan
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         y="131.26443"
+         x="456.09717"
+         sodipodi:role="line"
+         id="tspan4255">I/O Drivers</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       d="m 271.13701,55.723854 11.97833,0"
+       id="path5700" />
+    <path
+       id="path5702"
+       d="m 284.81086,125.69299 -11.97833,0"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       sodipodi:nodetypes="cc" />
+    <path
+       id="path5704"
+       d="m 392.97066,44.377367 11.97833,0"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       sodipodi:nodetypes="cc" />
+    <g
+       transform="translate(-32.4126,-32.889948)"
+       id="g5712">
+      <path
+         id="path5706"
+         d="m 439.05711,125.328 -11.97833,0"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+         sodipodi:nodetypes="cc" />
+      <path
+         id="path5708"
+         d="m 425.38326,113.35886 11.97833,0"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       transform="translate(-32.4126,8.364994)"
+       id="g5716">
+      <path
+         sodipodi:nodetypes="cc"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+         d="m 439.05711,125.328 -11.97833,0"
+         id="path5718" />
+      <path
+         sodipodi:nodetypes="cc"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+         d="m 425.38326,113.35886 11.97833,0"
+         id="path5720" />
+    </g>
+    <g
+       transform="translate(-25.16235,-31.635006)"
+       id="g4227">
+      <rect
+         style="font-size:13px;fill:none;stroke:#000000;stroke-width:0.875;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         id="rect3771"
+         width="64.193832"
+         height="42.065739"
+         x="431.69263"
+         y="54.979504" />
+      <rect
+         y="97.055618"
+         x="431.6926"
+         height="42.065739"
+         width="64.193832"
+         id="rect3895"
+         style="font-size:13px;fill:none;stroke:#000000;stroke-width:0.875;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
+      <text
+         xml:space="preserve"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         x="463.59753"
+         y="72.326874"
+         id="text3749"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           x="463.59753"
+           y="72.326874"
+           style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           id="tspan3753">Stepper</tspan><tspan
+           id="tspan3757"
+           sodipodi:role="line"
+           x="463.59753"
+           y="88.576874"
+           style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12">Control</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3763"
+         y="114.26649"
+         x="463.59119"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         xml:space="preserve"><tspan
+           id="tspan3765"
+           style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           y="114.26649"
+           x="463.59119"
+           sodipodi:role="line">Heater</tspan><tspan
+           style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           y="130.51648"
+           x="463.59119"
+           sodipodi:role="line"
+           id="tspan3767">Control</tspan></text>
+    </g>
+    <path
+       id="path5724"
+       d="m 525.63122,92.425456 -17.97833,0"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       sodipodi:nodetypes="cc" />
+    <path
+       id="path5726"
+       d="m 505.95737,80.456316 17.97833,0"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       d="m 238.13711,92.425456 -17.97833,0"
+       id="path7296" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       d="m 218.46326,80.456316 17.97833,0"
+       id="path7298" />
     <text
        xml:space="preserve"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
