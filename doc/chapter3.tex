@@ -118,13 +118,28 @@
 		
 		\subsection{Drivers}
 			
-			G-code is a relatively simple but very poorly defined language with many
-			conflicting implementations available.
+			In order to interface with the electronics and facilitate accurate timing
+			various peripherals on the Mbed will require supporting driver code. In
+			particular, the following features will be needed:
 			
-			% TODO/XXX: Expand on this?
-		
-		\subsection{}
-	
+			\begin{description}
+				\item[General-Purpose Input/Output (GPIO)]
+					Allows TTL (Transistor-Transfer-Level) digital signals to be produced
+					or read from the pins on the microcontroller. For example stepper
+					control signals, end-stop signals.
+				
+				\item[Analog Input]
+					Read analog signals from the electronics. For example readings from
+					temperature sensors.
+				
+				\item[Timer]
+					Produce interrupts at precisely timed intervals to allow stepper
+					control signals to be produced.
+				
+				\item[Watch-dog Timer]
+					To ensure fail-safe behaviour, a watch-dog timer can be used to reset
+					and power down the system in the event of software malfunction.
+			\end{description}
 	
 	\section{Hardware}
 		
