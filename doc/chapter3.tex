@@ -12,7 +12,7 @@
 		computer software used to design the object to be printed and to generate
 		the G-code instructions which will cause the object to be printed. The
 		second is microcontroller firmware which processes the G-code and drives the
-		printer electronics appropriately. Finally, there are the actual printer
+		printer electronics appropriately. Finally, there is the actual printer
 		hardware consisting of electronics driving the various motors, heaters and
 		sensors.
 		
@@ -141,11 +141,49 @@
 					and power down the system in the event of software malfunction.
 			\end{description}
 	
-	\section{Hardware}
+	
+	\section{Electronics \& Hardware}
 		
-		\subsection{Microcontroller}
+		Most of the work of this project will be focused on the electronics used to
+		drive the printer's hardware rather than the hardware itself though some
+		new sensors will be added.
 		
 		\subsection{Stepper Control}
+			
+			% TODO: Cite stepper motor board docs
+			
+			The printer's three primary axes are controlled by stepper motors which require
+			complex circuitry to drive. The previous electronics used off-the-shelf RepRap
+			stepper motor drivers\cite{stepperMotorDriver23}. Each of these boards
+			connects directly to the stepper motor coils, an ATX power supply and a
+			TTL control interface. They also provide a connection for two end-stop
+			sensors to be attached (the output from which they passively forward back
+			through the TTL connection).
+			
+			% TODO: Cite http://reprap.org/wiki/File:Cache-3218206144_6461b3e2c0.jpg
+			\begin{figure}[here]
+				\includegraphics[width=1\textwidth]{diagrams/stepperControllerBoard.pdf}
+				\caption{Stepper controller board with connections labelled. (Photo \cite{stepperControllerBoardPhoto})}
+				\label{fig:stepperControllerBoard}
+			\end{figure}
+			
+			These boards provide an enable, direction and step signal which allow
+			the microcontroller to drive the steppers using three GPIO pins per axis.
 		
 		\subsection{Heater \& DC Motor Control}
-	
+			
+			The heaters and motors both require large amounts of current at 12 volts
+			to run. This far exceeds the output of the GPIO pins on the Mbed so a
+			circuit will be needed to switch the power for these devices.
+			
+			% XXX: Expand?
+		
+		\subsection{End-stops}
+			
+			By adding end-stop sensors on each axis, the axes can be accurately and
+			consistently positioned at the start of a print job. Electronics
+			compatible with the interface exposed by the stepper controller board will
+			be required.
+			
+			% XXX: Expand?
+			
