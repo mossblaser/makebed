@@ -31,6 +31,8 @@ report.pdf : ${TEX} ${DIAGRAMS} ${BIB}
 
 clean :
 	@rm -rf report.pdf *.aux *.log *.fls *.bbl *.blg *.toc *.lof *.lot
+	@rm -rf *.bbl
+	@rm -rf *.blg
 	@rm -rf diagrams/*.pdf
 
 all : report.pdf

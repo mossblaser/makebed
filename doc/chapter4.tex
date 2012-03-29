@@ -1,16 +1,191 @@
 \chapter{Implementation}
 	
+	This chapter describes the implementation of the system in detail. First the
+	electronics are described and followed by an explanation of the firmware.
+	Finally, safety considerations and a brief discussion of the methods used is
+	presented.
+	
+	
 	\section{Electronics}
 		
-		\subsection{Boards}
+		% TODO: Some intro
 		
-		\subsection{Heaters \& Motors}
+		Two boards were produced, one which hosts the Mbed and the electronics
+		needed to drive the heaters, motors and temperature sensors and another
+		which provides an interface between the end-stops and stepper controller
+		boards. The system as installed in the printer is shown in figure
+		\ref{fig:electronicsPhoto} with the major components labelled.
 		
-		\subsection{Stepper Motors}
+		% TODO: Picture of up-to-date electronics
+		\begin{figure}
+			\includegraphics[width=1\textwidth]{diagrams/electronicsPhoto.pdf}
+			\caption{Electronics installed with major connections labelled}
+			\label{fig:electronicsPhoto}
+		\end{figure}
 		
-		\subsection{Thermistors}
+		To keep the system simple to build using readily available tools, 0.1"
+		spaced electronics were used throughout. These are easy to work with using
+		only a standard soldering iron and basic tools. Components of this size can
+		also be used in prototypes built on a solderless breadboard.
 		
-		\subsection{Endstops}
+		\subsection{Main Board}
+			
+			The main board will host the Mbed, electronics for controlling the
+			heaters, reading from the temperature sensors and connecting to the
+			stepper controller boards.
+			
+			A full circuit schematic and pin-out is given in Appendix
+			\ref{sec:mainboardDiagrams}.
+			
+			\subsubsection{Layout \& Board}
+				
+				A prototyping board designed for working with DIP (Dual In-line Package)
+				components such as the Mbed was selected (Figure \ref{fig:dipBoard} B).
+				Conventional strip board (\ref{fig:dipBoard} A) would require many
+				connections to be cut between the two columns of pins of the device. The
+				particular design chosen also includes a ready-made ground-plane.
+				
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/dipBoard.pdf}
+					\caption{Types of prototyping board}
+					\label{fig:dipBoard}
+				\end{figure}
+				
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/mainBoard.pdf}
+					\caption{Top-level layout of main board (reset button and power
+					         connections not shown)}
+					\label{fig:mainBoard}
+				\end{figure}
+				
+				The main board contains electronics for both low-power systems such as
+				the Mbed and high-power systems such as the heater and motors and
+				interference between these parts must be minimised. The high and lower
+				power parts have been kept physically separate on the board (Figure
+				\ref{fig:mainBoard}), each with their own power supply. The board also
+				has a ground plane covering the whole board which also helps reduce
+				noise\cite{pcb_design_notes}.
+			
+			\subsubsection{Heaters \& DC Motors}
+				
+				% TODO: Part numbers, specs and fact check!
+				
+				The heaters and DC motors in the extruder and platform operate at a
+				higher voltage and are considerably higher-current than the
+				microcontroller can produce on its output pins. To control these a
+				transistor is required.  An IRLU8729PbF MOSFET (Metal Oxide Field Effect
+				Transistor) was selected as it can switch large loads up to 58A with
+				very little on-resistance (reducing energy wastage through
+				heat)\cite{MOSFET}.
+				
+				% TODO: Photo of MOSFET
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/mosfetDiagram.pdf}
+					\caption{Metal Oxide Semiconductor Field Effect Transistor (MOSFET)}
+					\label{fig:mosfetDiagram}
+				\end{figure}
+				
+				The MOSFET has three connections called the gate, drain and source
+				(Figure \ref{fig:mosfetDiagram}). When the voltage between the gate and
+				the source is 0V, no current flows from the drain to the source. As the
+				voltage between the gate and drain are increased, the current allowed to
+				flow increases rapidly when it passes a certain threshold (Figure
+				\ref{fig:mosfetPerformance}). By connecting the gate to a pin on the
+				Mbed and the source to ground, a large current from a device such as a
+				heater or motor can be switched by connecting it through the drain to
+				ground.
+				
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/mosfetPerformance.pdf}
+					\caption{IRLU8729PbF Typical Transfer Characteristics (reproduced from
+					`Fig 3', \cite{MOSFET})}
+					\label{fig:mosfetPerformance}
+				\end{figure}
+				
+				The behaviour of a MOSFET when the gate is left floating (disconnected)
+				is generally undefined and can damage the component. When the Mbed
+				powers on its output pins default to a floating state which could cause
+				a MOSFET to unexpectedly turn on or become damaged. To prevent this
+				happening the gate is connected to ground via a pull-down resistor. When
+				the output pin is floating the gate is pulled to 0V by the pull-down
+				resistor. When the output of the pin is not floating, the gate is pulled
+				to that voltage overriding the pull-down resistor. A high resistance
+				value is used so that the Mbed can easily override the pull-down
+				resistor.
+				
+				Figure \ref{fig:mosfetUsage} shows the circuit used to control the two
+				heaters and two motors using a MOSFET and pull-down resistor.
+				
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/mosfetUsage.pdf}
+					\caption{Example MOSFET circuit with pull-down resistor}
+					\label{fig:mosfetUsage}
+				\end{figure}
+				
+				When driving motors a `flyback diode' is usually used to prevent a
+				voltage spike occurring when the power is removed from the motor. This
+				voltage spike is caused by the magnetic field in the motor's coils
+				collapsing. This is not included in the circuit as the MOSFETs used
+				already contain an appropriate diode.
+				
+				It should be noted that this circuit does not allow the motors to be
+				driven in both directions as this is not needed by the printer. If this
+				was required, a more complex circuit (such as a H bridge) would be
+				needed.
+			
+			\subsubsection{Thermistors}
+			
+			\subsubsection{Stepper Motors}
+			
+			\subsubsection{Endstops}
+				
+			\subsubsection{Power}
+				
+				The printer uses an ATX power supply unit (PSU) commonly found in
+				desktop computers. A 20-pin connector containing both power and various
+				control signals for the power supply is used to power the main board
+				(see table \ref{tab:atxConnectors}).
+				
+				\begin{table}[here]
+					\centering
+					\begin{tabular}{l l l}
+						\toprule
+						Signal & Colour & Notes\\
+						\midrule
+						Ground & Black  & \\
+						+3.3V  & Orange & $\pm5\%$  Tolerance (Unused) \\
+						+5V    & Red    & $\pm5\%$  Tolerance \\
+						+12V   & Yellow & $\pm5\%$  Tolerance \\
+						-12V   & Blue   & $\pm10\%$ Tolerance (Unused) \\
+						\addlinespace
+						Power Good  & Gray   & Signal asserted when all voltages are correct
+						                       and stable \\
+						+5V Standby & Purple & Power available at all times (Max 2A) \\
+						+3.3V Sense & Brown  & Unused \\
+						Power On    & Green  & Active-Low signal pulled up to +5V \\
+						
+						\bottomrule
+					\end{tabular}
+					
+					\caption{20-pin ATX Connector Signals\cite{ATX}}
+					\label{tab:atxConnectors}
+				\end{table}
+				
+				The Mbed is connected to the 5V standby supply allowing it to remain
+				booted and power on the system on demand. The maximum power consumption
+				of the Mbed is 200mA \cite{mbed}, well within the ratings of the ATX
+				specification. The Mbed's on-board regulator provides a regulated 3.3V
+				supply used by the Mbed and the low-power electronics attached to it.
+				The 3.3V supply from the PSU is not used because the regulator in the
+				Mbed offers a cleaner supply.
+				
+				To allow the PSU to be turned on by the Mbed, the power on signal is
+				attached to a GPIO pin.  Because the Mbed is a 3.3V logic device a
+				MOSFET (Metal Oxide Semiconductor Field Effect Transistor) is used to
+				pull the 5V Power On signal to ground (thus turning on the Power Supply)
+				using the 3.3V signal from the Mbed.
+		
+			\subsubsection{Ethernet}
 	
 	\section{Building for Mbed}
 		
