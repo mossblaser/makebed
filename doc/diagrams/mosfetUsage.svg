@@ -26,7 +26,7 @@
      inkscape:cx="357.05932"
      inkscape:cy="861.63413"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g30888"
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
@@ -359,7 +359,7 @@
          width="6.5882854"
          height="18.461338"
          x="308.96948"
-         y="160.05167" />
+         y="158.7045" />
       <path
          transform="matrix(1.1515152,0,0,1.1515152,59.437151,-5.998485)"
          d="m 271.89454,173.4942 c 0,1.05165 -0.85253,1.90419 -1.90418,1.90419 -1.05166,0 -1.90419,-0.85254 -1.90419,-1.90419 0,-1.05165 0.85253,-1.90418 1.90419,-1.90418 1.05165,0 1.90418,0.85253 1.90418,1.90418 z"
@@ -384,13 +384,13 @@
          transform="scale(0.99942702,1.0005733)"
          sodipodi:linespacing="125%"
          id="text30446"
-         y="173.48834"
+         y="172.14194"
          x="302.29733"
          style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
          xml:space="preserve"><tspan
            id="tspan30448"
            style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-           y="173.48834"
+           y="172.14194"
            x="302.29733"
            sodipodi:role="line">Pull-Down Resistor</tspan></text>
       <g
