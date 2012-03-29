@@ -1,5 +1,7 @@
 DIAGRAMS=$(shell ls diagrams/*.svg | sed -re "s/[.]svg/.pdf/g")
 
+BIB=refs.bib
+
 TEX=report.tex \
     abstract.tex \
     thanks.tex \
@@ -21,7 +23,9 @@ TEX=report.tex \
 %.pdf : %.svg
 	inkscape -D -A "${@}" "${<}"
 
-report.pdf : ${TEX} ${DIAGRAMS}
+report.pdf : ${TEX} ${DIAGRAMS} ${BIB}
+	pdflatex -interaction=nonstopmode report.tex
+	bibtex report.aux
 	pdflatex -interaction=nonstopmode report.tex
 	pdflatex -interaction=nonstopmode report.tex
 
