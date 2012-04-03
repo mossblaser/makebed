@@ -134,10 +134,99 @@
 				needed.
 			
 			\subsubsection{Thermistors}
+				
+				To measure the temperature of the heaters, thermistors are used. The
+				resistance of a thermistor changes non-linearly with temperature and is
+				modelled using an equation derived from the Steinhart-Hart
+				Equation\cite{Steinhart1968497}:
+				\begin{equation}
+					\frac{1}{T} = \frac{1}{T_0} + \frac{1}{\beta} \ln \left( \frac{R}{R_0} \right)
+					\label{equ:steinhart}
+				\end{equation}
+				Where $T$ and $R$ are the current temperature and resistance of the
+				thermistor, $T_0$ and $R_0$ are the temperature and resistance at a
+				reference temperature and $\beta$ is a characteristic constant for the
+				device available in the data-sheet.
+				
+				% TODO: Cite potential divider
+				
+				Using the Analog-to-Digital converter in the Mbed, voltages, but not
+				resistances, can be read directly. A potential divider (Figure
+				\ref{fig:potentialDiv}) is used to measure the resistance.
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/potentialDiv.pdf}
+					\caption{Potential divider}
+					\label{fig:potentialDiv}
+				\end{figure}
+				A reference voltage $V_\textrm{ref}$ is placed across two resistors,
+				$R_1$ and $R_2$, and the voltage between them at $V$ is measured. The
+				relationship between these variables is
+				\begin{equation}
+					V = V_\textrm{ref} \frac{R_2}{R_1 + R_2}
+				\end{equation}
+				Thus, if the thermistor is placed as $R_2$, the resistance can be
+				calculated using
+				\begin{equation}
+					R_2 = V_\textrm{ref} \frac{R_1}{V - V_\textrm{ref}}
+					\label{equ:potdiv}
+				\end{equation}
+				
+				% TODO: Resistor choice, specify thermistor
+				
+				The value of $R_1$ was chosen...
+				
+				Using (\ref{equ:steinhart}) and (\ref{equ:potdiv}) with a potential
+				divider circuit will allow the temperature of the thermistor to be
+				measured.
+				
 			
 			\subsubsection{Stepper Motors}
+				
+				The stepper controllers chosen accept TTL signals and connect via a
+				ten-pin insulation displacement connector (IDC). An IDC socket was
+				placed on the board and the pins connected directly to the Mbed and
+				ground plane as required. The pin-out for these connections is given in
+				Appendix \ref{sec:stepperControllerPinout}.
+				
+				% TODO: IDC Picture
 			
-			\subsubsection{Endstops}
+			\subsubsection{End-stops}
+				
+				Optical end-stops consist of a photo-interrupter containing an infra-red
+				LED and a photo-transistor arranged across a gap (Figure
+				\ref{fig:endstop}). Photons from the LED activate the photo-transistor
+				allowing current to flow but when the gap is blocked, the transistor is
+				switched off and no current flows.
+				
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/endstop.pdf}
+					\caption{Photo-interrupter with a photo-transistor in a Darlington pair}
+					\label{fig:endstop}
+				\end{figure}
+				
+				Due to problems sourcing the interface boards for the end-stops, a
+				circuit was built which is compatible with the stepper-controller
+				interface for end-stops. $+5V$ and ground are provided and a TTL logic
+				signal is expected by the interface. To ease debugging, an indicator LED
+				is also provided which is lit when the end-stop is unobstructed.
+				
+				% XXX: Is it a pulldown?
+				
+				The LED in the photo-interrupter is driven via a current-limiting
+				resistor and the signal output and indicator LED are connected through
+				the photo-transistor. A pull-down resistor is used to pull the signal
+				to ground when the photo-transistor is powered off.
+				
+				The circuitry is placed on a board with cables running to each end-stop
+				(photo-interrupter) and to each of the CAT-5 sockets on the stepper
+				controller boards. Strain-relief is included so that the connections are
+				not damaged if the cables are caught in the machine. A circuit diagram
+				is provided in Appendix \ref{sec:stepperControllerPinout}.
+				
+				% TODO: Picture of mounted endstop and board
+				
+				% XXX: Include resistor values and theory of operation?
+				
 				
 			\subsubsection{Power}
 				
@@ -186,6 +275,12 @@
 				using the 3.3V signal from the Mbed.
 		
 			\subsubsection{Ethernet}
+				
+				Ethernet requires relatively complex circuitry to drive it. This is
+				mostly provided on-board the Mbed but the pins on the mbed but a
+				CAT-5 socket containing the magnetics required by Ethernet is needed.
+				
+				% TODO: Picture of magnetics?
 	
 	\section{Building for Mbed}
 		
