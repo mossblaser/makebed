@@ -286,70 +286,150 @@
 			
 			% TODO: Picture of magnetics?
 	
-	\section{FreeRTOS on the Mbed}
+	\section{Firmware}
 		
-		% TODO: Cite mbed compiler
+		% TODO: Some intro
 		
-		The Mbed is designed for use with a web-based IDE and compiler. This system
-		is not appropriate for use in the project as the process of uploading code
-		to be compiled is laborious and the compilation options restricted.
-		
-		The CodeSourcery G++ None-EABI toolchain includes a GCC ARM cross-compiler,
-		linker and LibC compiled for various ARM based microcontrollers. It was
-		selected over closed-source alternatives because it has a large community of
-		users and produces reasonable code.
-		
-		% TODO: Cite CMSIS, LPC
-		
-		An unnoficial port of FreeRTOS for the Mbed is available which is built with
-		the CodeSourcery toolchain. It provides a base FreeRTOS configuration with a
-		demonstration \uIP{} based web server and other simple operating system
-		demos along with a suitable Makefile. Also included are headders for the ARM
-		Cortex Microcontroller Software Interface Standard (CMSIS) which define an
-		interface for all ARM Cortex microcontrollers common features. Finally, the
-		standard headders defining macros and pointers for all registers for the
-		Mbed are included.
-		
-		Appendix \ref{sec:compilation} contains specific compilation instructions
-		for the final system.
-	
-	\section{Temperature Control}
-		
-		To drive the two heaters an active-feedback loop is used where input from a
-		thermistor (\S \ref{sec:thermistor}) is used to drive a heater via a MOSFET
-		(\S \ref{sec:heatersAndMotors}). The following subsections describe how
-		analog values are read by the Mbed and the feedback loop that controls the
-		heaters.
-		
-		\subsection{Analog Read}
-		
-		\subsection{PID Control}
-	
-	\section{Stepper Control}
-		
-		\subsection{Timers}
-		
-		\subsection{Timing}
-	
-	\section{G-Code Interpreter}
-		
-		\subsection{The G-Code Machine}
-		
-		\subsection{Instruction Selection}
-		
-		\subsection{Parsing}
-	
-	\section{System Control}
-	
-	\section{Network Interface}
-		
-		\subsection{G-Code}
-		
-			\subsubsection{TCP}
+		\subsection{FreeRTOS on the Mbed}
 			
-			\subsubsection{UDP}
+			% TODO: Cite mbed compiler
+			
+			The Mbed is designed for use with a web-based IDE and compiler
+			\cite{mbedcompiler}. This system is not appropriate for use in the project
+			as the process of uploading code to be compiled is laborious and the
+			compilation options restricted.
+			
+			The CodeSourcery G++ None-EABI toolchain includes a GCC ARM cross-compiler,
+			linker and LibC compiled for various ARM based microcontrollers. It was
+			selected over closed-source alternatives because it has a large community of
+			users and produces reasonable code.
+			
+			% TODO: Cite CMSIS, LPC
+			
+			An unnoficial port of FreeRTOS for the Mbed is available which is built with
+			the CodeSourcery toolchain. It provides a base FreeRTOS configuration with a
+			demonstration \uIP{} based web server and other simple operating system
+			demos along with a suitable Makefile. Also included are headders for the ARM
+			Cortex Microcontroller Software Interface Standard (CMSIS) which define an
+			interface for all ARM Cortex microcontrollers common features. Finally, the
+			standard headders defining macros and pointers for all registers for the
+			Mbed are included.
+			
+			Appendix \ref{sec:compilation} contains specific compilation instructions
+			for the final system.
 		
-		\subsection{Status}
+		\subsection{Temperature Control}
+			
+			To drive the two heaters an active-feedback loop is used where input from
+			a thermistor (\S \ref{sec:thermistor}) is used to drive a heater via a
+			MOSFET (\S \ref{sec:heatersAndMotors}). The following subsections describe
+			how analog values are read by the Mbed and the theory and operation
+			feedback loop that controls the heaters.
+			
+			\subsubsection{Analog Input}
+				
+				The Mbed includes a 12-bit successive-approximation analog-to-digital
+				converter (ADC) for reading analog values\cite{LPC1768}. The ADC uses a
+				digital-to-analog converter and a comparator to binary search for an
+				approximation to the analog value (Figure \ref{fig:adc}). The input is
+				held constant while the each bit in order of diminishing significance is
+				determined. Once an appropriate number of iterations of the binary
+				search have been carried out, the value in the register is returned
+				\cite{maximadc}.
+				
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/adc.pdf}
+					\caption{Successive-approximation analog-to-digital converter}
+					\label{fig:adc}
+				\end{figure}
+				
+				The ADC sampling process takes at least $5\mu{}s$ or approximately 500
+				CPU cycles \cite{LPC1768} therefore the CPU should carry out some other
+				task while the ADC process takes place. Though an interrupt is provided
+				when the ADC completes (and even a direct memory access (DMA) facility
+				is provided), this was not used. The temperature sensors will be sampled
+				at an extremely low rate (around 2Hz) and latency is not important as
+				changes occur very slowly. Instead, a slow-poll is used where the task
+				reading from the ADC is suspended for a time typically adequate for ADC
+				operation. This system is extremely simple to implement and provides
+				adequate read performance.
+			
+			\subsubsection{Control}
+				
+				A na\"{i}ve controller could simply turn on the heaters when the
+				temperature was below some target temperature or `set point' and then
+				off when it met or exceeded it. This controller would cause the
+				temperature to overshoot and fall below the set point. Instead a
+				proportional-integral-derivative (PID) controller is used which can
+				control heaters taking into account such behaviours. These controllers
+				are widely used and are often used when a process must be controlled
+				which is not completely understood \cite{controleng}.
+				
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/pid.pdf}
+					\caption{PID heater controller schematic}
+					\label{fig:pid}
+				\end{figure}
+				
+				Figure \ref{fig:pid} shows a schematic of the PID controller used in the
+				system. At time $t$ the comparator calculates the error $e(t)$ between
+				the actual temperature and the set point. A value is calculated from
+				this error using a factor proportional to the error, the error
+				accumulated over time (integral) and the error's rate of change. These
+				factors are weighted by the constants $K_p$, $K_i$ and $K_d$
+				respectively and then used to control the heater. The three weights must
+				be chosen manually to produce sensible behaviour.
+				\S\ref{sec:pidtraning} discusses the process of selecting these values.
+				
+				The value calculated could be used with an analog output or
+				PWM\footnote{Pulse width modulation (PWM) is a method of approximating
+				analog outputs by rapidly switching a signal on and off with a varying
+				duty-cycle. This is cheap to implement in hardware and also avoids
+				problems with inefficiencies in MOSFETs when only partially driven.} to
+				control the heater or a threshold value used to decide whether a heater
+				is on or off (`bang-bang' control). Bang-bang control has been used
+				because the previous electronics proved this to be adequate. Using PWM
+				to control the heaters may also have resulted in unwanted
+				electromagnetic noise.
+				
+				The PID control loop is executed in its own task at a rate of 2Hz where
+				each temperature is read and the heater switched on or off as
+				appropriate. Because of the slow rate of change this is an adequate
+				response speed. Executing the loop more frequently would not be useful
+				and, due to floating point calculations being carried out in software,
+				would be costly.
+		
+		\subsection{Stepper Control}
+			
+			\subsubsection{Timers}
+			
+			\subsubsection{Timing}
+		
+		\subsection{G-Code Interpreter}
+			
+			\subsubsection{The G-Code Machine}
+			
+			\subsubsection{Instruction Selection}
+			
+			\subsubsection{Parsing}
+		
+		\subsection{System Control}
+		
+		\subsection{Network Interface}
+			
+			\subsubsection{G-Code}
+			
+				\subsubsection{TCP}
+				
+				\subsubsection{UDP}
+			
+			\subsubsection{Status}
+	
+	\section{Utilities}
+		
+		\subsection{G-Code Sender}
+		
+		\subsection{Status Monitoring}
 	
 	\section{Safety}
 		
