@@ -116,6 +116,15 @@
 			minimise the latency between a command completing and another starting,
 			especially during very short bursts of extremely detailed movements.
 		
+		\subsection{G-code Interpreter}
+			
+			Though existing G-code interpreters are available they are generally
+			tightly integrated with directly controling the electronics and not easily
+			used standalone. G-code implementations also vary widely with 3D printers
+			generally only using a very small subset of the available features. As a
+			result, a small G-code interpreter will be implemented for the required
+			subset of G-code.
+		
 		\subsection{Drivers}
 			
 			In order to interface with the electronics and facilitate accurate timing
