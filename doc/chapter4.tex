@@ -670,45 +670,294 @@
 				characters or register values are encountered a flag is set and the
 				parser continues from the next character or instruction. The state
 				machine is given in appendix \ref{sec:stateMachine}.
+				
+				Once each instruction is parsed and the register values set, the values
+				are converted into machine units. For example, movements are converted
+				into relative movements measured in stepper motor steps and speeds
+				converted into step periods measured in timer ticks. These low-level
+				commands are then added to a queue processed by the printer controller.
 		
-		\subsection{System Control}
+		\subsection{Printer Controller}
+			
+			The printer controller uses a FreeRTOS queue to buffer low-level commands
+			from the G-code interpreter which are processed in a high priority task.
+			The controller consists of a simple loop which executes each action and
+			requires minimal processing. As a result, this task spends most of its
+			time blocking waiting for actions to complete but with a minimal gap
+			between each action.
 		
 		\subsection{Network Interface}
 			
-			\subsubsection{G-Code}
+			The network interface consists of two services built on the \uIP{} stack:
+			a G-code transmission interface and a status monitoring interface. \uIP{}
+			provides a simple API for sending and receiving data over TCP and UDP
+			within applications built within its protosocket and protothread
+			frameworks \cite{uIP}.
 			
+			Protothreads are extremely lightweight threads with cooperative
+			multitasking implemented in pure C. These threads do not preserve
+			registers or variables during blocking phases of execution and as a result
+			use minimal system resources. Protosockets are a simplified UNIX-style
+			socket interface built on protothreads. These libraries are designed with
+			extremely low-power microcontrollers in mind and the design is not best
+			suited to a full RTOS.
+			
+			As a result a minimal application is implemented within the \uIP{}
+			frameworks which passes data from the network to the other parts of the
+			system. This is feasible because the protocols used are extremely simple
+			and are described in the following sections.
+			
+			\subsubsection{G-Code}
+				
+				The subset of G-code used requires reliable one-way communication with
+				flow-control. This was initially implemented using TCP but a bug in
+				\uIP{}'s flow control implementation required an alternative
+				implementation built on UDP, these are outlined below.
+				
 				\subsubsection{TCP}
+					
+					The TCP G-code interface consists of an open port (1818) listening for
+					connections. Once connected a client simply sends the G-code to the
+					printer and disconnects when finished. Telnet or net-cat (\verb|nc|)
+					can be used to send G-code files to the printer, for example
+					\begin{verbatim}
+						nc 192.168.3.100 1818 -q 0 < model.gcode
+					\end{verbatim}
+					Where \verb|model.gcode| is the file to send and \verb|193.168.3.100|
+					is the IP of the printer.
 				
 				\subsubsection{UDP}
+					
+					Unfortunately as discussed in \S\ref{sec:tcpProblem}, the TCP
+					implementation in \uIP{} is incorrect. Due to time constraints this
+					was not fixed during the project. Instead a UDP based protocol was
+					implemented.
+					
+					UDP provides a facility for sending datagrams containing a small
+					amount of data to a remote host. These datagrams are not guaranteed to
+					arrive or to arrive in the order they are sent. They do include a
+					checksum and so if a datagram arrives it can be safely be assumed to
+					be intact. Finally no flow-control mechanism is provided (excess
+					packets are silently dropped).
+					
+					UDP alone cannot be used to send data to the printer and simple
+					protocol has been built on top of UDP which provides a communications
+					channel which is
+					\begin{itemize}
+						\item Reliable
+						\item Unidirectional
+						\item Order-guaranteed
+						\item Flow-controlled
+					\end{itemize}
+					
+					Figure \ref{fig:datagram} shows the format of datagrams sent between
+					the printer and sender. Datagrams are sent to the printer which
+					contain a sequence number and a payload whose length can be calculated
+					based on the datagram's size stored in the UDP header. The sender then
+					waits for a response from the printer containing the same sequence
+					number and a window size. The printer will only respond if a datagram
+					with an appropriate sequence number is received thus ignoring
+					out-of-order datagrams. If a response with a matching sequence number
+					is not received by the sender within a short timeout the datagram is
+					retransmitted. This mechanism facilitates reliable, in-order
+					transmission.
+					
+					The window size returned by the printer is used for flow control and
+					is the amount of space in the G-code buffer or the maximum datagram
+					size (whichever is smallest). The sender may send up to this amount of
+					data to the printer in its next datagram ensuring the printer is
+					always sent as much data is it can deal with. If the G-code buffer
+					becomes full then the window size will become zero the sender must
+					poll the printer until the window size becomes non-zero.
+					
+					\begin{figure}
+						\includegraphics[width=1\textwidth]{diagrams/datagram.pdf}
+						\caption{UDP G-code Sender Datagram Format}
+						\label{fig:datagram}
+					\end{figure}
+					
+					\S\ref{sec:udpPerformance} discusses the performance and practical
+					implications of this protocol and the full specification is given in
+					Appendix \ref{sec:udpSpec}.
 			
 			\subsubsection{Status}
+				
+				\label{sec:statusInterface}
+				
+				A simple Telnet-compatible TCP interface (listening on port 2777) was
+				implemented that can be used to request the contents of various status
+				and debugging variables. As flow control is not necessary, the TCP
+				implementation in \uIP{} is adequate.
+				
+				The interface listens for keywords separated by white space and responds
+				with tab separated data compatible with GNU Plot. For example:
+				\begin{verbatim}
+					tmp
+					22523	22500	0	11800	12000	1
+				\end{verbatim}
+				Here current temperature information is requested. The response contains
+				current temperature, set point (target) and whether the heater is on or
+				off for the extruder and the platform. Temperature readings are in
+				degrees Celsius multiplied by 100. This is due to the version of LibC
+				provided with the CodeSourcery tool chain not supporting printing
+				floating point values.
+				
+				A utilities for using the status monitoring facility are described in
+				the next section and full documentation for the protocol is given in
+				Appendix \ref{sec:statusSpec}.
+	
 	
 	\section{Utilities}
 		
-		\subsection{G-Code Sender}
+		Two utilities for interacting with the printer were written in Python. First
+		a client implementing the UDP G-code transmission protocol and secondly a
+		utility for conveniently monitoring the printer status. The utilities are
+		part of the \verb|makebed.py| command.
 		
-		\subsection{Status Monitoring}
+		For example, the following command will stream the G-code contained in
+		\verb|cube.gcode| to the printer:
+		\begin{verbatim}
+			makebed.py send cube.gcode
+		\end{verbatim}
+		
+		While print jobs are running the status information can be requested or
+		polled using, for example:
+		\begin{verbatim}
+			makebed.py get temperature
+		\end{verbatim}
+		
+		Finally, a simple wrapper \verb|makebed_live.sh| is provided written in Bash
+		and GNU Plot which plots various pieces of printer status in real-time
+		(figure \ref{fig:makebedlive}).
+		
+		\begin{figure}
+			\includegraphics[width=1\textwidth]{diagrams/makebedlive.pdf}
+			\caption{\texttt{makebed live.sh} screen shot}
+			\label{fig:makebedlive}
+		\end{figure}
+		
+		Usage information for the utilities can be found in Appendix
+		\ref{sec:utilDoc}.
 	
 	\section{Safety}
 		
-		\subsection{STOP Button}
+		Because the system contains moving parts and heaters, safety was a major
+		concern when implementing the system. This section outlines the key features
+		used to ensure operation is as safe as possible.
 		
-		\subsection{Watchdog}
+		\subsection{Heater Indicator LEDs}
+			
+			The two heaters each have an indicator LED on the microcontroller which is
+			lit when the heaters are powered on. This enables an operator to easily
+			and safely check that the heaters are turned off.
 		
 		\subsection{Power-on Behaviour}
-	
-	\section{Methodology}
+			
+			On power-on, the PSU is not turned on and so the heaters and motors do not
+			receive power. The only way to start the heaters is to open a new
+			connection to the printer and send a specific PSU G-code instruction.
+			This design means that if the printer is powered on unintentionally it
+			cannot do anything requiring an operator's attention. It also means that
+			resetting the printer has the effect of putting it into a safe state where
+			an explicit action is required to restart it.
 		
-		\subsection{Tools}
+		\subsection{Stop Button}
 			
-			\subsubsection{Git (Version Control)}
+			The electronics break out the Mbed's reset pin to a larger and easier to
+			press red button. Because of the safe power-on behaviour and to ensure
+			correct operation in the event of a software failure this button is not
+			checked by software and is entirely the responsibility of the
+			microcontroller.
 			
-			\subsubsection{Wireshark (Network Protocol Analyser)}
+			% TODO: Picture
+		
+		\subsection{Watchdog Timer}
+			
+			The most safety critical software process is that of the heater
+			controllers. If this routine fails for any reason the heaters may be stuck
+			powered on. As over-heating is not as obvious to the operator as for
+			example, a jammed axis, this is a particularly dangerous fault.
+			
+			To catch such faults the Mbed includes a hardware watchdog timer. This
+			device is a timer which, upon timing out, resets the system. The watchdog
+			must be `fed' (reset) periodically to prevent it resetting the system. To
+			feed the watchdog specific values must be loaded in the correct order into
+			a certain register. This can catch bugs which cause the microcontroller to
+			jump to a random location, block for an excessive period or to become
+			corrupted.
+			
+			The heater controller loop executes at 2Hz and so the watchdog is fed at
+			the end of each iteration of the control loop. The watchdog is set with a
+			timeout of two seconds which means that it should never come close to a
+			timeout except in the event that the heater control loop has failed or the
+			system has somehow become saturated. In the event that the watchdog resets
+			the system it enters a safe state where the heaters do not have power and
+			are allowed to cool.
+	
+	\section{Methodology \& Tools}
+		
+		In this section the methodologies used for the implementation of the system
+		are discussed followed by the choice of languages and development tools and
+		why they were selected. Finally the methods of debugging are described.
+		
+		\subsection{Methodology}
+		
+			Development followed an iterative, bottom-up process where components were
+			built, tested and then built up into the system as a whole. Physical
+			components and the tight integration required for microcontroller
+			development would make unit-testing impractical as units are not easily
+			isolated. As a result the iterative cycle of development followed by a
+			specifically created tests was selected for this project.
+			
+			The UDP protocol was initially prototyped in a high level language
+			(Python) allowing quick development and testing. Some parts of the
+			prototype were subsequently modified and used as part of the off-printer
+			client software.
 		
 		\subsection{Languages}
 			
-			\subsubsection{C}
+			The firmware was written entirely in C. As well as a mature compiler and
+			manufacturer-provided header files, C strikes a good balance between the
+			availability of sensible abstractions and providing low-level access to
+			the underlying hardware. Thanks to manual, static memory management no
+			garbage collection or dynamic memory allocation was required which helps
+			keep system behaviour deterministic.
 			
-			\subsubsection{Python}
+			The off-printer utilities are written primarily in python and include a
+			wrapper shell script written in Bash. These languages provide very high
+			levels of abstraction simplifying and accelerating development. The
+			performance costs incurred by using such languages are not relevant on a
+			modern PC for the simple tasks required.
+			
+		\subsection{Version Control}
+			
+			To track changes and keep snapshots of the project's code, Git was used
+			for version control. Git provides facilities for quickly comparing
+			versions of code. It also allows experimental copies or branches of the
+			code base to be created and independently modified. Useful changes within
+			branches can easily be merged back into the main version of the system and
+			past changes can also be partially reverted. These features allowed new
+			ideas to be quickly created and tested without irreversibly damaging the
+			system.
 		
 		\subsection{Debugging}
+			
+			Microcontrollers are typically debugged using a JTAG (Joint Test Action
+			Group) interface which allows the microcontroller to be paused, stepped
+			and examined during program execution. Unfortunately the Mbed does not
+			expose this interface and so all debugging must be carried out through the
+			input/output facilities provided.
+			
+			The port of FreeRTOS used included a demonstration web server which was
+			modified during the first iteration of firmware development to allow
+			program variables to be exposed. Eventually the demonstration code was
+			removed and the status interface described in \S\ref{sec:statusInterface}
+			was put in it's place. Both interfaces allowed internal variables to be
+			polled, examined and graphed on a PC.
+			
+			As well as the firmware itself, its interactions with the network also
+			required debugging. To do this Wireshark, a network analyser was used.
+			This allows the individual packets sent and received by a computer to be
+			monitored, filtered and examined. It also includes protocol specific
+			features such as protocol checking and providing protocol-specific
+			statistics.
