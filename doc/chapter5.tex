@@ -80,6 +80,8 @@
 		
 		% TODO: Talk about performance tests
 		
+		\label{sec:udpPerformance}
+		
 		Wireshark was used to monitor the packets sent between the Mbed and computer
 		and it became apparent that every packet was being received from the Mbed
 		twice. After ruling out network problems being the cause, the bug was traced
@@ -127,6 +129,8 @@
 		responses which are small enough (around 30 bytes) to fit in a single
 		packet. Disabling packet duplication, in favour of removing a barrier to
 		proper flow control, is a good trade off.
+		
+		\label{sec:tcpProblem}
 		
 		Unfortunately, problems with flow control persisted with no improvement
 		after disabling packet duplication. With the duplicate packets removed, the
@@ -223,6 +227,8 @@
 	
 	\section{PID Control}
 		
+		% XXX: Yeah...
+		
 		\label{sec:pidtraning}
 		
 		The PID controller has three constants ($K_p$, $K_i$ and $K_d$) which must
@@ -244,9 +250,9 @@
 		was monitored both while idle and during printing and the size of
 		oscillations were measured. Performance was similar while in both states
 		(with a temperature jump in platform temperature at the start of printing
-		when molten plastic is extruded directly on to the platform). 
-		
-		% TODO tomorrow, write about the actual performance
+		when molten plastic is extruded directly on to the platform). Oscillations
+		were $\pm2\dC$ for the extruder and platform. Though this is greater than
+		the $\pm1\dC$ recommended, print quality was not adversely effected.
 		
 		\begin{table}
 			\centering
@@ -267,34 +273,292 @@
 	
 	\section{Stepper Control}
 		
+		The stepper control system consists of code for producing accurately timed
+		steps and code for coherently moving the stepper motors. These two parts
+		were tested separately as described in the following subsections. Finally,
+		the results of these tests are evaluated.
+		
 		\subsection{Timing}
+			
+			To ensure timing accuracy, the three stepper signals were driven at a
+			combination of frequencies with a frequency meter attached to the step
+			pin. These tests were generated initially using a program on the
+			microcontroller (so that the system was not under any load) and then using
+			G-code sent over the network interface while other requests were being
+			made (to place the system under reasonable load).
+			
+			The frequencies measured were exact to within the accuracy of the meter
+			(four significant figures) for all tests.
+			
+			% XXX: What does that really mean?
+			
 		
 		\subsection{Stepping}
-	
-	\section{Endstops}
-		
-		\subsection{Lighting}
-	
-	\section{Network Interface}
-		
-		\subsection{Compatibility}
-		
-		\subsection{Protocol Correctness \& Efficiency}
 			
-			\label{sec:udpPerformance}
-		
-		\subsection{TCP Flow Control}
+			To test that stepping was happening coherently, with sequences of steps
+			correctly spaced apart, the system was connected to the printer and
+			circles were plotted on the axes. The circles are made up of short,
+			continuous line segments where the relationship between the movements on
+			each axis is not constant. Once again, the test was initially carried out
+			using a test program running on the Mbed and then by G-code sent over the
+			network. The number of segments the circle was divided into was increased
+			from $30$ to $3,000$ and the speed set to $330\mm/\s$ and $3300\mm/\s$ to
+			test slow and fast movements.
 			
-			\label{sec:tcpProblem}
+			The performance of the system was measured by visual inspection of the
+			movement and circles plotted by attaching a pen to the extruder. The time
+			taken the plot the circles was also measured using a timer on the Mbed to
+			see if the overhead between each segment caused significant drift. Above
+			around $100$ segments the circles drawn appeared smooth and at low and
+			high speeds the overhead after 20 circles had been plotted at each speed
+			and resolution was less than the $1\ms$ resolution of the timer. Finally,
+			to ensure that steps were not being missed the system was homed to a known
+			point between tests and this did not drift after all tests had completed.
+			
+		\subsection{Evaluation}
+		
+			The amount of plastic deposited at a given point during a print is
+			dependent on the rate at which the plastic is extruded and also the rate
+			at which the platform moves. The accuracy of the timing (combined with the
+			mechanical properties of the machine) determines the platform's rate of
+			movement. The print quality therefore depends on these factors.
+			
+			% XXX: Quantify
+			
+			The timing accuracy measured above indicates that errors caused by timing
+			will be far smaller than the mechanical errors in the system. The
+			inspection of the system actually stepping indicates that there is no
+			significant timing drift caused by processing between movements. The tests
+			also showed that the system can easily deal with plotting sub-millimetre
+			paths.
+	
+	\section{End-stops}
+		
+		The endstops were tested under various lighting conditions to observe the
+		effect on the opto-interrupters. The following lightings conditions were
+		tested:
+		\begin{itemize}
+			\item Ambient strip lighting
+			\item Ambient halogen lighting
+			\item Ambient incandescent lighting
+			\item Ambient natural light
+			\item Direct halogen lighting
+			\item Direct incandescent lighting
+			\item Darkened room
+		\end{itemize}
+		
+		Testing consisted of interrupting each opto-interrupter by moving the
+		printer axes so that the end-stop should be triggered and observing the
+		digital value read by the Mbed and the state of the debugging LED. Under all
+		but the direct lighting conditions the correct value was read and the
+		debugging LEDs were completely off or completely on. Under direct lighting,
+		especially incandescent lighting, the state read by the Mbed for some
+		end-stops was stuck where external light shone into the opto-interrupter. In
+		these cases the debugging LEDs did not become completely `off' indicating
+		that the opto-interrupter was being triggered.
+		
+		Though these results suggest that the end-stops cannot be used under direct
+		lighting from halogen or incandescent bulbs, the system was found to perform
+		well outside these conditions. Although not tested (due to unfavourable
+		weather conditions), direct natural light may also have caused similar
+		problems.
+		
+		To solve this problem, a more complex system can be implemented. The
+		infra-red LEDs in the opto-interrupters are pulsed by the microcontroller
+		and the photo-transistor's current is checked for the presence of these
+		pulses. External light sources are unlikely to contain the same pulses and
+		so the system can be sure of the origin of the light passing onto the
+		photo-transistor. Unfortunately this would require significant additions to
+		the electronics and a change to the end-stop interface. As a result, the
+		changes could not be made within the time frame of project. Instead the
+		printer should be used out of direct light to ensure that the end-stops
+		operate correctly.
 	
 	\section{Buffer Utilisation}
+		
+		To ensure that the printer did not stall during regular print jobs, the
+		G-code and low-level command buffers were monitored during the execution of
+		various test jobs. Buffer underruns or low buffer utilisation could indicate
+		a performance issue in the G-code interpreter, network interface or their
+		interaction with the operating system.
+		
+		The utilisation and size of each buffer along with a counter for the number
+		of underruns experienced by the command-buffer are logged while various
+		G-code files are sent to the printer. The test files consisted of:
+		
+		\begin{description}
+			
+			\item[Circle drawing with low detail] This test ensures that given a
+			sequence of slow G-code instructions the printer keeps all buffers
+			reasonably full and that the network interface can cope with infrequent
+			small bursts of data.
+			
+			\item[Circle drawing with high detail] This test ensures that given a
+			constant sequence of fast G-code instructions the printer keeps all
+			buffers reasonably full and that no underruns occur during busy periods.
+			
+			\item[Circle drawing with high detail and pauses] This test ensures that
+			given a sequence of fast G-code instructions separated by sleeps where the
+			buffers filled and the network interface paused can quickly restart after
+			the sleep.
+			
+			\item[Test box model] This non-synthetic test is a simple print job which
+			contains long pauses (during heating and cleaning phases), relatively
+			low-activity periods (border drawing) and reasonably detailed periods
+			(fill patterns).
+			
+		\end{description}
+		
+		% TODO: Results
 	
 	\section{System Testing}
 		
+		The system was tested as a whole to assess its performance in both synthetic
+		printing benchmarks and tests as well as printing real-world objects. These
+		tests also aid in calibration of the G-code generator (Skeinforge). The
+		synthetic tests allow the printer's performance to be objectively measured
+		while real objects show real-world performance of the printer in its
+		intended application.
+		
 		\subsection{Synthetic Tests}
+			
+			As a simple test of using all of the printer's components coherently, the
+			circle plotting test was modified to produce spirals and the heaters and
+			extruder enabled. Figure \label{fig:syntheticTests} shows samples of the
+			output of these tests:
+			\begin{description}
+				
+				\item[(A)] The extruder was moved at a safe distance from the platform
+				to ensure that all components move together but without the risk of the
+				extruder colliding with the platform or blocking the nozzle of the
+				extruder.
+				
+				\item[(B)] As in (A) but the extruder is moved closer to the platform to
+				test that the system can safely operate next to the platform and that
+				the plastic adheres to the platform (and then properly detaches when
+				ejected).
+				
+				\item[(C)] A larger spiral printed to test that the plastic adheres
+				closer to the (colder) edges of the platform and that warping due to
+				temperature changes during the print does not cause problems.
+				
+				\item[(D)] The winding of the spiral is tightened to test that the
+				plastic adheres to itself and the platform and that warping does not
+				cause the print to fail. Figure \ref{fig:looseSpiral} shows a print
+				where the spiral was printed too loosely and it did not adhere to
+				itself.
+				
+			\end{description}
+			
+			\begin{figure}
+				\includegraphics[width=1\textwidth]{diagrams/syntheticTests.pdf}
+				\caption{Synthetic 3D printer tests for basic calibration}
+				\label{fig:syntheticTests}
+			\end{figure}
+			
+			\begin{figure}
+				\includegraphics[width=1\textwidth]{diagrams/looseSpiral.pdf}
+				\caption{Bad print of the test in figure \ref{fig:syntheticTests}(D)}
+				\label{fig:looseSpiral}
+			\end{figure}
+			
+			These prints were repeated, varying the platform temperature, Z-axis
+			position (height) and the tightness of the spiral until the tests
+			performed as described above. These tests ensure that the printer is
+			capable of operating all its major components coherently in order to
+			produce printed object.
+			
+			% TODO: Picture of Vernier caliper in use?
+			
+			% TODO: Actual cube measurements
+			
+			To test the system with G-code generated by Skeinforge, a simple 3D model
+			of a cuboid (Figure \ref{fig:testCubes} (A)) was printed. This print
+			yields a cuboid of known dimensions and is used to check calibration
+			settings for Skeinforge. The cuboid is initially printed on top of a thick
+			`raft' of plastic (used to ensure an even printing surface) and then
+			separated using a chisel. The dimensions of the cuboid are then checked
+			using a Vernier caliper to ensure that the printed object is of the
+			correct size. The Makerbot wiki claims that $0.1\mm$ resolution is
+			possible on a correctly tuned machine and so this requirement was used to
+			judge prints \cite{makerbotfaq}.
+			
+			\begin{figure}
+				\includegraphics[width=1\textwidth]{diagrams/testCubes.pdf}
+				\caption{Test cuboid model (A) print from Skeinforge G-code before raft
+				         removal (B) and after raft removal (C)}
+				\label{fig:testCubes}
+			\end{figure}
+			
 		
 		\subsection{Test Objects}
 			
+			To test the printer's ability to produce useful objects, various objects
+			were printed including objects with moving parts and objects near the
+			print-size limits for the printer. These tests check the system's ability
+			to deal with large and complex loads. A large selection of printed test
+			objects is provided in Appendix \ref{sec:examplePrints}.
+			
 			\subsubsection{Detailed Prints}
+				
+				Prints with detailed areas were used to test that the system could
+				process the larger density of G-code at the required rate and also to
+				ensure that steps were not missed during printing.
+				
+				For example, figure \ref{fig:vase} shows a vase which yields very short
+				line segments while printing the corners of the shape. The previous
+				electronics would not be able to process this design fast enough and
+				would skip instructions causing steps to be missed. With the new
+				electronics no buffer underruns or printing problems occurred during a
+				run featuring a large version (shown) and a smaller version containing
+				finer detail as a result.
+				
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/vase.pdf}
+					\caption{3D printed vase with detailed corners}
+					\label{fig:vase}
+				\end{figure}
+			
+			\subsubsection{Large Prints}
+				
+				% XXX: No objective numbers...
+				
+				Large prints stress the printer and electronics for long periods and can
+				reveal missed motor steps or instructions. The previous system had
+				frequent issues printing large objects due to skipped instructions or
+				steps and is a particular area for improvement.
+				
+				% TODO: Figure ref
+				Of the large objects printed, only one failed to print. This was due to
+				the object warping and becoming detached from the platform during the
+				print causing the tip of the extruder to rip the object off the platform
+				(figure \ref{fig:}). Unevenness in the temperature of the object during
+				printing is the cause of this distortion. This is partially caused by
+				unevenness in the temperature of the build platform. Unfortunately, this
+				is a problem with the printer's design which is not addressed in this
+				project.
+				
+				% TODO: Picture of damaged large print
+				
+				% XXX: Conclude...?
 			
 			\subsubsection{Raftless Printing}
+				
+				Though the first prints were completed on top of a raft, it was later
+				disabled. This reduced print time, improved print quality and allowed
+				intricate designs such as a comb to be printed (figure \ref{fig:comb})
+				where removal of the raft would damage the design.
+				
+				\begin{figure}
+					\includegraphics[width=1\textwidth]{diagrams/comb.pdf}
+					\caption{Folding `butterfly comb', printed without a raft (designed by
+					         techno246 \cite{butterflycomb})}
+					\label{fig:comb}
+				\end{figure}
+				
+				Many objects were reprinted using raftless printing and performance was
+				generally similar with the exception of larger designs. These
+				experienced greater warping without the support of the raft and thus
+				were more prone to failure due to the extruder hitting the object.
+				
+				% XXX: Conclude
