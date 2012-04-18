@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.0466926"
-     inkscape:cx="371.01786"
-     inkscape:cy="770.39938"
+     inkscape:zoom="1.4956828"
+     inkscape:cx="398.75725"
+     inkscape:cy="756.51372"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -132,7 +132,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -158,235 +158,288 @@
     <text
        xml:space="preserve"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-       x="585.35773"
-       y="393.33707"
+       x="584.95343"
+       y="413.33707"
        id="text10395"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         x="585.35773"
-         y="393.33707"
+         x="584.95343"
+         y="413.33707"
          style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
          id="tspan10397">ATX Power Supply</tspan></text>
-    <g
-       id="g10403">
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#ffffff;stroke-width:3.75000000000000000;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         d="m 525.13355,389.61546 -71.97833,0"
-         id="path10401" />
-      <path
-         id="path10399"
-         d="m 525.13355,389.61546 -71.97833,0"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         sodipodi:nodetypes="cc" />
-    </g>
+    <path
+       id="path10401"
+       d="m 524.48302,409.61546 -96.95054,0"
+       style="fill:none;stroke:#ffffff;stroke-width:3.75;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 524.48302,409.61546 -96.95054,0"
+       id="path10399" />
     <text
        sodipodi:linespacing="125%"
        id="text10407"
-       y="133.33704"
+       y="185.33704"
        x="593.35773"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
        xml:space="preserve"><tspan
          id="tspan10409"
          style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-         y="133.33704"
+         y="185.33704"
          x="593.35773"
          sodipodi:role="line">Stepper Controller (Z)</tspan></text>
-    <g
-       id="g10411"
-       transform="translate(0,-260.00003)">
-      <path
-         id="path10413"
-         d="m 525.13355,389.61546 -71.97833,0"
-         style="fill:none;stroke:#ffffff;stroke-width:3.75;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         sodipodi:nodetypes="cc" />
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         d="m 525.13355,389.61546 -71.97833,0"
-         id="path10415" />
-    </g>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ffffff;stroke-width:3.74999976;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 524.48302,181.61543 -97.14313,0"
+       id="path10413" />
+    <path
+       id="path10415"
+       d="m 524.48302,181.61543 -97.14313,0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
        x="593.35773"
-       y="203.33704"
+       y="243.33704"
        id="text10417"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          x="593.35773"
-         y="203.33704"
+         y="243.33704"
          style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
          id="tspan10419">Stepper Controller (Y)</tspan></text>
-    <g
-       transform="translate(0,-190.00003)"
-       id="g10421">
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#ffffff;stroke-width:3.75;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         d="m 525.13355,389.61546 -71.97833,0"
-         id="path10423" />
-      <path
-         id="path10425"
-         d="m 525.13355,389.61546 -71.97833,0"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         sodipodi:nodetypes="cc" />
-    </g>
+    <path
+       id="path10423"
+       d="m 524.48302,239.61543 -97.14313,0"
+       style="fill:none;stroke:#ffffff;stroke-width:3.74999976;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 524.48302,239.61543 -97.14313,0"
+       id="path10425" />
     <text
        sodipodi:linespacing="125%"
        id="text10427"
-       y="273.33704"
+       y="303.33704"
        x="593.35773"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
        xml:space="preserve"><tspan
          id="tspan10429"
          style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-         y="273.33704"
+         y="303.33704"
          x="593.35773"
          sodipodi:role="line">Stepper Controller (X)</tspan></text>
-    <g
-       id="g10431"
-       transform="translate(0,-120.00003)">
-      <path
-         id="path10433"
-         d="m 525.13355,389.61546 -71.97833,0"
-         style="fill:none;stroke:#ffffff;stroke-width:3.75;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         sodipodi:nodetypes="cc" />
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         d="m 525.13355,389.61546 -71.97833,0"
-         id="path10435" />
-    </g>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ffffff;stroke-width:3.74999976;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 524.48302,299.61543 -97.14313,0"
+       id="path10433" />
+    <path
+       id="path10435"
+       d="m 524.48302,299.61543 -97.14313,0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
        x="211.16861"
-       y="233.33707"
+       y="265.4263"
        id="text10437"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          x="211.16861"
-         y="233.33707"
+         y="265.4263"
          style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
          id="tspan10439">Ethernet Interface</tspan></text>
-    <g
-       transform="matrix(0.46830696,0,0,1,3.1055259,-160)"
-       id="g10441">
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#ffffff;stroke-width:5.47981596;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         d="m 525.13355,389.61546 -71.97833,0"
-         id="path10443" />
-      <path
-         id="path10445"
-         d="m 525.13355,389.61546 -71.97833,0"
-         style="fill:none;stroke:#000000;stroke-width:1.4612844;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         sodipodi:nodetypes="cc" />
-    </g>
+    <path
+       id="path10443"
+       d="m 249.02922,261.7047 -33.70795,0"
+       style="fill:none;stroke:#ffffff;stroke-width:3.75;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#000000;stroke-width:1.00000012;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 249.02922,261.7047 -33.70795,0"
+       id="path10445" />
     <text
        sodipodi:linespacing="125%"
        id="text10447"
-       y="275.33707"
+       y="301.33707"
        x="211.16861"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
        xml:space="preserve"><tspan
          id="tspan10449"
          style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-         y="275.33707"
+         y="301.33707"
          x="211.16861"
          sodipodi:role="line">Programmer Interface</tspan></text>
-    <g
-       id="g10451"
-       transform="matrix(0.67945761,0,0,1,-91.733093,-118)">
-      <path
-         id="path10453"
-         d="m 525.13355,389.61546 -71.97833,0"
-         style="fill:none;stroke:#ffffff;stroke-width:4.54935789;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         sodipodi:nodetypes="cc" />
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#000000;stroke-width:1.21316218;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         d="m 525.13355,389.61546 -71.97833,0"
-         id="path10455" />
-    </g>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ffffff;stroke-width:3.75000024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 255.12944,297.61546 -39.80817,0"
+       id="path10453" />
+    <path
+       id="path10455"
+       d="m 255.12944,297.61546 -39.80817,0"
+       style="fill:none;stroke:#000000;stroke-width:1.00000012;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
        x="211.10849"
-       y="303.33707"
+       y="325.33707"
        id="text10457"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          x="211.10849"
-         y="303.33707"
+         y="325.33707"
          style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
          id="tspan10459">Stop/Reset Button</tspan></text>
-    <g
-       transform="matrix(0.67945761,0,0,1,-91.733093,-90)"
-       id="g10461">
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#ffffff;stroke-width:4.54935789;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         d="m 525.13355,389.61546 -71.97833,0"
-         id="path10463" />
-      <path
-         id="path10465"
-         d="m 525.13355,389.61546 -71.97833,0"
-         style="fill:none;stroke:#000000;stroke-width:1.21316218;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         sodipodi:nodetypes="cc" />
-    </g>
+    <path
+       id="path10463"
+       d="m 257.95298,321.61546 -42.63171,0"
+       style="fill:none;stroke:#ffffff;stroke-width:3.75000024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#000000;stroke-width:1.00000012;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 257.95298,321.61546 -42.63171,0"
+       id="path10465" />
     <text
        sodipodi:linespacing="125%"
        id="text10467"
-       y="181.33707"
+       y="220.18195"
        x="211.10849"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
        xml:space="preserve"><tspan
          id="tspan10469"
          style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-         y="181.33707"
+         y="220.18195"
          x="211.10849"
          sodipodi:role="line">To Heaters/Motors</tspan></text>
-    <g
-       id="g10471"
-       transform="matrix(0.59228531,0,0,1,-52.471067,-212)">
-      <path
-         id="path10473"
-         d="m 525.13355,389.61546 -71.97833,0"
-         style="fill:none;stroke:#ffffff;stroke-width:4.87265682;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         sodipodi:nodetypes="cc" />
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#000000;stroke-width:1.29937518;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         d="m 525.13355,389.61546 -71.97833,0"
-         id="path10475" />
-    </g>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ffffff;stroke-width:3.75000024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 254.53779,216.46033 -39.21652,0"
+       id="path10473" />
+    <path
+       id="path10475"
+       d="m 254.53779,216.46033 -39.21652,0"
+       style="fill:none;stroke:#000000;stroke-width:1.00000012;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
        x="211.10849"
-       y="321.33707"
+       y="345.33707"
        id="text10477"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          x="211.10849"
-         y="321.33707"
+         y="345.33707"
          style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
          id="tspan10479">To Thermistors</tspan></text>
-    <g
-       transform="matrix(1.0926401,0,0,1,-277.62548,-72)"
-       id="g10481">
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#ffffff;stroke-width:3.58750677;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         d="m 525.13355,389.61546 -71.97833,0"
-         id="path10483" />
-      <path
-         id="path10485"
-         d="m 525.13355,389.61546 -71.97833,0"
-         style="fill:none;stroke:#000000;stroke-width:0.9566685;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
-         sodipodi:nodetypes="cc" />
-    </g>
+    <path
+       id="path10483"
+       d="m 283.97302,341.61546 -68.65175,0"
+       style="fill:none;stroke:#ffffff;stroke-width:3.75000024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#000000;stroke-width:1.00000012;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 283.97302,341.61546 -68.65175,0"
+       id="path10485" />
+    <text
+       xml:space="preserve"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+       x="211.10849"
+       y="165.46135"
+       id="text3070"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="211.10849"
+         y="165.46135"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         id="tspan3072">End-stop Board</tspan></text>
+    <path
+       id="path3076"
+       d="m 263.47851,161.73973 -48.15724,0"
+       style="fill:none;stroke:#ffffff;stroke-width:3.75000024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#000000;stroke-width:1.00000012;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 263.47851,161.73973 -48.15724,0"
+       id="path3078" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text3080"
+       y="191.46135"
+       x="211.10849"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+       xml:space="preserve"><tspan
+         id="tspan3082"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         y="191.46135"
+         x="211.10849"
+         sodipodi:role="line">To End-stops</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ffffff;stroke-width:3.75000024;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 319.31976,187.73973 -103.99849,0"
+       id="path3086" />
+    <path
+       id="path3088"
+       d="m 319.31976,187.73973 -103.99849,0"
+       style="fill:none;stroke:#000000;stroke-width:1.00000012;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+       x="582.52863"
+       y="125.33704"
+       id="text3090"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="582.52863"
+         y="125.33704"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         id="tspan3092">End-stop Interface</tspan></text>
+    <path
+       id="path3096"
+       d="m 524.48301,121.61543 -47.92953,0"
+       style="fill:none;stroke:#ffffff;stroke-width:3.74999976;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#000000;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 524.48301,121.61543 -47.92953,0"
+       id="path3098" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text3144"
+       y="339.33707"
+       x="552.40265"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+       xml:space="preserve"><tspan
+         id="tspan3146"
+         style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         y="339.33707"
+         x="552.40265"
+         sodipodi:role="line">To PSU</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ffffff;stroke-width:3.75;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 523.0763,335.61546 -169.68787,0"
+       id="path3148" />
+    <path
+       id="path3150"
+       d="m 523.0763,335.61546 -169.68787,0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       sodipodi:nodetypes="cc" />
   </g>
 </svg>
