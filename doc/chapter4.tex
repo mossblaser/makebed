@@ -333,7 +333,7 @@
 			\subsubsection{Analog Input}
 				
 				The Mbed includes a 12-bit successive-approximation analog-to-digital
-				converter (ADC) for reading analog values\cite{LPC1768}. The ADC uses a
+				converter (ADC) for reading analog values\cite{lpc1768}. The ADC uses a
 				digital-to-analog converter and a comparator to binary search for an
 				approximation to the analog value (Figure \ref{fig:adc}). The input is
 				held constant while the each bit in order of diminishing significance is
@@ -348,7 +348,7 @@
 				\end{figure}
 				
 				The ADC sampling process takes at least $5\mu{}s$ or approximately 500
-				CPU cycles \cite{LPC1768} therefore the CPU should carry out some other
+				CPU cycles \cite{lpc1768} therefore the CPU should carry out some other
 				task while the ADC process takes place. Though an interrupt is provided
 				when the ADC completes (and even a direct memory access (DMA) facility
 				is provided), this was not used. The temperature sensors will be sampled
