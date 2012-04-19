@@ -1,12 +1,49 @@
+\newcommand{\examplePrint}[2]{
+	\begin{figure}[H]
+		\includegraphics[width=1\textwidth]{diagrams/#1.pdf}
+		\caption{#2}
+		\label{fig:#1}
+	\end{figure}
+}
+
 \chapter{Example Prints}
 	
 	\label{sec:examplePrints}
 	
-	\section{Calibration}
+	This appendix shows a representative selection of some of the objects that
+	were printed as test cases for system testing. All designs printed were
+	downloaded from Thingiverse or included as part of ReplicatorG.
 	
-	\section{Raftless Printing}
-	
+	\section{Intricate Prints}
+		
+		\examplePrint{snake}{Flexible snake to test printing many thin fins}
+		
+		\examplePrint{starfish}{Starfish to test layerering appearence}
+		
+		\examplePrint{doorstop}{Doorstop to test large, smooth gradients}
+		
+		\examplePrint{butterfly}{Butterfly to test intricate islands of print}
+		
+		\examplePrint{rabbit}{Rabbit outline to test very thin structures}
+		
 	\section{Large Prints}
-	
-	\section{Complex Prints}
-
+		
+		\examplePrint{letter}{Letter `A' to test simple large shapes}
+		
+		\examplePrint{phoneDock}{Phone stand to test large gradients}
+		
+		\examplePrint{tooth}{Tooth to test large models with large overhanging areas}
+		
+		\examplePrint{joblot}{Multiple `metabricks' to test building multiple objects}
+		
+	\section{Functional Prints}
+		
+		\examplePrint{heart}{Rotatable heart to test simple mechanisms and
+		                     multi-part objects}
+		
+		\examplePrint{whistle}{Whistle with pea printed inside to test precise,
+		                       air-tight objects with built in sub-parts}
+		
+		\examplePrint{tweezers}{Tweezers to test flexible designs (frequently used
+		                        to remove excess extrusion produced during
+		                        self-cleaning)}
