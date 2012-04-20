@@ -1,52 +1,214 @@
 \chapter{Code Documentation}
 	
-	\section{Configuration}
+	This appendix contains the documentation required to configure and build the
+	microcontroller firmware. It also contains the required documentation for
+	using the communication utilities.
+	
+	\section{File Listing}
+		
+		Table \ref{tab:files} describes the purpose of each of the key project
+		files.
+		
+		\begin{table}
+			\begin{tabular}{p{0.45\textwidth} p{0.45\textwidth}}
+				\toprule
+				Filename & Description \\
+				\midrule
+				\verb|core_cm3.h| & ARM CMSIS header for Cortex-M3 \\
+				\verb|cr_startup_lpc17.c| & Defines interrupt-handler functions \\
+				\verb|FreeRTOSConfig.h| & System \& networking parameters \\
+				\verb|freertos_hooks.{c,h}| & FreeRTOS callback handlers \\
+				\verb|LPC17xx.h| & NXP CMSIS header for LPC17xx series \\
+				\verb|main.c| & Initialises system starts all tasks \\
+				\verb|MakebedConfig.h| & Configuration for 3D printing firmware \\
+				\verb|makedefs| & Definitions used by the Makefile \\
+				\verb|Makefile| & Makefile which builds the project \\
+				\verb|mbed_boot.{c,h}| & Functions to boot up chip peripherals \\
+				\verb|rtosdemo_rdb1768_Debug.ld| & Linker script \\
+				\verb|system_LPC17xx.h| & ARM CMSIS header for Cortex-M3 \\
+				\addlinespace
+				\verb|analog/analog_in.{c,h}| & Analog input driver \\
+				\addlinespace
+				\verb|float_parsing/strtod.{c,h}| & Implementation of strtod \\
+				\addlinespace
+				\verb|GPIO/gpio.{c,h}| & General purpose input/output driver \\
+				\addlinespace
+				\verb|makerbot/makerbot.{c,h}| & Print manager/scheduler \\
+				\addlinespace
+				\verb|network/clock-arch.h| & \uIP{} timer definitions \\
+				\verb|network/clock.h| & \uIP{} clock interface \\
+				\verb|network/emac.h| & FreeRTOS EMAC driver \\
+				\verb|network/EthDev*.h| & Ethernet driver \\
+				\verb|network/lc*.h| & \uIP{} local continuations library \\
+				\verb|network/network.{c,h}| & Network interface \uIP{} `application' \\
+				\verb|network/network_uip_state.h| & State struct for \uIP{} `application' \\
+				\verb|network/network_debug.{c,h}| & Debugging/Status interface \\
+				\verb|network/network_gcode.{c,h}| & G-code transmission interface \\
+				\verb|network/psock.{c,h}| & \uIP{} protosockets library \\
+				\verb|network/pt.h| & \uIP{} protothreads library \\
+				\verb|network/timer.{c,h}| & \uIP{} timer library \\
+				\verb|network/uip*.{c,h}| & \uIP{} \\
+				\addlinespace
+				\verb|pid/pid.{c,h}| & PID controller \\
+				\addlinespace
+				\verb|stepper/stepper.{c,h}| & Stepper motor driver \\
+				\addlinespace
+				\verb|thermistor/thermistor.{c,h}| & Thermistor library \\
+				\addlinespace
+				\verb|util/makebed.py| & Communication utility \\
+				\verb|util/makebed_live.sh| & Live printer status monitor\\
+				\verb|util/gsend.py| & G-code UDP library \\
+				\verb|util/debug.py| & Status interface library \\
+				\verb|util/gcode/*.gcode| & Example G-code files \\
+				\addlinespace
+				\verb|watchdog/watchdog.{c,h}| & Watchdog timer driver \\
+				\bottomrule
+			\end{tabular}
+			
+			\caption{Source file listing}
+			\label{tab:files}
+		\end{table}
+	
+	\section{Firmware}
+		
+		This section describes the compilation and configuration process for the
+		Mbed firmware.
+		
+		\subsection{Dependencies}
+			
+			The tools/libraries required to build the firmware are listed in table
+			\ref{tab:dependencies}.
+			
+			\begin{table}
+				\centering
+				\begin{tabular}{l l}
+					\toprule
+					Package & Version \\
+					\midrule
+					CodeSourcery G++ Lite & 2011.03-42 \\
+					FreeRTOS & 7.0.2 \\
+					GNU Make & 3.81 \\
+					\bottomrule
+				\end{tabular}
+				
+				\caption{Firmware software dependencies}
+				\label{tab:dependencies}
+			\end{table}
+			
+		\subsection{Compilation}
+			
+			\label{sec:compilation}
+			
+			The following steps can be used to build the Mbed firmware:
+			
+			\begin{enumerate}
+				
+				\item Make sure the dependencies mentioned above are installed
+				
+				\item Ensure that \verb|arm-none-eabi-gcc| is in your path
+				
+				\item In the Makefile, set \verb|RTOS_SOURCE_DIR| to the \verb|Source|
+				directory of your FreeRTOS distribution.
+				
+				\item In the Makefile, set the path of the Mbed drive on your computer
+				in the \verb|install: all| make rule.
+				
+				\item Run \verb|make| to build the firmware
+				
+				\item \verb|make install| will build as above and also copy the firmware
+				to the Mbed. Reset the Mbed to start the newly installed firmware.
+				
+			\end{enumerate}
+		
+		\subsection{Configuration}
+			
+			All printer-related parameters can be found fully documented in
+			\verb|MakebedConfig.h|.
+			
+			To set the system's IP, net-mask and MAC addresses, the definitions
+			\verb|configIP_ADDR0-3|, \verb|configIP_ADDR0-3| and
+			\verb|configMAC_ADDR0-5| can be set in \verb|FreeRTOSConfig.h|. DHCP is
+			not supported.
+			
 	
 	\section{Utilities}
 		
 		\label{sec:utilDoc}
 		
+		Utilities are provided for interacting with the printer over the network.
+		Their dependencies and use are described below. They should be executed from
+		the \verb|util| directory.
+		
+		The utilities require that the printer's IP address is specified in
+		\verb|~/.makebedrc|.
+		
 		\subsection{Dependencies}
+			
+			The utilities depend on the programs mentioned in table
+			\ref{tab:utildependencies}.
+			
+			\begin{table}
+				\centering
+				\begin{tabular}{l l}
+					\toprule
+					Package & Version \\
+					\midrule
+					Python & 2.6 \\
+					Bash & 4.1 \\
+					GNUPlot & 4.4 patchlevel 0 \\
+					\bottomrule
+				\end{tabular}
+				
+				\caption{Utility dependencies}
+				\label{tab:utildependencies}
+			\end{table}
 		
 		\subsection{Send}
 		
 			\label{sec:makebedDoc}
 			
-			% TODO: Talk about safety [i.e. if you kill the send]
+			Files can be sent to the printer using the command
+			\begin{verbatim}
+				makebed.py send
+			\end{verbatim}
+			which accepts G-code on its standard input or from a file specified as an
+			argument. The program will block until the entire file has been received
+			by the printer.
+			
+			If the printer is suffering buffer underruns, the rate at which the
+			utility polls the printer can be increased with the \verb|-p| option which
+			takes a number of seconds (defaulting to 0.1) to wait between poll
+			requests. This should not be required for most prints and can result in a
+			large amount of network traffic being generated.
+			
+			\subsubsection{Safety}
+				
+				If the program is terminated while sending a G-code file, the printer
+				will keep running after executing the last intact G-code instruction
+				received. During a typical print this could leave the printer stationary
+				but extruding plastic indefinitely potentially causing damage or unsafe
+				behaviour. As a precaution, it is recommended that the printer is reset
+				using the reset button if the utility is stopped prematurely.
 		
 		\subsection{Get}
+			
+			The command
+			\begin{verbatim}
+				makebed.py get
+			\end{verbatim}
+			allows printer status information to be fetched. The command expects a
+			list of categories for which status should be fetched and returns a
+			tab-delimited data file containing those values and exits.
+			
+			The \verb|-p| option causes the printer to be repeatedly polled for status
+			information until the utility is terminated.
+			
+			The output of this utility is compatible with GNUPlot.
 		
 		\subsection{makebed\_live.sh}
 			
 			\label{sec:makebedliveDoc}
-	
-	\section{File Listing}
-	
-	\section{Firmware}
-	
-		\subsection{Dependencies}
-		
-		\subsection{Compilation}
-			\label{sec:compilation}
-	
-		\subsection{Drivers}
 			
-			\subsubsection{Analog}
-			
-			\subsubsection{GPIO}
-			
-			\subsubsection{Watchdog}
-			
-		\subsection{Libraries}
-			
-			\subsubsection{Float Parsing}
-			
-			\subsubsection{Stepper}
-			
-			\subsubsection{Thermistor}
-			
-			\subsubsection{Makerbot}
-			
-			\subsubsection{Network}
-			
-			\subsubsection{PID}
+			To provide a live view of the printer's status during a print, a shell
+			script has been provided which plots live data from the printer's status
+			interface. It is a simple wrapper for the \verb|makebed.sh get| command.
