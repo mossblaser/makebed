@@ -99,9 +99,6 @@ mbed_boot(void)
 
 	/*  Setup the peripheral bus to be the same as the PLL output (64 MHz). */
 	LPC_SC->PCLKSEL0 = 0x05555555;
-
-	/* Configure the LEDs. */
-	vParTestInitialise();
 }
 /*-----------------------------------------------------------*/
 

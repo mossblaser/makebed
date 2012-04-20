@@ -258,28 +258,3 @@ struct uip_eth_addr xAddr;
 	uip_setethaddr( xAddr );
 }
 /*-----------------------------------------------------------*/
-
-void vApplicationProcessFormInput( char *pcInputString )
-{
-char *c;
-const unsigned long ulLEDNo = 3;
-
-	/* Process the form input sent by the IO page of the served HTML. */
-
-	c = strstr( pcInputString, "?" );
-    if( c )
-    {
-		/* Turn LED's on or off in accordance with the check box status. */
-		if( strstr( c, "LED0=1" ) != NULL )
-		{
-			/* Set LED7. */
-			vParTestSetLED( ulLEDNo, pdFALSE );
-		}
-		else
-		{
-			/* Clear LED7. */
-			vParTestSetLED( ulLEDNo, pdTRUE );
-		}
-    }
-}
-
