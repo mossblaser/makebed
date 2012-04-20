@@ -575,6 +575,8 @@
 			
 			\subsubsection{The G-Code Machine}
 				
+				\label{sec:gcodemachine}
+				
 				The G-code machine consists of 26 numeric registers named `A' to `Z'.
 				A G-code instruction consists of a set of register assignments after
 				which the machine evaluates a specific action based on the contents of
@@ -672,8 +674,7 @@
 				A simple state machine was built by hand which parses and executes the
 				G-code setting and reading registers as described above. If unexpected
 				characters or register values are encountered a flag is set and the
-				parser continues from the next character or instruction. The state
-				machine is given in appendix \ref{sec:stateMachine}.
+				parser continues from the next character or instruction.
 				
 				Once each instruction is parsed and the register values set, the values
 				are converted into machine units. For example, movements are converted

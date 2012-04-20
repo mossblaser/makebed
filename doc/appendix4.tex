@@ -1,31 +1,424 @@
 \chapter{G-Code Reference}
 	
+	The subset of G-code interpreted by the system is described in the following
+	sections.
+	
 	\section{Language}
+		
+		The G-code machine is described in \S\ref{sec:gcodemachine}. The following
+		subsections specify the syntax and registers of the language.
 		
 		\subsection{BNF}
 			
 			\label{sec:gcodebnf}
-		
-		\subsection{State Machine}
 			
-			\label{sec:stateMachine}
+			\begin{verbatim}
+				<instruction> ::= <reg-write> <new-line>
+				
+				<reg-write> ::= <reg-name> <number> <white-space>* <reg-write> | <comment> | ""
+				<reg-name>  ::= [A-Z]
+				
+				<comment>            ::= <line-comment> | <block-comment>
+				<line-comment>       ::= <line-comment-start> <non-newline>* <new-line> 
+				<line-comment-start> ::= ";" | "/"
+				<block-comment>      ::= "(" <non-close-bracket>* ")"
+			\end{verbatim}
 		
 		\subsection{Register Types \& Behaviour}
+			
+			\begin{table}[H]
+				\centering
+				\begin{tabular}{c l l}
+					\toprule
+					Register & Type & Reset at instruction start \\
+					\midrule
+						A & Integer & No  \\
+						B & Float   & No  \\
+						C & Float   & No  \\
+						D & Float   & No  \\
+						E & Float   & No  \\
+						F & Float   & No  \\
+						G & Integer & Yes \\
+						H & Float   & No  \\
+						I & Float   & No  \\
+						J & Float   & No  \\
+						K & Float   & No  \\
+						L & Float   & No  \\
+						M & Integer & Yes \\
+						N & Float   & No  \\
+						O & Float   & No  \\
+						P & Integer & No  \\
+						Q & Float   & No  \\
+						R & Float   & No  \\
+						S & Float   & No  \\
+						T & Integer & No  \\
+						U & Float   & No  \\
+						V & Float   & No  \\
+						W & Float   & No  \\
+						X & Float   & No  \\
+						Y & Float   & No  \\
+						Z & Float   & No  \\
+					\bottomrule
+				\end{tabular}
+				
+				\caption{G-code register types and behaviours}
+				\label{tab:gcoderegisters}
+			\end{table}
 	
 	\section{Actions}
 		
 		\label{sec:gcodeactions}
+		
+		Each instruction should write a value to the `G' or `M' register. Depending
+		on the value written, the printer will carry out a diferrent action. These
+		actions are specified below.
+		
+		\newcommand{\gcodeaction}[4]{
+			\subsubsection{#1 : #2}
+				#3
+				
+				\begin{table}[H]
+					\begin{tabular}{c p{0.41\textwidth} p{0.41\textwidth}}
+						\toprule
+						Argument & Description & Unit \\
+						\midrule
+						#4
+						\bottomrule
+					\end{tabular}
+				\end{table}
+		}
+		\newcommand{\gcodearg}[3]{#1 & #2 & #3 \\}
+		\newcommand{\gcodenoargs}{\multicolumn{3}{c}{\emph{No arguments}}\\}
+		
+		\subsection{`G' Actions}
+			
+			\gcodeaction{G0 \& G1}{Move extruder to coordinate}{
+				G1 moves the extruder through a straight line from the current position
+				to the position given in the arguments.
+				
+				G0 is included for compatibility reasons but does the same thing as G1.
+			}{
+				\gcodearg{X}{X-coordinate}{Current unit}
+				\gcodearg{Y}{Y-coordinate}{Current unit}
+				\gcodearg{Z}{Z-coordinate}{Current unit}
+				\gcodearg{F}{Feed rate (speed) of movement}{Current units per minute}
+			}
+			
+			\gcodeaction{G4}{Sleep}{
+				Pause the printer for a specified period.
+			}{
+				\gcodearg{P}{Period}{Miliseconds}
+			}
+			
+			\gcodeaction{G20 \& G21}{Set unit}{
+				Set the units used to specify movements to inches or milimeters
+				respectively. The default is inches for historical reasons.
+			}{
+				\gcodenoargs
+			}
+			
+			\gcodeaction{G90 \& G91}{Set absolute/relative positioning}{
+				Sets whether positions are specified absolutely or relative to the
+				current position. Relative positioning is not supported by the system.
+			}{
+				\gcodenoargs
+			}
+			
+			\gcodeaction{G92}{Set origin}{
+				Set the current position without moving the extruder. Used to set the
+				initial position of the extruder to the origin or some known homing
+				location. If this instruction is not used, the current position is
+				undefined and moving the extruder may have unexpected effects.
+			}{
+				\gcodearg{X}{X-coordinate}{Current unit}
+				\gcodearg{Y}{Y-coordinate}{Current unit}
+				\gcodearg{Z}{Z-coordinate}{Current unit}
+			}
+		
+		\subsection{`M' Actions}
+			
+			\gcodeaction{M-2}{Home axes}{
+				Custom extension to the standard G-code actions.
+				
+				Slowly move the specified axes until hitting the endstop. The current
+				position in the X, Y and Z registers is then set to the locations of the
+				end-stops (essentially calibrating the printer's position).
+			}{
+				\gcodearg{A}{Axis Selection}{Bit mask. Bit 1: X, Bit 2: Y, Bit 3: Z.}
+			}
+			
+			\gcodeaction{M-1 \& M0}{Turn the PSU on/off}{
+				M-1 is a custom extension to the standard G-code actions.
+				
+				Turns the PSU on and off respectively. Note that if the PSU is not
+				powered on, many actions may block indefinately.
+				
+				This action blocks until mains power is available if the
+				microcontroller is being powered via USB.
+			}{
+				\gcodenoargs
+			}
+			
+			\gcodeaction{M6}{Wait for heaters}{
+				Block until both heaters have reached their target temperature. Contrary
+				to the standard, this command will not block waiting for the heaters to
+				cool down to a new target temperature.
+			}{
+				\gcodenoargs
+			}
+			
+			\gcodeaction{M17 \& M18}{Power stepper motors on/off}{
+				Enable or disable power to all stepper motor drivers. If the stepper
+				motors are powered they cannot be moved manually. The steppers are
+				automatically powered on when moved.
+			}{
+				\gcodenoargs
+			}
+			
+			\gcodeaction{M101, M102 \& M103}{Extruder motor forward/backward/off}{
+				Set the extruder motor moving forward, backward or not at all
+				respectively. M102 is not supported by the system and will raise an
+				error and stop the motor motor.
+				
+				The extruder should not be turned on unless it has heated up enough to
+				melt the incoming filament.
+			}{
+				\gcodenoargs
+			}
+			
+			\gcodeaction{M104}{Set extruder temperature}{
+				Set the target temperature of the extruder. This action does not block,
+				to wait for heating to complete use M6.
+			}{
+				\gcodearg{S}{Target temperature}{\dC}
+			}
+			
+			\gcodeaction{M106 \& M107}{Platform conveyor on/off}{
+				Turn the platform conveyor belt on or off respectively.
+			}{
+				\gcodenoargs
+			}
+			
+			\gcodeaction{M108}{Set extruder speed}{
+				Set the speed at which the extruder motor turns. Not supported by the
+				system.
+			}{
+				\gcodenoargs
+			}
+			
+			\gcodeaction{M109}{Set platform temperature}{
+				Set the target temperature of the platform. This action does not block,
+				to wait for heating to complete use M6.
+			}{
+				\gcodearg{S}{Target temperature}{\dC}
+			}
 	
 	\section{Examples}
-	
+		
+		The following example G-code files show how G-code can be used for various
+		useful tasks.
+		
 		\subsection{Power On, Heat Up}
+			
+			Heats the system up to a temperature suitable for printing. Can be used to
+			prepare the printer before starting a print.
+			
+			\begin{verbatim}
+				(Turn on the PSU)
+				M-1
+				
+				(Set the target temperature for the extruder to 225*c)
+				M104 S225
+				
+				(Set the target temperature for the platform to 120*c)
+				M109 S120
+			\end{verbatim}
+			
+		\subsection{Power-down}
+			
+			Powers down all components and then the PSU. When the PSU is turned back
+			on, the heaters and motors will still remain off.
+			
+			\begin{verbatim}
+				(Turn off extruder)
+				M104 S0 (Heater: set target to 0*c)
+				M103    (Motor)
+				
+				(Turn off platform)
+				M109 S0 (Heater: set target to 0*c)
+				M107    (Conveyor)
+				
+				(Turn off stepper motors)
+				M18
+				
+				(Power off PSU)
+				M0
+			\end{verbatim}
 		
-		\subsection{Reset \& Power-down}
+		\subsection{Skeinforge Print Prefix}
+			
+			Prifix added to all print jobs to heat up and prepare the printer before a
+			print job.
+			
+			\begin{verbatim}
+				(**** begin initilization commands ****)
+				
+				(power on)
+				M-1
+				
+				G21 (set units to mm)
+				G90 (set positioning to absolute)
+				
+				(Start in parking position)
+				G92 X-60 Y-45 Z10
+				
+				(Raise up to avoid the loop)
+				G1 Z12 F100
+				
+				(Move to squirt position)
+				G1 X-55 Y-10 F1000
+				G1 Z7 F100
+				
+				(Heat up)
+				M104 S225
+				M109 S120
+				M6
+				
+				(Extrude a bit and stop)
+				M101
+				G4 P5000
+				M103
+				G4 P6000
+				
+				(Wipe)
+				G1 Y10 F2000
+				
+				(Go to origin)
+				(M101)
+				(G1 X0 Y0 Z0 F2400.0)
+				
+				(**** end initilization commands ****)
+			\end{verbatim}
 		
-		\subsection{Print Prefix \& Postfix}
+		\subsection{Skeinforge Print Postfix}
+			
+			Postfix added to all print jobs to cool down and eject the object after
+			printing.
+			
+			\begin{verbatim}
+				(**** begin ending commands ****)
+				
+				G1 X0 Y40 F3300.0 (move platform to ejection position)
+				(cool down platform)
+				M104 S225
+				M109 S80
+				M103 (Extruder off)
+				G04 P100000 (wait t/1000 seconds)
+				M106 (conveyor on)
+				G04 P10000 (wait t/1000 seconds)
+				M107 (conveyor off)
+				
+				(start wipe)
+				(Move to squirt position)
+				G1 X-55 Y-10 F1000
+				G1 Z7 F100
+				
+				(Heat up extruder)
+				M104 S225
+				M6
+				
+				(Extrude a bit and stop)
+				M101
+				G4 P5000
+				M103
+				G4 P6000
+				
+				(Wipe)
+				G1 Y10 F2000
+				
+				(Go to starting position)
+				G1 Z12 F100
+				G1 X-60 Y-45 F3300
+				G1 Z10 F100
+				
+				
+				(Turn off heaters)
+				M104 S0 (set extruder temperature)
+				M109 S0 (set heated-build-platform temperature)
+				
+				(power off)
+				M0
+				
+				(**** end ending commands ****)
+			\end{verbatim}
 		
 		\subsection{Home X \& Y Axes}
+			
+			Home the X \& Y axes using the end stops. Assumes that the Z-axis starts at
+			the correct height to fit in the homing bracket. Raise the nozzle out
+			of the homing bracket, home to the endstops and then place the nozzle in
+			the calibration bracket.
+			
+			\begin{verbatim}
+				(Power on)
+				M-1
+				
+				(Use mm)
+				G21
+				
+				(Set the Z axis as we're not homing that)
+				G92 X0 Y0 Z10
+				
+				(Lift the head out of its hole)
+				G1 Z15 F100
+				
+				(Home x[1] and y[2] at the same time[1+2 = 3])
+				M-2 A3
+				
+				(Move to the calibration ring)
+				G1 X-56 Y-44 Z15 F3300
+				G1 Z10 F100
+				
+				(Power off)
+				M0
+			\end{verbatim}
 			
 			\label{sec:gcode_home_xy}
 		
 		\subsection{Circle}
+			
+			Plots a circle segmented into lines using the X and Y axes. Assumes the
+			extruder is hovering safely above the center of the platform before
+			moving.
+			
+			\begin{verbatim}
+				(Power on)
+				M-1
+				
+				(Use mm)
+				G21
+				
+				(Assume we're starting in the middle)
+				G92 X0 Y0 Z0
+				
+				(Move to the edge of the circle)
+				G1 X40.000000 Y0.000000 F330.000000
+				
+				(Plot the circle)
+				G1 X32.360680 Y23.511410 F330.000000
+				G1 X12.360680 Y38.042261 F330.000000
+				G1 X-12.360680 Y38.042261 F330.000000
+				G1 X-32.360680 Y23.511410 F330.000000
+				G1 X-40.000000 Y0.000000 F330.000000
+				G1 X-32.360680 Y-23.511410 F330.000000
+				G1 X-12.360680 Y-38.042261 F330.000000
+				G1 X12.360680 Y-38.042261 F330.000000
+				G1 X32.360680 Y-23.511410 F330.000000
+				
+				(Move to the center of the circle
+				G1 X0 Y0 F330.000000
+				
+				(Power off)
+				M0
+			\end{verbatim}
+
