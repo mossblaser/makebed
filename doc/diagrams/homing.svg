@@ -10,7 +10,7 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="homing.svg"
+   sodipodi:docname="exampleCube.svg"
    inkscape:version="0.47 r22583"
    version="1.1"
    id="svg2"
@@ -192,6 +192,13 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2986"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <metadata
      id="metadata7">
@@ -214,15 +221,15 @@
        style="fill:#ffffff;fill-opacity:1;stroke:none"
        id="rect6660"
        width="566.92914"
-       height="129.13899"
+       height="224.3423"
        x="88.582672"
-       y="71.012466" />
+       y="69.162422" />
     <image
-       y="69.866203"
-       x="289.71115"
-       id="image9469"
-       height="133.02698"
-       width="164.67216"
-       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/exampleCube.jpg" />
+       y="66.82515"
+       x="197.08665"
+       id="image2988"
+       height="229.01683"
+       width="349.92117"
+       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/homing.jpg" />
   </g>
 </svg>

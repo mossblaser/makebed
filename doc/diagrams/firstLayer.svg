@@ -10,7 +10,7 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="homing.svg"
+   sodipodi:docname="firstLayer.svg"
    inkscape:version="0.47 r22583"
    version="1.1"
    id="svg2"
@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.94534534"
-     inkscape:cx="477.61173"
-     inkscape:cy="817.83471"
+     inkscape:zoom="1.1175214"
+     inkscape:cx="323.52076"
+     inkscape:cy="858.25646"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -192,6 +192,27 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3133"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3207"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2916"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <metadata
      id="metadata7">
@@ -214,15 +235,15 @@
        style="fill:#ffffff;fill-opacity:1;stroke:none"
        id="rect6660"
        width="566.92914"
-       height="129.13899"
+       height="152.0668"
        x="88.582672"
-       y="71.012466" />
+       y="38.522457" />
     <image
-       y="69.866203"
-       x="289.71115"
-       id="image9469"
-       height="133.02698"
-       width="164.67216"
-       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/exampleCube.jpg" />
+       y="38.1609"
+       x="165.78085"
+       id="image2918"
+       height="152.78992"
+       width="412.53278"
+       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/firstLayer.jpg" />
   </g>
 </svg>
