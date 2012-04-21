@@ -18,7 +18,6 @@
 		boards. The system as installed in the printer is shown in figure
 		\ref{fig:electronicsPhoto} with the major components labelled.
 		
-		% TODO: Picture of up-to-date electronics
 		\begin{figure}
 			\includegraphics[width=1\textwidth]{diagrams/electronicsPhoto.pdf}
 			\caption{Electronics installed with major connections labelled}
@@ -72,17 +71,14 @@
 			
 			\label{sec:heatersAndMotors}
 			
-			% TODO: Part numbers, specs and fact check!
-			
 			The heaters and DC motors in the extruder and platform operate at a
 			higher voltage and are considerably higher-current than the
 			microcontroller can produce on its output pins. To control these a
 			transistor is required.  An IRLU8729PbF MOSFET (Metal Oxide Field Effect
 			Transistor) was selected as it can switch large loads up to 58A with
 			very little on-resistance (reducing energy wastage through
-			heat)\cite{MOSFET}.
+			heat) \cite{MOSFET}.
 			
-			% TODO: Photo of MOSFET
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/mosfetDiagram.pdf}
 				\caption{Metal Oxide Semiconductor Field Effect Transistor (MOSFET)}
@@ -154,8 +150,6 @@
 			reference temperature and $\beta$ is a characteristic constant for the
 			device available in the data-sheet.
 			
-			% TODO: Cite potential divider
-			
 			Using the Analog-to-Digital converter in the Mbed, voltages, but not
 			resistances, can be read directly. A potential divider (Figure
 			\ref{fig:potentialDiv}) is used to measure the resistance.
@@ -177,9 +171,10 @@
 				\label{equ:potdiv}
 			\end{equation}
 			
-			% TODO: Resistor choice, specify thermistor
-			
-			The value of $R_1$ was chosen...
+			The value of $R_1$ was chosen to evenly spread the voltages from the
+			expected range of thermistor resistances over the full range of 0 to
+			$V_\textrm{ref}$ volts. This maximises the utilisation of the analog to
+			digital converter available over the temperature ranges used.
 			
 			Using (\ref{equ:steinhart}) and (\ref{equ:potdiv}) with a potential
 			divider circuit will allow the temperature of the thermistor to be
@@ -192,8 +187,6 @@
 			ten-pin insulation displacement connector (IDC). An IDC socket was
 			placed on the board and the pins connected directly to the Mbed and
 			ground plane as required.
-			
-			% TODO: IDC Picture
 		
 		\subsection{End-stops}
 			
@@ -215,23 +208,23 @@
 			signal is expected by the interface. To ease debugging, an indicator LED
 			is also provided which is lit when the end-stop is unobstructed.
 			
-			% XXX: Is it a pulldown?
-			
 			The LED in the photo-interrupter is driven via a current-limiting
 			resistor and the signal output and indicator LED are connected through
 			the photo-transistor. A pull-down resistor is used to pull the signal
 			to ground when the photo-transistor is powered off.
 			
 			The circuitry is placed on a board with cables running to each end-stop
-			(photo-interrupter) and to each of the CAT-5 sockets on the stepper
-			controller boards. Strain-relief is included so that the connections are
-			not damaged if the cables are caught in the machine. A circuit diagram
-			is provided in Appendix \ref{sec:stepperControllerPinout}.
+			(shown mounted in figure \ref{fig:endstopInstalled}) and to each of the
+			CAT-5 sockets on the stepper controller boards. Strain-relief is included
+			so that the connections are not damaged if the cables are caught in the
+			machine. A circuit diagram is provided in Appendix
+			\ref{sec:stepperControllerPinout}.
 			
-			% TODO: Picture of mounted endstop and board
-			
-			% XXX: Include resistor values and theory of operation?
-			
+			\begin{figure}
+				\includegraphics[width=1\textwidth]{diagrams/endstopInstalled.pdf}
+				\caption{Photo-interrupter endstop being interrupted by the X-axis}
+				\label{fig:endstopInstalled}
+			\end{figure}
 			
 		\subsection{Power}
 			
@@ -281,21 +274,29 @@
 		
 		\subsection{Ethernet}
 			
-			Ethernet requires relatively complex circuitry to drive it. This is
-			mostly provided on-board the Mbed but the pins on the mbed but a
-			CAT-5 socket containing the magnetics required by Ethernet is needed.
+			Ethernet requires relatively complex circuitry to drive it. This is mostly
+			provided on-board the Mbed but the pins on the mbed but an RJ45 socket
+			containing the magnetics required by Ethernet (figure
+			\ref{fig:jackMagnetics}) is needed.
 			
-			% TODO: Picture of magnetics?
+			\begin{figure}
+				\includegraphics[width=1\textwidth]{diagrams/jackMagnetics.pdf}
+				\caption{X-ray of RJ45 sockets with and without integrated magnetics
+				         \cite{raspimag}}
+				\label{fig:jackMagnetics}
+			\end{figure}
 	
 	\section{Firmware}
 		
-		% TODO: Some intro
+		In this section the firmware for the Mbed is described starting with the
+		infrastructure required for development on FreeRTOS on the Mbed. Each of the
+		key components of the firmware are then described followed by the tools
+		needed to interact with the firmware. Finally the safety precautions taken
+		and development practices used are outlined.
 		
 		\subsection{FreeRTOS on the Mbed}
 			
 			\label{sec:compiler}
-			
-			% TODO: Cite mbed compiler
 			
 			The Mbed is designed for use with a web-based IDE and compiler
 			\cite{mbedcompiler}. This system is not appropriate for use in the project
@@ -307,16 +308,14 @@
 			selected over closed-source alternatives because it has a large community of
 			users and produces reasonable code.
 			
-			% TODO: Cite CMSIS, LPC
-			
-			An unnoficial port of FreeRTOS for the Mbed is available which is built with
-			the CodeSourcery toolchain. It provides a base FreeRTOS configuration with a
-			demonstration \uIP{} based web server and other simple operating system
-			demos along with a suitable Makefile. Also included are headders for the ARM
-			Cortex Microcontroller Software Interface Standard (CMSIS) which define an
-			interface for all ARM Cortex microcontrollers common features. Finally, the
-			standard headders defining macros and pointers for all registers for the
-			Mbed are included.
+			An unnoficial port of FreeRTOS for the Mbed is available which is built
+			with the CodeSourcery toolchain. It provides a base FreeRTOS configuration
+			with a demonstration \uIP{} based web server and other simple operating
+			system demos along with a suitable Makefile. Also included are headders
+			for the ARM Cortex Microcontroller Software Interface Standard (CMSIS)
+			which define an interface for all ARM Cortex microcontrollers common
+			features \cite{cmsis}. Finally, the standard headders defining macros and
+			pointers for all registers for the Mbed are included.
 			
 			Appendix \ref{sec:compilation} contains specific compilation instructions
 			for the final system.
@@ -423,9 +422,6 @@
 					\caption{Stepper control signal wave diagram}
 					\label{fig:stepperWave}
 				\end{figure}
-				
-				% XXX: Step time may be wrong here or in code (here is based on 3300
-				% mm/min working fine)
 				
 				\begin{table}
 					\centering
@@ -732,6 +728,8 @@
 				
 				\subsubsection{UDP}
 					
+					\label{sec:udpimpl}
+					
 					Unfortunately as discussed in \S\ref{sec:tcpProblem}, the TCP
 					implementation in \uIP{} is incorrect. Due to time constraints this
 					was not fixed during the project. Instead a UDP based protocol was
@@ -868,12 +866,16 @@
 		\subsection{Stop Button}
 			
 			The electronics break out the Mbed's reset pin to a larger and easier to
-			press red button. Because of the safe power-on behaviour and to ensure
-			correct operation in the event of a software failure this button is not
-			checked by software and is entirely the responsibility of the
-			microcontroller.
+			press red button (figure \ref{fig:stop}). Because of the safe power-on
+			behaviour and to ensure correct operation in the event of a software
+			failure this button is not checked by software and is entirely the
+			responsibility of the microcontroller.
 			
-			% TODO: Picture
+			\begin{figure}
+				\includegraphics[width=1\textwidth]{diagrams/stop.pdf}
+				\caption{Emergency stop/reset button}
+				\label{fig:stop}
+			\end{figure}
 		
 		\subsection{Watchdog Timer}
 			

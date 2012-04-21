@@ -23,7 +23,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.0844844"
-     inkscape:cx="392.07106"
+     inkscape:cx="273.58157"
      inkscape:cy="860.84281"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -110,7 +110,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -129,12 +129,12 @@
     <text
        xml:space="preserve"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-       x="121.93131"
+       x="115.93131"
        y="45.102551"
        id="text6832"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         x="121.93131"
+         x="115.93131"
          y="45.102551"
          style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
          id="tspan6834">Network</tspan></text>
@@ -142,124 +142,150 @@
        sodipodi:linespacing="125%"
        id="text6874"
        y="45.102551"
-       x="617.64795"
+       x="623.1806"
        style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
        xml:space="preserve"><tspan
          id="tspan6876"
          style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
          y="45.102551"
-         x="617.64795"
+         x="623.1806"
          sodipodi:role="line">Hardware</tspan></text>
-    <rect
-       style="font-size:15px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-       id="rect6838"
-       width="86.192276"
-       height="45.382179"
-       x="273.76233"
-       y="17.296875" />
-    <text
-       xml:space="preserve"
-       style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-       x="316.80554"
-       y="35.177971"
-       id="text6840"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         x="316.80554"
+    <g
+       id="g3093"
+       transform="translate(-7.7471436,0)">
+      <rect
+         y="17.296875"
+         x="273.76233"
+         height="45.382179"
+         width="86.192276"
+         id="rect6838"
+         style="font-size:15px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text6840"
          y="35.177971"
-         style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-         id="tspan6842">G-Code</tspan><tspan
-         sodipodi:role="line"
          x="316.80554"
-         y="51.427971"
-         style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-         id="tspan6868">Interpreter</tspan></text>
+         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         xml:space="preserve"><tspan
+           id="tspan6842"
+           style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           y="35.177971"
+           x="316.80554"
+           sodipodi:role="line">G-Code</tspan><tspan
+           id="tspan6868"
+           style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           y="53.927971"
+           x="316.80554"
+           sodipodi:role="line">Interpreter</tspan></text>
+    </g>
     <path
        sodipodi:nodetypes="cc"
        style="font-size:15px;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-       d="m 249.04833,39.98797 24.10019,0"
+       d="m 240.66065,39.98797 24.10019,0"
        id="path6846" />
-    <rect
-       y="17.296875"
-       x="476.76794"
-       height="45.382179"
-       width="76.631424"
-       id="rect6848"
-       style="font-size:15px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
-    <text
-       sodipodi:linespacing="125%"
-       id="text6850"
-       y="36.302467"
-       x="514.91376"
-       style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-       xml:space="preserve"><tspan
-         id="tspan6852"
-         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+    <g
+       id="g3087"
+       transform="translate(8.3992493,0)">
+      <rect
+         style="font-size:15px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         id="rect6848"
+         width="76.631424"
+         height="45.382179"
+         x="476.76794"
+         y="17.296875" />
+      <text
+         xml:space="preserve"
+         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         x="514.91376"
          y="36.302467"
-         x="514.91376"
-         sodipodi:role="line">Printer</tspan><tspan
-         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-         y="55.052467"
-         x="514.91376"
-         sodipodi:role="line"
-         id="tspan6870">Controller</tspan></text>
+         id="text6850"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           x="514.91376"
+           y="36.302467"
+           style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           id="tspan6852">Printer</tspan><tspan
+           id="tspan6870"
+           sodipodi:role="line"
+           x="514.91376"
+           y="55.052467"
+           style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12">Controller</tspan></text>
+    </g>
     <path
        id="path6854"
-       d="m 360.02843,39.98797 24.10019,0"
+       d="m 352.71181,39.98797 24.10019,0"
        style="font-size:15px;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
        sodipodi:nodetypes="cc" />
     <path
        sodipodi:nodetypes="cc"
        style="font-size:15px;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
-       d="m 553.90777,39.98797 24.10019,0"
+       d="m 562.303,39.98797 24.10019,0"
        id="path6872" />
-    <rect
-       y="26.857729"
-       x="183.14084"
-       height="26.260479"
-       width="64.864227"
-       id="rect6878"
-       style="font-size:15px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
-    <text
-       sodipodi:linespacing="125%"
-       id="text6880"
-       y="44.391289"
-       x="215.40752"
-       style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-       xml:space="preserve"><tspan
-         style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-         y="44.391289"
-         x="215.40752"
-         sodipodi:role="line"
-         id="tspan6890">Buffer</tspan></text>
     <path
        id="path6886"
-       d="m 157.45739,39.98797 24.10019,0"
+       d="m 148.89562,39.98797 24.10019,0"
        style="font-size:15px;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
        sodipodi:nodetypes="cc" />
     <path
        id="path6892"
-       d="m 451.61937,39.98797 24.10019,0"
+       d="m 459.81264,39.98797 24.10019,0"
        style="font-size:15px;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
        sodipodi:nodetypes="cc" />
-    <rect
-       style="font-size:15px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-       id="rect7046"
-       width="64.864227"
-       height="26.260479"
-       x="385.71188"
-       y="26.857729" />
-    <text
-       xml:space="preserve"
-       style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-       x="417.97855"
-       y="44.391289"
-       id="text7048"
-       sodipodi:linespacing="125%"><tspan
-         id="tspan7050"
-         sodipodi:role="line"
-         x="417.97855"
-         y="44.391289"
-         style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12">Buffer</tspan></text>
+    <g
+       id="g3063"
+       transform="translate(6.5289947,0)">
+      <rect
+         style="font-size:15px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         id="rect3055"
+         width="65.906136"
+         height="45.382179"
+         x="167.72116"
+         y="17.296875" />
+      <text
+         xml:space="preserve"
+         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         x="200.48334"
+         y="35.177971"
+         id="text3057"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           x="200.48334"
+           y="35.177971"
+           style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           id="tspan3059">G-Code</tspan><tspan
+           sodipodi:role="line"
+           x="200.48334"
+           y="53.927971"
+           style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           id="tspan3061">Buffer</tspan></text>
+    </g>
+    <g
+       id="g3081"
+       transform="translate(0.41316527,0)">
+      <rect
+         y="17.296875"
+         x="377.6532"
+         height="45.382179"
+         width="81.241913"
+         id="rect3069"
+         style="font-size:15px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:LMRoman12;-inkscape-font-specification:LMRoman12" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3071"
+         y="36.302467"
+         x="418.09357"
+         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         xml:space="preserve"><tspan
+           style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           y="36.302467"
+           x="418.09357"
+           sodipodi:role="line"
+           id="tspan3075">Command</tspan><tspan
+           id="tspan3079"
+           style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+           y="55.052467"
+           x="418.09357"
+           sodipodi:role="line">Buffer</tspan></text>
+    </g>
   </g>
 </svg>

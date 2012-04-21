@@ -23,7 +23,6 @@
 		% TODO: Remove detail (diagram out of date anyway)
 		\begin{figure}[here]
 			\includegraphics[width=1\textwidth]{diagrams/systemDiagramTop.pdf}
-			% TODO: Explain what greyed out boxes mean.
 			\caption{High-level diagram of overall system architecture.}
 			\label{fig:systemDiagramTop}
 		\end{figure}
@@ -56,8 +55,6 @@
 		
 		\subsection{Network Interface}
 			
-			% XXX: This is probably not useful here
-			
 			The firmware will provide an interface for sending G-code and an interface
 			for querying the printer's status.
 			
@@ -71,12 +68,10 @@
 			missed, corrupted or out-of-order G-code instruction would cause
 			unexpected results.
 			
-			% TODO: Cite G-code error checking
-			
 			TCP offers both reliable communication and flow control mechanisms and is
 			implemented in \uIP{}.\footnote{Some G-code implementations have error
 			checking and retransmission mechanisms but these are clunky and designed
-			for use with serial connections. \cite{gcodeErrorChecking}} Unfortunately,
+			for use with serial connections.} Unfortunately,
 			the TCP flow-control implementation in \uIP{} was found to be buggy. Due
 			to time constraints and the compact nature of \uIP{} a minimal custom
 			UDP-based protocol should be used as a work-around.
@@ -97,7 +92,6 @@
 			lower-level commands. The low-level commands are placed in a buffer and
 			then executed in sequence to drive the printer.
 			
-			% XXX: Show data types on pipeline?
 			\begin{figure}[here]
 				\includegraphics[width=1\textwidth]{diagrams/firmwarePipeline.pdf}
 				\caption{G-code processing pipeline}
@@ -113,8 +107,6 @@
 			Nearer the start of the pipeline, we want to minimise the effect of
 			network latency by having a large buffer which gives the network time to
 			respond to changes in the rate of command execution.
-			
-			% XXX: Mention relative buffer size:length ratios?
 			
 			Finally, by assigning a high priority to the Printer Controller we can
 			minimise the latency between a command completing and another starting,
@@ -163,17 +155,14 @@
 		
 		\subsection{Stepper Control}
 			
-			% TODO: Cite stepper motor board docs
-			
 			The printer's three primary axes are controlled by stepper motors which require
 			complex circuitry to drive. The previous electronics used off-the-shelf RepRap
-			stepper motor drivers\cite{stepperMotorDriver23}. Each of these boards
+			stepper motor drivers \cite{stepperMotorDriver23}. Each of these boards
 			connects directly to the stepper motor coils, an ATX power supply and a
 			TTL control interface. They also provide a connection for two end-stop
 			sensors to be attached (the output from which they passively forward back
 			through the TTL connection).
 			
-			% TODO: Cite http://reprap.org/wiki/File:Cache-3218206144_6461b3e2c0.jpg
 			\begin{figure}[here]
 				\includegraphics[width=1\textwidth]{diagrams/stepperControllerBoard.pdf}
 				\caption{Stepper controller board with connections labelled. (Photo \cite{stepperControllerBoardPhoto})}
@@ -189,7 +178,9 @@
 			to run. This far exceeds the output of the GPIO pins on the Mbed so a
 			circuit will be needed to switch the power for these devices.
 			
-			% XXX: Expand?
+			Previously, mechanical relays were used to control the heaters but instead
+			a solid-state solution should be sought to allow the posibility of varying
+			heater power.
 		
 		\subsection{End-stops}
 			
