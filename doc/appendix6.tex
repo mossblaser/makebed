@@ -1,17 +1,123 @@
 \chapter{Protocol Specifications}
 	
+	The printer provides two network interfaces for which the protocols are
+	described in the following sections.
+	
+	The port numbers used by these services are shown in table \ref{tab:ports}.
+	
+	\begin{table}
+		\centering
+		\begin{tabular}{l l}
+			\toprule
+			Port & Service \\
+			\midrule
+			1818 & G-code interface (UDP \& TCP) \\
+			2777 & Status interface (TCP) \\
+			\bottomrule
+		\end{tabular}
+		
+		\caption{Network interface ports}
+		\label{tab:ports}
+	\end{table}
+	
 	\section{UDP G-code Transmission Protocol}
 		
 		\label{sec:udpSpec}
 		
-		\section{Sender Packets}
+		This interface is required to reliably send data to the printer and provide
+		flow control such that the printer doesn't receive data it can't handle. A
+		discussion of the protocol's general design and requirements can be found in
+		\S\ref{sec:udpimpl}
 		
-		\section{Acknowledges}
-		
-		\section{Retransmission}
-		
-		\section{Errors}
-	
+		\subsection{Sender Packets}
+			
+			Packets sent to the printer consist of an unsigned 32-bit integer sequence
+			number followed by bytes of payload data up to the window size advertised
+			by the receiver.
+			
+			Initially the sequence number is 0 and the window size is assumed to be
+			zero. This means that the first datagram consists of the sequence number
+			alone.
+			
+		\subsection{Acknowledges}
+			
+			The receiver is required to acknowledge each datagram received and
+			accepted and advertise its current window size. Packets consist of a copy
+			of the 32-bit sequence number received followed by an unsigned 32-bit
+			integer window size.
+			
+			Datagrams are only accepted when their sequence numbers are sequential, an
+			empty first packet with sequence number zero has been received and the
+			data contained fits into the system buffer (i.e. obeys the window size).
+			
+		\subsection{Retransmission}
+			
+			If the sender does not receive an acknowledgement with a matching sequence
+			number within a certain period it will repeatedly resend the request.
+			
+			If a zero-window size is reported, the sender must poll the printer until
+			the window re-opens by issuing new empty packets with increasing sequence
+			numbers.
+			
+			Exponential back-off is not used to reduce the latency between finally
+			receiving a response and sending the next piece of data. Shorter timeouts
+			result in more traffic and less delay in restarting transmission after a
+			zero window. Longer timeouts result in less wasted traffic but if too long
+			can result in buffer underruns occurring in the printer before more data
+			is sent after a zero window.
+			
+		\subsection{Errors}
+			
+			If the printer receives some unexpected data (for example if the printer
+			is reset and receives a datagram from the middle of a transmission), an
+			acknowledgement with sequence number 0 and a zero-window is returned. This
+			indicates a terminal error.
+			
 	\section{Status Monitoring Protocol}
 		
 		\label{sec:statusSpec}
+		
+		To monitor the printer's status, newline-terminated commands are sent to the
+		printer over a TCP connection. Responses consist of a series of integers
+		separated by spaces and terminated with a newline. Table
+		\ref{tab:statuscmds} lists the commands and their responses.
+		
+		The `Integer $\times100$' format is used for decimal values as printing
+		floating point values is not supported by the standard libraries used. The
+		floating point value is multiplied by 100 and truncated to an integer.
+		
+		\begin{table}
+			\centering
+			\begin{tabular}{l l l l}
+				\toprule
+				Command & Response & Unit & Format \\
+				\midrule
+				\verb|tmp| & Extruder temperature & \dC & Integer $\times100$ \\
+				           & Extruder set point   & \dC & Integer $\times100$ \\
+				           & Extruder heater on   &     & Boolean \\
+				           & Platform temperature & \dC & Integer $\times100$ \\
+				           & Platform set point   & \dC & Integer $\times100$ \\
+				           & Platform heater on   &     & Boolean \\
+				\addlinespace
+				\verb|gcd| & G-code instructions interpreted & & Integer \\
+				           & Last interpreter error number &  & Integer \\
+				\addlinespace
+				\verb|buf| & G-code buffer utilisation & Bytes & Integer \\
+				           & G-code buffer size & Bytes & Integer \\
+				           & Command buffer utilisation & Commands & Integer \\
+				           & Command buffer size & Commands & Integer \\
+				           & Command buffer overrun count this print & & Integer \\
+				\addlinespace
+				\verb|pow| & PSU Power On & & Boolean \\
+				\addlinespace
+				\verb|pos| & X-axis Position & Millimetres & Integer $\times100$ \\
+				           & Y-axis Position & Millimetres & Integer $\times100$ \\
+				           & Z-axis Position & Millimetres & Integer $\times100$ \\
+				\addlinespace
+				\verb|dbg| & Debug Register & Undefined & Undefined \\
+				\bottomrule
+			\end{tabular}
+			
+			\caption{Status interface commands and responses}
+			\label{tab:statuscmds}
+		\end{table}
