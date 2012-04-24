@@ -10,7 +10,7 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="gearCube.svg"
+   sodipodi:docname="stop.svg"
    inkscape:version="0.47 r22583"
    version="1.1"
    id="svg2"
@@ -220,6 +220,42 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3047"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3175"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3183">
+      <rect
+         y="66.736107"
+         x="88.582672"
+         height="208.94888"
+         width="566.92914"
+         id="rect3185"
+         style="fill:#ffffff;fill-opacity:1;stroke:none" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3191">
+      <rect
+         y="66.736107"
+         x="88.582672"
+         height="208.94888"
+         width="566.92914"
+         id="rect3193"
+         style="fill:#ffffff;fill-opacity:1;stroke:none" />
+    </clipPath>
   </defs>
   <metadata
      id="metadata7">
@@ -242,15 +278,26 @@
        style="fill:#ffffff;fill-opacity:1;stroke:none"
        id="rect26262"
        width="566.92914"
-       height="154.94888"
+       height="208.94888"
        x="88.582672"
-       y="53.736115" />
+       y="66.736107" />
     <image
-       y="51.962658"
-       x="263.40094"
-       id="image6499"
-       height="158.4958"
-       width="217.29263"
-       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/stop.jpg" />
+       y="35.509174"
+       x="400.0094"
+       id="image3177"
+       height="240.94778"
+       width="220.52245"
+       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/gearCubeOpen.jpg"
+       clip-path="url(#clipPath3183)"
+       transform="translate(-8.6489143,0)" />
+    <image
+       y="58.404102"
+       x="139.04744"
+       id="image3049"
+       height="218.05286"
+       width="216.14503"
+       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/gearCube.jpg"
+       clip-path="url(#clipPath3191)"
+       transform="translate(-6.8358727,0)" />
   </g>
 </svg>
