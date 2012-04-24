@@ -1,7 +1,5 @@
 \chapter{Background}
 	
-	% TODO: Background Citations
-	
 	\label{sec:background}
 	
 	In this chapter the background of the project is described. The principle
@@ -145,6 +143,70 @@
 			protocol to communicate with the host computer. This protocol is designed
 			to be simple for the microcontroller to use and, as well as various
 			diagnostic features contains a compressed version of G-code.
+			
+		\subsection{G-Code}
+			
+			\label{sec:gcodemachine}
+			
+			G-code is assumed to execute on an abstract `G-code machine'. The machine
+			consists of 26 numeric registers named `A' to `Z'.  A G-code instruction
+			consists of a set of register assignments after which the machine
+			executes a specific action based on the contents of its registers.
+			
+			Some registers may be reset to an `undefined' state before each
+			instruction allowing the machine to identify when a register is written.
+			For example, the `G' and `M' registers are used to specify what type of
+			action should occur and, if not cleared, it would be impossible
+			to determine which register contains the action required.
+			
+			Each register accepts either a floating point or integer value, for
+			example the `G' and `M' registers only accept integer action numbers while
+			`X', `Y' and `Z' are floating point and accept coordinates.
+			
+			For example, when the instruction \verb|G1 X10 Y-15 Z0.3 F3000| is encountered,
+			the following register values are set:
+			
+			\begin{gcoderegs}
+				\reg{F}{3000}
+				\reg{G}{1}
+				\reg{X}{10}
+				\reg{Y}{-15}
+				\reg{Z}{0.3}
+			\end{gcoderegs}
+			
+			In this example, the action is determined based on the `G' register to be
+			`move to' and the `X', `Y' and `Z' registers determine where to move and
+			`F' at what speed. If this is followed by \verb|M104 S225| then the
+			following registers will be set:
+			
+			\begin{gcoderegs}
+				\reg{F}{3000}
+				\reg{M}{104}
+				\reg{S}{225}
+				\reg{X}{10}
+				\reg{Y}{-15}
+				\reg{Z}{0.3}
+			\end{gcoderegs}
+			
+			Note that the `G' register has been undefined but the others have
+			remained. In this example, the action is determined based on the `M'
+			register to be `set extruder temperature' and the `S' register determines
+			the temperature. `X', `Y', `Z' and `F' are ignored. Finally, if
+			\verb|G1 Z0.6| is encountered the following registers are set:
+			
+			\begin{gcoderegs}
+				\reg{F}{3000}
+				\reg{G}{1}
+				\reg{S}{225}
+				\reg{X}{10}
+				\reg{Y}{-15}
+				\reg{Z}{0.6}
+			\end{gcoderegs}
+			
+			Once again the machine determines the action to be `move to' and moves to
+			the position defined by `X', `Y' and `Z' at the speed in `F', ignoring the
+			`S' register.  Because the values of `X', `Y' have not been changed, the
+			machine will move only the `Z' axis.
 		
 		\subsection{Support Software}
 			

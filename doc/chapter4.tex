@@ -3,45 +3,49 @@
 	\label{sec:implementation}
 	
 	This chapter describes the implementation of the system in detail. First the
-	electronics are described and followed by an explanation of the firmware.
-	Finally, safety considerations and a brief discussion of the methods used is
-	presented.
-	
+	electronics produced are described and followed by an explanation of the
+	firmware which drives them. Finally, safety considerations and a brief
+	discussion of the development methodology used is presented.
 	
 	\section{Electronics}
 		
-		% TODO: Some intro
-		
-		Two boards were produced, one which hosts the Mbed and the electronics
+		Two circuits were produced, one which hosts the Mbed and the electronics
 		needed to drive the heaters, motors and temperature sensors and another
 		which provides an interface between the end-stops and stepper controller
-		boards. The system as installed in the printer is shown in figure
-		\ref{fig:electronicsPhoto} with the major components labelled.
+		boards.
+		
+		The main board will host the Mbed, electronics for controlling heaters and
+		motors, reading from temperature sensors and connections for the stepper
+		controller boards (figure \ref{fig:electronicsDiagram}). A second board is
+		used for the end-stop electronics as these parts may be replaced separately
+		from the main electronics and connect via the existing stepper controller
+		interface. The completed system, as installed in the printer, is shown in
+		figure \ref{fig:electronicsPhoto} with the major components labelled.
+		
+		To keep the system easy to build requiring readily available tools, 0.1"
+		spaced electronics were used throughout. These are easy to work with using
+		only a standard soldering iron and basic tools. Components of this size can
+		also be used for prototyping with a solderless breadboard.
+		
+		\begin{figure}
+			\includegraphics[width=1\textwidth]{diagrams/electronicsDiagram.pdf}
+			\caption{Components of the main board}
+			\label{fig:electronicsDiagram}
+		\end{figure}
 		
 		\begin{figure}
 			\includegraphics[width=1\textwidth]{diagrams/electronicsPhoto.pdf}
-			\caption{Electronics installed with major connections labelled}
+			\caption{Electronics installed with key components labelled}
 			\label{fig:electronicsPhoto}
 		\end{figure}
-		
-		To keep the system simple to build using readily available tools, 0.1"
-		spaced electronics were used throughout. These are easy to work with using
-		only a standard soldering iron and basic tools. Components of this size can
-		also be used in prototypes built on a solderless breadboard.
-		
-		The main board will host the Mbed, electronics for controlling the heaters,
-		reading from the temperature sensors and connecting to the stepper
-		controller boards. A second board is used for the end-stop electronics as
-		these parts may be replaced separately from the main electronics and connect
-		via the stepper controller boards.
 		
 		\subsection{Layout \& Board}
 			
 			A prototyping board designed for working with DIP (Dual In-line Package)
-			components such as the Mbed was selected (Figure \ref{fig:dipBoard} B).
-			Conventional strip board (\ref{fig:dipBoard} A) would require many
-			connections to be cut between the two columns of pins of the device. The
-			particular design chosen also includes a ready-made ground-plane.
+			components such as the Mbed was selected (Figure \ref{fig:dipBoard}(B)).
+			Conventional strip board (\ref{fig:dipBoard}(A)) is not ideal for these
+			components as it would require many connections to be cut between the
+			columns of pins. 
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/dipBoard.pdf}
@@ -56,28 +60,30 @@
 				\label{fig:mainBoard}
 			\end{figure}
 			
-			The main board contains electronics for both low-power systems such as
-			the Mbed and high-power systems such as the heater and motors and
+			The main board contains electronics for both low-power systems such as the
+			Mbed and high-power systems such as the heater and motors and electrical
 			interference between these parts must be minimised. The high and lower
-			power parts have been kept physically separate on the board (Figure
-			\ref{fig:mainBoard}), each with their own power supply. The board also
-			has a ground plane covering the whole board which also helps reduce
-			noise\cite{pcb_design_notes}.
+			power parts have been kept physically separate on the board (figure
+			\ref{fig:mainBoard}), each with their own power supply connections. The
+			board also has a continuous track covering the whole board which can be
+			connected to ground (known as a ground plane), helping reduce
+			noise \cite{pcb_design_notes}.
 			
-			A full circuit schematic and pin-out is given in Appendix
+			A full circuit schematic and pin-out for the board is given in Appendix
 			\ref{sec:mainboardDiagrams}.
 		
 		\subsection{Heaters \& DC Motors}
 			
 			\label{sec:heatersAndMotors}
 			
-			The heaters and DC motors in the extruder and platform operate at a
-			higher voltage and are considerably higher-current than the
-			microcontroller can produce on its output pins. To control these a
-			transistor is required.  An IRLU8729PbF MOSFET (Metal Oxide Field Effect
-			Transistor) was selected as it can switch large loads up to 58A with
-			very little on-resistance (reducing energy wastage through
-			heat) \cite{MOSFET}.
+			The heaters and DC motors in the extruder and platform operate at a higher
+			voltage and are considerably higher-current than the microcontroller can
+			provide on its output pins. To control these a transistor can be used.
+			Transistors act like a switch which allows high-power components to be
+			switched on and off using only a small current from the Mbed. An
+			IRLU8729PbF MOSFET (Metal Oxide Field Effect Transistor) was selected as
+			it can switch large loads up to 58A with very little on-resistance
+			(reducing energy wastage through heat) \cite{MOSFET}.
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/mosfetDiagram.pdf}
@@ -85,15 +91,14 @@
 				\label{fig:mosfetDiagram}
 			\end{figure}
 			
-			The MOSFET has three connections called the gate, drain and source
+			A MOSFET has three connections called the gate, drain and source
 			(Figure \ref{fig:mosfetDiagram}). When the voltage between the gate and
-			the source is 0V, no current flows from the drain to the source. As the
+			source is 0V, no current flows from the drain to the source. As the
 			voltage between the gate and drain are increased, the current allowed to
 			flow increases rapidly when it passes a certain threshold (Figure
 			\ref{fig:mosfetPerformance}). By connecting the gate to a pin on the
 			Mbed and the source to ground, a large current from a device such as a
-			heater or motor can be switched by connecting it through the drain to
-			ground.
+			heater or motor attached to the drain can be switched.
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/mosfetPerformance.pdf}
@@ -102,19 +107,17 @@
 				\label{fig:mosfetPerformance}
 			\end{figure}
 			
-			The behaviour of a MOSFET when the gate is left floating (disconnected)
-			is generally undefined and can damage the component. When the Mbed
-			powers on its output pins default to a floating state which could cause
-			a MOSFET to unexpectedly turn on or become damaged. To prevent this
-			happening the gate is connected to ground via a pull-down resistor. When
-			the output pin is floating the gate is pulled to 0V by the pull-down
-			resistor. When the output of the pin is not floating, the gate is pulled
-			to that voltage overriding the pull-down resistor. A high resistance
-			value is used so that the Mbed can easily override the pull-down
-			resistor.
-			
-			Figure \ref{fig:mosfetUsage} shows the circuit used to control the two
-			heaters and two motors using a MOSFET and pull-down resistor.
+			The behaviour of a MOSFET when the gate is left floating (disconnected) is
+			generally undefined and can damage the component. When the Mbed powers on
+			its output pins default to a floating state which could cause a MOSFET to
+			unexpectedly switch on or become damaged. To prevent this happening the
+			gate is connected to ground via a resistor. When the output pin is
+			floating the gate is pulled to 0V by the resistor. When the output of the
+			pin is not floating, the gate is pulled to that voltage overriding the
+			pull-down resistor. A high resistance value is used so that the Mbed can
+			easily override the pull-down resistor. Figure \ref{fig:mosfetUsage} shows
+			the circuit used to control the two heaters and two motors using a MOSFET
+			and pull-down resistor.
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/mosfetUsage.pdf}
@@ -122,7 +125,7 @@
 				\label{fig:mosfetUsage}
 			\end{figure}
 			
-			When driving motors a `flyback diode' is usually used to prevent a
+			When driving motors, a `flyback diode' is usually used to prevent a
 			voltage spike occurring when the power is removed from the motor. This
 			voltage spike is caused by the magnetic field in the motor's coils
 			collapsing. This is not included in the circuit as the MOSFETs used
@@ -130,7 +133,7 @@
 			
 			It should be noted that this circuit does not allow the motors to be
 			driven in both directions as this is not needed by the printer. If this
-			was required, a more complex circuit (such as a H bridge) would be
+			was required, a more complex circuit (such as an H bridge) would be
 			needed.
 		
 		\subsection{Thermistors}
@@ -138,9 +141,9 @@
 			\label{sec:thermistor}
 			
 			To measure the temperature of the heaters, thermistors are used. The
-			resistance of a thermistor changes non-linearly with temperature and is
-			modelled using an equation derived from the Steinhart-Hart
-			Equation\cite{Steinhart1968497}:
+			resistance of a thermistor changes non-linearly with temperature and can
+			be modelled using an equation derived from the Steinhart-Hart
+			Equation \cite{Steinhart1968497}:
 			\begin{equation}
 				\frac{1}{T} = \frac{1}{T_0} + \frac{1}{\beta} \ln \left( \frac{R}{R_0} \right)
 				\label{equ:steinhart}
@@ -151,8 +154,9 @@
 			device available in the data-sheet.
 			
 			Using the Analog-to-Digital converter in the Mbed, voltages, but not
-			resistances, can be read directly. A potential divider (Figure
-			\ref{fig:potentialDiv}) is used to measure the resistance.
+			resistances, can be read directly. As a result, a potential divider
+			(figure \ref{fig:potentialDiv}) is used to produce a measurable voltage
+			which is proportional to the resistance to measure it indirectly.
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/potentialDiv.pdf}
 				\caption{Potential divider}
@@ -193,7 +197,7 @@
 			Optical end-stops consist of a photo-interrupter containing an infra-red
 			LED and a photo-transistor arranged across a gap (Figure
 			\ref{fig:endstop}). Photons from the LED activate the photo-transistor
-			allowing current to flow but when the gap is blocked, the transistor is
+			allowing current to flow but, when the gap is blocked, the transistor is
 			switched off and no current flows.
 			
 			\begin{figure}
@@ -202,11 +206,11 @@
 				\label{fig:endstop}
 			\end{figure}
 			
-			Due to problems sourcing the interface boards for the end-stops, a
-			circuit was built which is compatible with the stepper-controller
-			interface for end-stops. $+5V$ and ground are provided and a TTL logic
-			signal is expected by the interface. To ease debugging, an indicator LED
-			is also provided which is lit when the end-stop is unobstructed.
+			Due to problems sourcing the interface boards for the end-stops, a circuit
+			was built which is compatible with the stepper-controller interface. $+5V$
+			and ground are provided and a TTL logic signal is expected by the
+			interface. To ease debugging, an indicator LED was also added which is lit
+			when the end-stop is unobstructed.
 			
 			The LED in the photo-interrupter is driven via a current-limiting
 			resistor and the signal output and indicator LED are connected through
@@ -217,8 +221,8 @@
 			(shown mounted in figure \ref{fig:endstopInstalled}) and to each of the
 			CAT-5 sockets on the stepper controller boards. Strain-relief is included
 			so that the connections are not damaged if the cables are caught in the
-			machine. A circuit diagram is provided in Appendix
-			\ref{sec:stepperControllerPinout}.
+			machine. A circuit diagram is provided in appendix
+			\ref{sec:endstopDiagram}.
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/endstopInstalled.pdf}
@@ -228,10 +232,10 @@
 			
 		\subsection{Power}
 			
-			The printer uses an ATX power supply unit (PSU) commonly found in
-			desktop computers. A 20-pin connector containing both power and various
-			control signals for the power supply is used to power the main board
-			(see table \ref{tab:atxConnectors}).
+			The printer uses an ATX power supply unit (PSU) commonly found in desktop
+			computers. A 20-pin connector containing both power and various control
+			signals for the power supply (see table \ref{tab:atxConnectors}) is used
+			to power the main board.
 			
 			\begin{table}[here]
 				\centering
@@ -259,25 +263,24 @@
 			\end{table}
 			
 			The Mbed is connected to the 5V standby supply allowing it to remain
-			booted and power on the system on demand. The maximum power consumption
-			of the Mbed is 200mA \cite{mbed}, well within the ratings of the ATX
-			specification. The Mbed's on-board regulator provides a regulated 3.3V
-			supply used by the Mbed and the low-power electronics attached to it.
-			The 3.3V supply from the PSU is not used because the regulator in the
-			Mbed offers a cleaner supply.
+			connected to the network and power on the system on demand. The maximum
+			power consumption of the Mbed is 200mA, well within the ratings of the ATX
+			specification \cite{mbed}. The Mbed's on-board regulator provides a
+			regulated 3.3V supply used by the Mbed and the low-power electronics
+			attached to it. The 3.3V supply from the PSU is not used because the
+			regulator in the Mbed offers a cleaner supply which is always available.
 			
 			To allow the PSU to be turned on by the Mbed, the power on signal is
-			attached to a GPIO pin.  Because the Mbed is a 3.3V logic device a
-			MOSFET (Metal Oxide Semiconductor Field Effect Transistor) is used to
-			pull the 5V Power On signal to ground (thus turning on the Power Supply)
-			using the 3.3V signal from the Mbed.
+			attached to a GPIO pin.  Because the Mbed is a 3.3V logic device a MOSFET
+			is used to connect the 5V Power On signal to ground (thus turning on the
+			Power Supply) using the 3.3V signal from the Mbed.
 		
 		\subsection{Ethernet}
 			
-			Ethernet requires relatively complex circuitry to drive it. This is mostly
-			provided on-board the Mbed but the pins on the mbed but an RJ45 socket
-			containing the magnetics required by Ethernet (figure
-			\ref{fig:jackMagnetics}) is needed.
+			Ethernet requires relatively complex circuitry to drive it. With the
+			exception of the Ethernet magnetics, this is provided on-board the Mbed. A
+			jack containing the magnetics (figure \ref{fig:jackMagnetics}) was used to
+			complete the system.
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/jackMagnetics.pdf}
@@ -288,11 +291,10 @@
 	
 	\section{Firmware}
 		
-		In this section the firmware for the Mbed is described starting with the
-		infrastructure required for development on FreeRTOS on the Mbed. Each of the
-		key components of the firmware are then described followed by the tools
-		needed to interact with the firmware. Finally the safety precautions taken
-		and development practices used are outlined.
+		In this section the firmware for the Mbed is described, starting with the
+		infrastructure required for development on FreeRTOS on the Mbed and then
+		moving on to the major components of the system. Finally the safety
+		precautions taken and the tools and development practices used are outlined.
 		
 		\subsection{FreeRTOS on the Mbed}
 			
@@ -308,36 +310,33 @@
 			selected over closed-source alternatives because it has a large community of
 			users and produces reasonable code.
 			
-			An unnoficial port of FreeRTOS for the Mbed is available which is built
-			with the CodeSourcery toolchain. It provides a base FreeRTOS configuration
-			with a demonstration \uIP{} based web server and other simple operating
-			system demos along with a suitable Makefile. Also included are headders
-			for the ARM Cortex Microcontroller Software Interface Standard (CMSIS)
-			which define an interface for all ARM Cortex microcontrollers common
-			features \cite{cmsis}. Finally, the standard headders defining macros and
-			pointers for all registers for the Mbed are included.
+			An unofficial port of FreeRTOS for the Mbed is available designed for the
+			CodeSourcery toolchain. It provides a base FreeRTOS configuration with a
+			demonstration \uIP{} based web server as well as other simple operating
+			system demos. Also included are headers for the ARM Cortex Microcontroller
+			Software Interface Standard (CMSIS) which defines a common interface for
+			ARM Cortex microcontrollers \cite{cmsis}. Finally, headers defining macros
+			and pointers for all control registers in the Mbed are included.
 			
 			Appendix \ref{sec:compilation} contains specific compilation instructions
-			for the final system.
+			for the final system with the CodeSourcery toolchain.
 		
 		\subsection{Temperature Control}
 			
 			To drive the two heaters an active-feedback loop is used where input from
-			a thermistor (\S \ref{sec:thermistor}) is used to drive a heater via a
-			MOSFET (\S \ref{sec:heatersAndMotors}). The following subsections describe
-			how analog values are read by the Mbed and the theory and operation
-			feedback loop that controls the heaters.
+			a thermistor is used to drive a heater via a MOSFET. The following
+			subsections describe how analog values are read by the Mbed and the theory
+			and operation of the feedback loop that controls the heaters.
 			
 			\subsubsection{Analog Input}
 				
 				The Mbed includes a 12-bit successive-approximation analog-to-digital
-				converter (ADC) for reading analog values\cite{lpc1768}. The ADC uses a
+				converter (ADC) for reading analog values \cite{lpc1768}. The ADC uses a
 				digital-to-analog converter and a comparator to binary search for an
-				approximation to the analog value (Figure \ref{fig:adc}). The input is
-				held constant while the each bit in order of diminishing significance is
-				determined. Once an appropriate number of iterations of the binary
-				search have been carried out, the value in the register is returned
-				\cite{maximadc}.
+				approximation to the analog value while the input is held constant
+				(figure \ref{fig:adc}). Once an appropriate
+				number of iterations of the binary search have been carried out, the
+				value in the register is returned \cite{maximadc}.
 				
 				\begin{figure}
 					\includegraphics[width=1\textwidth]{diagrams/adc.pdf}
@@ -346,26 +345,26 @@
 				\end{figure}
 				
 				The ADC sampling process takes at least $5\mu{}s$ or approximately 500
-				CPU cycles \cite{lpc1768} therefore the CPU should carry out some other
-				task while the ADC process takes place. Though an interrupt is provided
-				when the ADC completes (and even a direct memory access (DMA) facility
-				is provided), this was not used. The temperature sensors will be sampled
-				at an extremely low rate (around 2Hz) and latency is not important as
-				changes occur very slowly. Instead, a slow-poll is used where the task
-				reading from the ADC is suspended for a time typically adequate for ADC
-				operation. This system is extremely simple to implement and provides
-				adequate read performance.
+				CPU cycles therefore the CPU can carry out another task while the ADC
+				process takes place \cite{lpc1768}. Though an interrupt is provided when
+				the ADC completes (as well as a direct memory access (DMA) facility),
+				this was not used. Instead, a slow-poll is used where the task reading
+				from the ADC is suspended for a time typically adequate for ADC
+				operation. The temperature sensors are sampled at an extremely low rate
+				(around 2Hz) and latency is not important as changes occur very slowly.
+				This system is very simple to implement with negligible overhead.
 			
-			\subsubsection{Control}
+			\subsubsection{Heater Control Loop}
 				
-				A na\"{i}ve controller could simply turn on the heaters when the
-				temperature was below some target temperature or `set point' and then
-				off when it met or exceeded it. This controller would cause the
-				temperature to overshoot and fall below the set point. Instead a
+				A na\"{i}ve controller could simply turn on the heaters whenever the
+				temperature drops below some target temperature or `set point' and then
+				off when it was met or exceeded. This type of controller can cause the
+				temperature to overshoot and fall below the set point as the heating and
+				cooling of the system is not immediate. Instead a
 				proportional-integral-derivative (PID) controller is used which can
-				control heaters taking into account such behaviours. These controllers
-				are widely used and are often used when a process must be controlled
-				which is not completely understood \cite{controleng}.
+				control heaters which takes into account such behaviours. PID
+				controllers are widely used where a process which is not completely
+				understood must be controlled \cite{controleng}.
 				
 				\begin{figure}
 					\includegraphics[width=1\textwidth]{diagrams/pid.pdf}
@@ -374,48 +373,55 @@
 				\end{figure}
 				
 				Figure \ref{fig:pid} shows a schematic of the PID controller used in the
-				system. At time $t$ the comparator calculates the error $e(t)$ between
+				system. At time $t$ the comparator calculates the error, $e(t)$, between
 				the actual temperature and the set point. A value is calculated from
 				this error using a factor proportional to the error, the error
-				accumulated over time (integral) and the error's rate of change. These
-				factors are weighted by the constants $K_p$, $K_i$ and $K_d$
-				respectively and then used to control the heater. The three weights must
-				be chosen manually to produce sensible behaviour.
-				\S\ref{sec:pidtraning} discusses the process of selecting these values.
+				accumulated over time (integral) and the error's rate of change
+				(derivative). These factors are weighted by the constants $K_p$, $K_i$
+				and $K_d$ respectively and the result used to control the heater. The
+				three weights must be chosen manually to produce sensible behaviour.
+				\S\ref{sec:pidtraning} discusses how these values were selected.
 				
-				The value calculated could be used with an analog output or
+				The value calculated could be used to control an analog output or
 				PWM\footnote{Pulse width modulation (PWM) is a method of approximating
 				analog outputs by rapidly switching a signal on and off with a varying
-				duty-cycle. This is cheap to implement in hardware and also avoids
-				problems with inefficiencies in MOSFETs when only partially driven.} to
-				control the heater or a threshold value used to decide whether a heater
-				is on or off (`bang-bang' control). Bang-bang control has been used
-				because the previous electronics proved this to be adequate. Using PWM
-				to control the heaters may also have resulted in unwanted
-				electromagnetic noise.
+				duty-cycle. This is cheap to implement in hardware and avoids
+				inefficiencies in MOSFETs when only partially driven.} or a threshold
+				value used to decide whether a heater is on or off (`bang-bang'
+				control). Bang-bang control was used as the previous electronics proved
+				this method to be adequate.
 				
-				The PID control loop is executed in its own task at a rate of 2Hz where
-				each temperature is read and the heater switched on or off as
-				appropriate. Because of the slow rate of change this is an adequate
-				response speed. Executing the loop more frequently would not be useful
-				and, due to floating point calculations being carried out in software,
-				would be costly.
+				The PID control loop is executed in its own task twice a second when
+				each temperature is read and the heaters switched on and off as
+				appropriate. Executing the loop more frequently would not be useful
+				because of the slow rate of change in the system. Doing so would also be
+				costly due to floating point calculations being carried out in software.
 		
 		\subsection{Stepper Control}
 			
-			To drive the TTL stepper controller interface accurately timed pulses must
-			be produced to cause the motors to step. These pulses need to be coherent
-			so that the three axes can move simultaneously to plot straight paths.
+			To drive the stepper controllers, accurately timed pulses must be produced
+			to cause the stepper motors to move at the correct speed. These pulses
+			also need to be coherent between motors so that the three axes can move
+			simultaneously to plot straight paths.
+			
+			\subsubsection{Principle of Operation}
+			
+			Before each movement begins, a periodic timer is set based on the
+			frequency at which steps must occur and is used to toggle the step signal.
+			This is used instead of Bresenham's line algorithm to simplify
+			implementation \cite{bresenham}.  Since expensive floating point
+			calculations are required for value conversion into machine units, the
+			additional calculation introduced is not significant. During each timer
+			tick only cheap integer operations are required.
 			
 			\subsubsection{Timing Constraints}
 				
-				The stepper controller boards use an Allegro A3982 stepper controller
-				which defines the signals and timing requirements. Figure
-				\ref{fig:stepperWave} shows an example waveform with 3 forward steps
-				followed by 4 backward steps. On the positive edge of each step signal
-				the direction is sampled and the stepper controller steps the motor.
-				Table \ref{tab:stepperTiming} gives the timing constraints for these
-				signals.
+				The stepper controller boards are based on an Allegro A3982 stepper
+				controller which defines additional timing requirements. Table
+				\ref{tab:stepperTiming} gives the timing constraints for these signals.
+				Figure \ref{fig:stepperWave} shows an example waveform with three
+				forward steps followed by four backward steps. On the positive edge of
+				the step signal the direction is sampled and the motor is stepped.
 				
 				\begin{figure}
 					\includegraphics[width=1\textwidth]{diagrams/stepperWave.pdf}
@@ -443,35 +449,29 @@
 					\label{tab:stepperTiming}
 				\end{table}
 				
-				The motors in the printer also add a timing constraint ($t_t$) as they
-				are limited as to how often they can step by the mechanical properties
-				of the printer. The faster the stepper is driven, the less torque is
-				available and the stepper may miss steps or fail to move.
+				The motors in the printer add an additional timing constraint, $t_t$,
+				due the limit on how often they can step defined by the mechanical
+				properties of the printer. This is important because the faster the
+				stepper is driven, the less torque is available and so the stepper may
+				miss steps and fail to move.
 			
-			\subsubsection{Timers}
+			\subsubsection{Timer Requirements}
 				
-				To simplify implementation, Bresenham's line algorithm \cite{bresenham}
-				was not used to control the motors. Instead, before the movement begins
-				a periodic timer is set based on the frequency at which steps must occur
-				and is used to toggle the step signal. Since expensive floating point
-				calculations are carried out before each movement in order to convert
-				distances in millimetres into numbers steps, the additional calculation
-				at the start of a movement is not significant. This scheme therefore
-				uses one expensive calculation at the start of the movement followed by
-				a small number of inexpensive integer operations on each timer tick.
+				If a stepper is set to run at its maximum speed, steps will be $757\us$
+				apart meaning that the signal must be toggled every $379\us$.  Therefore
+				the output signals may change at up to $1.32\kHz$.
 				
-				If a stepper is set to run at its maximum speed, steps will be
-				$757\mu{}s$ apart meaning that the signal must be toggled every
-				$379\mu{}s$.  Therefore signals may change at up to $1.32\kHz$.
+				FreeRTOS provides timing guarantees for scheduling arbitrary delays
+				within tasks. Unfortunately, this uses the system timer which ticks at
+				$1\kHz$ which is too far low for the frequencies such as those discussed
+				above. 
+				
 				According to the Nyquist-Shannon sampling theorem a frequency of $f\Hz$
 				can only be generated by a timer running at $> 2f\Hz$. This means the
-				timer resolution must be above $2 \times 1.32\kHz = 2.64\kHz$ to
-				generate such a step signal\cite{shannon}. Intuitively, a timer must
-				tick at least twice in a cycle of the desired frequency in order to set
-				it high then set it low. Figure \ref{fig:nyquist} shows the result of
+				timer resolution must be above $2 \times 1.32\kHz = 2.64\kHz$
+				\cite{shannon}. Figure \ref{fig:nyquist} shows `aliasing' caused by
 				trying to reproduce a signal at $\frac{2}{3}$ ($> \frac{1}{2}$) the
-				frequency of the timer resolution and whole cycles can be seen missing
-				in the output.
+				frequency of the timer where whole cycles are missing in the output.
 				
 				\begin{figure}
 					\includegraphics[width=1\textwidth]{diagrams/nyquist.pdf}
@@ -500,28 +500,28 @@
 				worst case to, for example, one-hundredth of the step period then a
 				frequency of $264\kHz$ is needed.
 				
-				FreeRTOS provides timing guarantees for scheduling arbitrary delays
-				within tasks. Unfortunately, this uses the system timer which
-				ticks at $1\kHz$ which is too far low for the frequencies such as those
-				discussed above. Increasing the speed of the system timer would make the
-				overhead due to the scheduler running on each tick unacceptable and so
-				another timer must be used.
+				Increasing the speed of the system timer to such a frequency would make
+				the overhead of the scheduler unacceptable and so the FreeRTOS timer
+				cannot be used. Instead a hardware timer which interrupts the
+				microcontroller causing a light weight interrupt service routine (ISR)
+				to run will be needed.
 				
 				Because the Mbed only provides a limited number of hardware timers, just
 				one is used to control all three steppers. As each stepper may not be in
-				phase, the time between signals being produced can become very small
-				even when the step period is large. This is another example of a
-				sampling artefact errors and the resulting errors are again no larger
-				than $\frac{1}{f}\s$ for a timer running at $f\Hz$ so no extra timer
-				precision is required.
+				phase, the time between signals being produced for each stepper can
+				become very small, even when the step period is large. This is another
+				example of a sampling artefact where the resulting errors are at worst
+				$\frac{1}{f}\s$ for a timer running at $f\Hz$. Because the timer is
+				already sufficiently fast to make such errors insignificant, no extra
+				precision is required when sharing a timer.
 				
 				The timers provided on board the Mbed consist of a register comparator
 				and counter which is incremented by the system clock after being passed
-				through a pre-scaler clock divider (figure \ref{fig:timerArch}). The
-				timer was configured such that when the counter matches the register the
-				timer is reset and the CPU is interrupted. The pre-scaler is configured
-				to increment the counter at $1\MHz$ which exceeds the $264\kHz$
-				requirement above.
+				through a clock divider (figure \ref{fig:timerArch}). The timer was
+				configured such that when the counter matches the value in the register,
+				the counter is reset and the CPU is interrupted. The timer was
+				configured to run at $1\MHz$ which exceeds the $264\kHz$ requirement
+				calculated above with some additional margin.
 				
 				\begin{figure}
 					\includegraphics[width=1\textwidth]{diagrams/timerArch.pdf}
@@ -529,9 +529,10 @@
 					\label{fig:timerArch}
 				\end{figure}
 				
-				The interrupt service routine (ISR) for the timer scans through each
-				stepper to determine if its step signal should be toggled and then sets
-				the timer compare register to the time the next interrupt should occur.
+				The ISR for the timer interrupt determines for each stepper, whether its
+				step signal should be toggled and calculates how long until another
+				interrupt is required. The timer compare register is updated, the ISR
+				returns and normal program execution resumes.
 				
 				GCC generates approximately 100 instructions for the ISR taking an
 				estimated 250 cycles to execute\footnote{Estimate based on informal
@@ -541,108 +542,43 @@
 				\begin{equation}
 					\textrm{Overhead} =
 					\frac{\textrm{Interrupts Per Seccond} \times \textrm{ISR Cycles}}
-					     {\textrm{CyclesPer Seccond}} =
+					     {\textrm{Cycles Per Seccond}} =
 					\frac{(1.32\times10^3) \times 250}
 					     {100\times10^6} = 0.33\%
 				\end{equation}
 				
-				The timer does not drift as it is reset by hardware and continues
-				counting while the ISR is executing. The ISR merges steps due within a
-				very small period into its current invocation so that when the timer
-				compare register is updated the timer will not have reached the old
-				value and reset a second time.
+				This design results in very little overhead in the system but provides
+				very accurately signals to the stepper motors.
 			
 			\subsubsection{Usage}
 				
 				An API is provided which allows a number of steps in a given direction
-				with a specified period to be sent to a stepper motor. A method which
-				blocks until all steps have been completed is also provided. This method
-				requests a semaphore which is released by the ISR when all steps have
-				been completed. FreeRTOS allows tasks unblocked by the ISR to
-				temporarily receive a higher priority during which the task can start
-				the next sequence of steps immediately.
+				with a specified period to be sent to a stepper motor. To allow
+				sequences of coherent movements to be made, a method which blocks until
+				all steps have been completed is also provided. This method uses a
+				semaphore which is released by the ISR when all steps have been
+				completed. This is also used to temporarily give a higher priority to
+				the controlling task during which time the next sequence of steps
+				can be started immediately.
 		
 		\subsection{G-Code Interpreter}
 			
-			In this subsection, the abstract `G-code machine' is described followed by
-			a discussion of which language features are supported and their selection.
-			Finally the parser and interpreter will be described.
-			
-			\subsubsection{The G-Code Machine}
-				
-				\label{sec:gcodemachine}
-				
-				The G-code machine consists of 26 numeric registers named `A' to `Z'.
-				A G-code instruction consists of a set of register assignments after
-				which the machine evaluates a specific action based on the contents of
-				its registers.
-				
-				Some registers may be reset to an `undefined' state before each
-				instruction. This allows the machine to identify when a register is
-				written. For example, the `G' and `M' registers are used to specify what
-				type of action should occur and if they are not cleared it would not be
-				possible to determine which register contains the action required.
-				
-				Each register accepts either floating point or integer values, for
-				example the `G' and `M' registers only accept integer instruction
-				numbers while `X', `Y' and `Z' are floating point and accept
-				coordinates.
-				
-				For example, when the instruction \verb|G1 X10 Y-15 Z0.3| is
-				encountered, the following register values are set:
-				
-				\begin{gcoderegs}
-					\reg{G}{1}
-					\reg{X}{10}
-					\reg{Y}{-15}
-					\reg{Z}{0.3}
-				\end{gcoderegs}
-				
-				In this example, the action is determined based on the `G' register to
-				be `move to' and the `X', `Y' and `Z' registers determine where to move.
-				If this is followed by \verb|M104 S225| then the following registers
-				will be set:
-				
-				\begin{gcoderegs}
-					\reg{M}{104}
-					\reg{S}{225}
-					\reg{X}{10}
-					\reg{Y}{-15}
-					\reg{Z}{0.3}
-				\end{gcoderegs}
-				
-				Note that the `G' register has been undefined but the others have
-				remained. In this example, the action is determined based on the `M'
-				register to be `set extruder temperature' and the `S' register
-				determines the temperature. `X', `Y' and `Z' are ignored. Finally, if
-				\verb|G1 Z0.6| is encountered the following registers are set:
-				
-				\begin{gcoderegs}
-					\reg{G}{1}
-					\reg{S}{225}
-					\reg{X}{10}
-					\reg{Y}{-15}
-					\reg{Z}{0.6}
-				\end{gcoderegs}
-				
-				Once again the machine determines the action to be `move to' and moves
-				to the position defined by `X', `Y' and `Z' ignoring the `S' register.
-				Because the values of `X' and `Y' have not been changed the machine will
-				only move the `Z' axis.
+			In this subsection there is a discussion of the selection of G-code
+			features implemented by the system. Following this, the implementation of
+			the parser and interpreter is described.
 			
 			\subsubsection{Feature Subset Selection}
 				
 				G-code interpreters support a large variety of features ranging from
-				comments and instructions which return data to error checking and simple
-				flow control. As well as various language features, the actions
-				available and the way they use the values in each register differ.
+				comments and instructions which return data to error checking. As well
+				as various language features, the actions available and their precise
+				behaviours differ.
 				
-				To keep the system as simple (and fast) as possible only features and
-				actions required by the Skeinforge G-code generator were implemented.
-				The resulting language simply supports comments and writing to registers
-				but none of the more advanced features supported by some interpreters.
-				The syntax supported is given in Backus-Naur Form (BNF) in appendix
-				\ref{sec:gcodebnf}.
+				To keep the system as simple (and fast) as possible, only features and
+				actions required to support the output of Skeinforge's G-code generator
+				were implemented.  The resulting language simply supports comments and
+				writing to registers.  The syntax supported is given in Backus-Naur Form
+				(BNF) in appendix \ref{sec:gcodebnf}.
 				
 				Actions (and their treatment of registers) were also selected based on the
 				output of Skeinforge and include:
@@ -653,38 +589,38 @@
 					\item Motor control
 					\item Power control
 					\item Temperature control
-					\item Waiting for heaters to warm-up
-					\item Timed pauses
+					\item Delays
 				\end{itemize}
-				A complete list of actions supported are enumerated in appendix
+				A complete description of the actions supported is given in appendix
 				\ref{sec:gcodeactions}.
 			
 			\subsubsection{Parsing}
 				
-				The G-code subset supported is very simple and it is simpler to
-				implement the parser by hand than to use a standard parser generator
-				such as GNU Bison. Such tools also generate code that is not optimised
-				for running on a microcontroller in a real-time environment.
+				The G-code subset supported is very simple and so a small parser was
+				implemented by hand rather than using a standard parser generator such
+				as GNU Bison. Such tools also generate code that is not optimised for
+				running on a microcontroller in a real-time environment and would have
+				been time consuming to learn.
 				
-				A simple state machine was built by hand which parses and executes the
-				G-code setting and reading registers as described above. If unexpected
-				characters or register values are encountered a flag is set and the
-				parser continues from the next character or instruction.
+				A simple state machine was built which parses and executes the G-code
+				setting and reading registers as described in \S\ref{ref:gcodemachine}.
+				When unexpected characters or register values are encountered a flag is
+				set and the parser continues from the next character or instruction.
 				
 				Once each instruction is parsed and the register values set, the values
 				are converted into machine units. For example, movements are converted
 				into relative movements measured in stepper motor steps and speeds
 				converted into step periods measured in timer ticks. These low-level
-				commands are then added to a queue processed by the printer controller.
+				commands are then added to the command buffer to be executed by the
+				printer controller.
 		
 		\subsection{Printer Controller}
 			
-			The printer controller uses a FreeRTOS queue to buffer low-level commands
-			from the G-code interpreter which are processed in a high priority task.
-			The controller consists of a simple loop which executes each action and
-			requires minimal processing. As a result, this task spends most of its
-			time blocking waiting for actions to complete but with a minimal gap
-			between each action.
+			The printer controller uses a FreeRTOS queue in a high priority task to
+			buffer low-level commands from the G-code interpreter. The controller
+			consists of a simple loop which executes each command requiring minimal
+			processing. As a result, this task spends most of its time blocked waiting
+			for actions to complete but responds quickly when required.
 		
 		\subsection{Network Interface}
 			
@@ -694,29 +630,23 @@
 			within applications built within its protosocket and protothread
 			frameworks \cite{uIP}.
 			
-			Protothreads are extremely lightweight threads with cooperative
+			Protothreads are extremely lightweight threads using cooperative
 			multitasking implemented in pure C. These threads do not preserve
-			registers or variables during blocking phases of execution and as a result
-			use minimal system resources. Protosockets are a simplified UNIX-style
-			socket interface built on protothreads. These libraries are designed with
-			extremely low-power microcontrollers in mind and the design is not best
-			suited to a full RTOS.
+			registers or variables during blocking phases of execution and use minimal
+			system resources. Protosockets are a simplified UNIX-style socket
+			interface built on protothreads. These libraries are designed with
+			extremely low-power microcontrollers in mind.  As a result, only a minimal
+			application is implemented within the \uIP{} framework which passes data
+			from the network immediately to the other parts of the system.
 			
-			As a result a minimal application is implemented within the \uIP{}
-			frameworks which passes data from the network to the other parts of the
-			system. This is feasible because the protocols used are extremely simple
-			and are described in the following sections.
+			The G-code was initially implemented using TCP but a bug in \uIP{}'s flow
+			control implementation meant an alternative implementation was required
+			and built on UDP. The two protocols are outlined below along with an
+			additional TCP interface used for reporting the system's status.
 			
-			\subsubsection{G-Code}
-				
-				The subset of G-code used requires reliable one-way communication with
-				flow-control. This was initially implemented using TCP but a bug in
-				\uIP{}'s flow control implementation required an alternative
-				implementation built on UDP, these are outlined below.
-				
-				\subsubsection{TCP}
+				\subsubsection{TCP G-code Interface}
 					
-					The TCP G-code interface consists of an open port (1818) listening for
+					The TCP G-code interface consists of an open port listening for
 					connections. Once connected a client simply sends the G-code to the
 					printer and disconnects when finished. Telnet or net-cat (\verb|nc|)
 					can be used to send G-code files to the printer, for example
@@ -725,12 +655,15 @@
 					\end{verbatim}
 					Where \verb|model.gcode| is the file to send and \verb|193.168.3.100|
 					is the IP of the printer.
+					
+					As the G-code subset supported does not support return values, nothing
+					is returned by the printer.
 				
-				\subsubsection{UDP}
+				\subsubsection{UDP G-code Interface}
 					
 					\label{sec:udpimpl}
 					
-					Unfortunately as discussed in \S\ref{sec:tcpProblem}, the TCP
+					Unfortunately, as discussed in \S\ref{sec:tcpProblem}, the TCP
 					implementation in \uIP{} is incorrect. Due to time constraints this
 					was not fixed during the project. Instead a UDP based protocol was
 					implemented.
@@ -740,10 +673,11 @@
 					arrive or to arrive in the order they are sent. They do include a
 					checksum and so if a datagram arrives it can be safely be assumed to
 					be intact. Finally no flow-control mechanism is provided (excess
-					packets are silently dropped).
+					packets are silently dropped). They are, however, lightweight and a
+					good base for building custom protocols.
 					
 					UDP alone cannot be used to send data to the printer and simple
-					protocol has been built on top of UDP which provides a communications
+					protocol has been built on top which provides a communications
 					channel which is
 					\begin{itemize}
 						\item Reliable
@@ -755,12 +689,12 @@
 					Figure \ref{fig:datagram} shows the format of datagrams sent between
 					the printer and sender. Datagrams are sent to the printer which
 					contain a sequence number and a payload whose length can be calculated
-					based on the datagram's size stored in the UDP header. The sender then
-					waits for a response from the printer containing the same sequence
-					number and a window size. The printer will only respond if a datagram
-					with an appropriate sequence number is received thus ignoring
+					based on the datagram's size (contained in the UDP header). The sender
+					then waits for a response from the printer containing the same
+					sequence number and a window size. The printer will only respond if a
+					datagram with an appropriate sequence number is received discarding
 					out-of-order datagrams. If a response with a matching sequence number
-					is not received by the sender within a short timeout the datagram is
+					is not received by the sender within a short timeout, the datagram is
 					retransmitted. This mechanism facilitates reliable, in-order
 					transmission.
 					
@@ -782,14 +716,14 @@
 					implications of this protocol and the full specification is given in
 					Appendix \ref{sec:udpSpec}.
 			
-			\subsubsection{Status}
+			\subsubsection{Status Interface}
 				
 				\label{sec:statusInterface}
 				
 				A simple Telnet-compatible TCP interface (listening on port 2777) was
 				implemented that can be used to request the contents of various status
-				and debugging variables. As flow control is not necessary, the TCP
-				implementation in \uIP{} is adequate.
+				and debugging variables. As flow control was not necessary, the TCP
+				implementation in \uIP{} is adequate for this purpose.
 				
 				The interface listens for keywords separated by white space and responds
 				with tab separated data compatible with GNU Plot. For example:
@@ -797,12 +731,12 @@
 					tmp
 					22523	22500	0	11800	12000	1
 				\end{verbatim}
-				Here current temperature information is requested. The response contains
-				current temperature, set point (target) and whether the heater is on or
-				off for the extruder and the platform. Temperature readings are in
-				degrees Celsius multiplied by 100. This is due to the version of LibC
-				provided with the CodeSourcery tool chain not supporting printing
-				floating point values.
+				The command \verb|tmp| requests current temperature information. The
+				response contains the current temperature, set point (target) and
+				whether the heater is on or off for the extruder and the platform.
+				Temperature readings are given in degrees Celsius multiplied by 100. This is
+				due to the version of LibC provided with the CodeSourcery tool chain not
+				supporting printing of floating point values.
 				
 				A utilities for using the status monitoring facility are described in
 				the next section and full documentation for the protocol is given in
@@ -811,10 +745,10 @@
 	
 	\section{Utilities}
 		
-		Two utilities for interacting with the printer were written in Python. First
-		a client implementing the UDP G-code transmission protocol and secondly a
-		utility for conveniently monitoring the printer status. The utilities are
-		part of the \verb|makebed.py| command.
+		Two utilities for interacting with the printer were written in Python. The
+		first, a client implementing the UDP G-code transmission protocol and, the
+		second, a utility for conveniently monitoring the printer status. These
+		utilities are part of the \verb|makebed.py| command.
 		
 		For example, the following command will stream the G-code contained in
 		\verb|cube.gcode| to the printer:
@@ -823,14 +757,14 @@
 		\end{verbatim}
 		
 		While print jobs are running the status information can be requested or
-		polled using, for example:
+		polled. For example:
 		\begin{verbatim}
 			makebed.py get temperature
 		\end{verbatim}
 		
-		Finally, a simple wrapper \verb|makebed_live.sh| is provided written in Bash
-		and GNU Plot which plots various pieces of printer status in real-time
-		(figure \ref{fig:makebedlive}).
+		Additionally, a simple wrapper, \verb|makebed_live.sh|, is provided written
+		in Bash using GNU Plot to plot various pieces of printer status information
+		in real-time (figure \ref{fig:makebedlive}).
 		
 		\begin{figure}
 			\includegraphics[width=1\textwidth]{diagrams/makebedlive.pdf}
@@ -843,33 +777,33 @@
 	
 	\section{Safety}
 		
-		Because the system contains moving parts and heaters, safety was a major
-		concern when implementing the system. This section outlines the key features
-		used to ensure operation is as safe as possible.
+		Because the system contains heaters and moving parts, safety was a major
+		consideration when implementing the system. This section outlines the key
+		features used to ensure operation is as safe as possible including
+		human-interaction features and fail-safe design.
 		
 		\subsection{Heater Indicator LEDs}
 			
-			The two heaters each have an indicator LED on the microcontroller which is
-			lit when the heaters are powered on. This enables an operator to easily
-			and safely check that the heaters are turned off.
+			The two heaters each use an indicator LED on the microcontroller to
+			indicate when the heaters are powered on. This enables an operator to
+			easily and safely check the state of the heaters during operation.
 		
 		\subsection{Power-on Behaviour}
 			
 			On power-on, the PSU is not turned on and so the heaters and motors do not
 			receive power. The only way to start the heaters is to open a new
-			connection to the printer and send a specific PSU G-code instruction.
-			This design means that if the printer is powered on unintentionally it
-			cannot do anything requiring an operator's attention. It also means that
+			connection to the printer and send the required PSU and heater
+			instructions. This design means that if the printer is powered on
+			unintentionally it will not do anything unsafe. It also means that
 			resetting the printer has the effect of putting it into a safe state where
 			an explicit action is required to restart it.
 		
 		\subsection{Stop Button}
 			
-			The electronics break out the Mbed's reset pin to a larger and easier to
+			The electronics connect the Mbed's reset pin to a larger and easier to
 			press red button (figure \ref{fig:stop}). Because of the safe power-on
-			behaviour and to ensure correct operation in the event of a software
-			failure this button is not checked by software and is entirely the
-			responsibility of the microcontroller.
+			behaviour and indifference to software failures this button can always but
+			the system into a safe state.
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/stop.pdf}
@@ -880,77 +814,84 @@
 		\subsection{Watchdog Timer}
 			
 			The most safety critical software process is that of the heater
-			controllers. If this routine fails for any reason the heaters may be stuck
-			powered on. As over-heating is not as obvious to the operator as for
+			controller. If this routine fails for any reason the heaters may become
+			stuck powered on. As over-heating is not as obvious to the operator as for
 			example, a jammed axis, this is a particularly dangerous fault.
 			
-			To catch such faults the Mbed includes a hardware watchdog timer. This
-			device is a timer which, upon timing out, resets the system. The watchdog
+			To catch such faults the Mbed includes a hardware watchdog timer (WDT).
+			The WDT contains timer which, upon timing out, resets the system. The WDT
 			must be `fed' (reset) periodically to prevent it resetting the system. To
-			feed the watchdog specific values must be loaded in the correct order into
-			a certain register. This can catch bugs which cause the microcontroller to
-			jump to a random location, block for an excessive period or to become
-			corrupted.
+			feed the WDT specific values must be loaded in the correct order into a
+			control register. This mechanism can catch bugs which cause the routine to
+			jump to a random location, block for an excessive period or otherwise
+			become corrupted.
 			
-			The heater controller loop executes at 2Hz and so the watchdog is fed at
-			the end of each iteration of the control loop. The watchdog is set with a
-			timeout of two seconds which means that it should never come close to a
-			timeout except in the event that the heater control loop has failed or the
-			system has somehow become saturated. In the event that the watchdog resets
-			the system it enters a safe state where the heaters do not have power and
-			are allowed to cool.
+			The heater controller loop executes at 2Hz and the WDT is fed at the end
+			of each iteration of the control loop. The WDT is set with a timeout of
+			two seconds meaning that it should never come close to a timeout except in
+			the event of a control loop has failure or the system resources have
+			somehow become saturated.
+			
+			After the WDT has reset the system it enters a safe state where the
+			heaters do not have power and are allowed to cool safely.
 	
 	\section{Methodology \& Tools}
 		
 		In this section the methodologies used for the implementation of the system
 		are discussed followed by the choice of languages and development tools and
-		why they were selected. Finally the methods of debugging are described.
+		why they were selected. Finally the methods used to debug the firmware
+		running on the Mbed are described.
 		
 		\subsection{Methodology}
 		
 			Development followed an iterative, bottom-up process where components were
-			built, tested and then built up into the system as a whole. Physical
-			components and the tight integration required for microcontroller
-			development would make unit-testing impractical as units are not easily
-			isolated. As a result the iterative cycle of development followed by a
-			specifically created tests was selected for this project.
+			built, tested and then integrated into the system as a whole.
 			
-			The UDP protocol was initially prototyped in a high level language
+			Prototyping was used heavily in the development of the electronics. The
+			major parts of the circuit were initially prototyped on a solderless
+			breadboard and powered by a bench power supply (figure
+			\ref{fig:breadboard}). In these prototypes, different components could
+			easily be swapped in and out of the design and measurements easily taken
+			with the system running at different voltages.
+			
+			\begin{figure}
+				\includegraphics[width=1\textwidth]{diagrams/breadboard.pdf}
+				\caption{Breadboard with a prototype end-stop circuit}
+				\label{fig:breadboard}
+			\end{figure}
+			
+			The UDP protocol was also initially prototyped using a high level language
 			(Python) allowing quick development and testing. Some parts of the
 			prototype were subsequently modified and used as part of the off-printer
 			client software.
-			
-			Prototyping was also used in the development of the electronics. The major
-			parts of the circuit were initially prototyped on a solderless breadboard
-			and powered by a bench power supply. In these prototypes, different
-			components could easily be swapped in and out of the design and
-			measurements easily taken with the system running at different voltages.
+		
 		
 		\subsection{Languages}
 			
 			The firmware was written entirely in C. As well as a mature compiler and
 			manufacturer-provided header files, C strikes a good balance between the
 			availability of sensible abstractions and providing low-level access to
-			the underlying hardware. Thanks to manual, static memory management no
-			garbage collection or dynamic memory allocation was required which helps
-			keep system behaviour deterministic.
+			the underlying hardware. Thanks to a policy of manual, static memory
+			management no garbage collection or dynamic memory allocation was required
+			which helps make system performance more deterministic.
 			
 			The off-printer utilities are written primarily in python and include a
 			wrapper shell script written in Bash. These languages provide very high
 			levels of abstraction simplifying and accelerating development. The
 			performance costs incurred by using such languages are not relevant on a
-			modern PC for the simple tasks required.
+			modern PC for the simple tasks required and so represent a good fit for
+			the project.
 			
 		\subsection{Version Control}
 			
 			To track changes and keep snapshots of the project's code, Git was used
-			for version control. Git provides facilities for quickly comparing
-			versions of code. It also allows experimental copies or branches of the
-			code base to be created and independently modified. Useful changes within
-			branches can easily be merged back into the main version of the system and
-			past changes can also be partially reverted. These features allowed new
-			ideas to be quickly created and tested without irreversibly damaging the
-			system.
+			for version control \cite{git}. Git provides facilities for quickly
+			comparing versions of code. It also allows experimental copies or branches
+			of the code base to be created and independently modified. Useful changes
+			can be made in their own isolated branches and easily be merged back into
+			the main version of the system. Changes can also quickly reverted. These
+			features allowed new ideas to be created and tested without fear of
+			irreversibly altering the system.
 		
 		\subsection{Debugging}
 			
@@ -962,14 +903,15 @@
 			
 			The port of FreeRTOS used included a demonstration web server which was
 			modified during the first iteration of firmware development to allow
-			program variables to be exposed. Eventually the demonstration code was
-			removed and the status interface described in \S\ref{sec:statusInterface}
-			was put in it's place. Both interfaces allowed internal variables to be
-			polled, examined and graphed on a PC.
+			program variables to be exposed through this interface. Eventually the
+			demonstration code was removed and the status interface described in
+			\S\ref{sec:statusInterface} was put in it's place providing equivalent
+			facilities. Both interfaces allowed internal variables to be polled,
+			examined and graphed on a PC.
 			
 			As well as the firmware itself, its interactions with the network also
 			required debugging. To do this Wireshark, a network analyser was used.
 			This allows the individual packets sent and received by a computer to be
 			monitored, filtered and examined. It also includes protocol specific
-			features such as protocol checking and providing protocol-specific
+			features such as protocol checking and protocol-specific
 			statistics.
