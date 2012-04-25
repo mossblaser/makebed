@@ -25,7 +25,7 @@
 \ProcessOptions
 
 \LoadClass{report}
-\usepackage{a4-mancs}
+\usepackage{fullpage}
 \usepackage{graphicx}
 
 \usepackage{verbatim}
@@ -46,13 +46,33 @@
   \thispagestyle{empty}%
   \vspace*{1.4in}
   \begin{center}
-    {\large { University of Manchester\\School of Computer Science\\Project Report \@reportyear} \\
+    {\Large \textsc {University of Manchester} \\
+      \vspace*{0.1in}
+      \large {School of Computer Science} \\
+      \vspace*{0.4in}
+      \Large {Project Report \@reportyear} \\
       \vspace*{0.2in}
-      {\bf \@title} \\
-      \vspace*{0.2in}
-      Author: \@author\\
-      \vspace*{0.2in}
-      Supervisor: \@supervisor}
+      \rule{\linewidth}{0.5mm}\\
+      \vspace*{0.1in}
+      {\LARGE \bf \@title} \\
+      \rule{\linewidth}{0.5mm}\\
+      \vspace*{0.6in}
+      \begin{minipage}{0.4\textwidth}
+        \begin{flushleft} \large
+          \emph{Author:}\\
+          \@author
+        \end{flushleft}
+      \end{minipage}
+      \begin{minipage}{0.4\textwidth}
+        \begin{flushright} \large
+          \emph{Supervisor:} \\
+          \@supervisor
+        \end{flushright}
+      \end{minipage}
+      %Author: \@author\\
+      %\vspace*{0.2in}
+      %Supervisor: \@supervisor
+      }
   \end{center}
   \begin{abstract}
     \begin{center}
