@@ -10,7 +10,7 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="failedPrint.svg"
+   sodipodi:docname="handle.svg"
    inkscape:version="0.47 r22583"
    version="1.1"
    id="svg2"
@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="114.22842"
-     inkscape:cy="819.67004"
+     inkscape:zoom="1.4956828"
+     inkscape:cx="345.52892"
+     inkscape:cy="795.38842"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -103,14 +103,28 @@
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
     <inkscape:perspective
-       id="perspective3177"
+       id="perspective7885"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
        inkscape:vp_z="1 : 0.5 : 1"
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
     <inkscape:perspective
-       id="perspective3230"
+       id="perspective8781"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective10389"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective7454"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
        inkscape:vp_z="1 : 0.5 : 1"
        inkscape:vp_y="0 : 1000 : 0"
@@ -135,49 +149,43 @@
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
     <rect
-       y="114.59262"
-       x="88.58268"
-       height="225.17694"
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       id="rect7347"
        width="566.92914"
-       id="rect7107"
-       style="font-size:15px;fill:#ffffff;fill-opacity:1;stroke:none" />
-    <image
-       y="112.23209"
-       x="208.92271"
-       id="image3232"
-       height="229.89803"
-       width="326.24905"
-       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/failedPrint.jpg" />
+       height="118.89284"
+       x="88.582672"
+       y="67.975105" />
     <text
        xml:space="preserve"
-       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:NeoTech;-inkscape-font-specification:NeoTech"
-       x="288"
-       y="155.36218"
-       id="text3236"><tspan
+       style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+       x="271.40289"
+       y="184.21819"
+       id="text10477"
+       sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3238"
-         x="288"
-         y="155.36218"
-         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:LMRoman12;-inkscape-font-specification:LMRoman12">(B)</tspan></text>
+         x="271.40289"
+         y="184.21819"
+         style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         id="tspan10479">(A)</tspan></text>
+    <image
+       y="69.415672"
+       x="-569.96899"
+       id="image7456"
+       height="96.623238"
+       width="395.84357"
+       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/handle.jpg"
+       transform="scale(-1,1)" />
     <text
-       id="text3240"
-       y="325.36218"
-       x="152"
-       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:NeoTech;-inkscape-font-specification:NeoTech"
+       sodipodi:linespacing="125%"
+       id="text7460"
+       y="184.21819"
+       x="485.40289"
+       style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
        xml:space="preserve"><tspan
-         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
-         y="325.36218"
-         x="152"
-         id="tspan3242"
-         sodipodi:role="line">(A)</tspan></text>
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1.2507874;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-end:none"
-       d="m 318,151.36218 27,0"
-       id="path3244"
-       transform="translate(0,2.5390623e-6)" />
-    <path
-       id="path4224"
-       d="m 181,321.36218 27,0"
-       style="fill:none;stroke:#000000;stroke-width:1.2507874;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none" />
+         id="tspan7462"
+         style="font-size:15;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;font-family:LMRoman12;-inkscape-font-specification:LMRoman12"
+         y="184.21819"
+         x="489.64313"
+         sodipodi:role="line">(B) </tspan></text>
   </g>
 </svg>
