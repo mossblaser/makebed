@@ -2,131 +2,152 @@
 	
 	\label{sec:conclusions}
 	
-	% XXX: Eeek
 	In this chapter, the outcomes of the project are compared against the initial
-	goals. Finally, future work based on things learnt from the project and the
-	limitations of the system is suggested.
+	goals and future work is suggested based on lessons learnt and the limitations
+	the project.
 	
 	\section{Project Goals}
 		
-		The three project aims have each been addressed within the project and in
-		this section the degree to which they have been met is described.
+		The three project goals have each been addressed within the project and in
+		this section the degree to which they have been met is discussed.
 		
-		\subsection{Electronics}
+		\subsection{Electronics Replacement}
 			
 			The new electronics functionally replace all the features of the old
 			electronics and have proved reliable in testing.  With a single board the
-			system is also a lot simpler than the previous three boards (featuring a
-			custom communications protocol and extra microcontroller).  Though not
-			quite as polished as a printed circuit board (PCB), it offers a reasonable
-			amount of space for future expansion. The
+			system is also a lot simpler than the previous three boards (removing the
+			need for a custom communications protocol and extra microcontroller).
+			Though not quite as polished as a printed circuit board (PCB), it offers
+			the possibility future expansion.
 			
 			The solid state MOSFETs, used for heater control, have performed well with
 			the silent operation notable over the previous system. They also allow the
-			possibility of variable power control with only software changes.
+			possibility of variable power controls for the motors and heaters with
+			only software changes.
 			
-			The only notable issue remaining with the electronics is its compatibility
-			with certain ATX PSUs. Despite the simplicity of the fix, time was not
-			available to implement and test the change. Future work should aim to
-			address this issue.
+			The only notable issue remaining is its compatibility with certain ATX
+			PSUs. Despite the simplicity of the fix, time was not available to
+			implement and test the change. Future work should aim to address this
+			issue.
 		
-		\subsection{Firmware}
+		\subsection{Microcontroller Improvements}
 			
-			% TODO: Mbed debugging difficulties
+			The choice of using the Mbed microcontroller proved overall to be a good
+			decision. It provided all the hardware required in a small, easily
+			integrated package. The device was also fast enough to host the printer
+			software providing a major improvement over the old system. Unfortunately,
+			the lack of exposed debugging facilities significantly hindered
+			development in some areas. For example, with JTAG debugging facilities
+			available, adding a new networking stack may have been possible within the
+			project time scale.
 			
 			The firmware written for the Mbed proved to be an improvement over the
-			previous system making more detailed prints possible. It is also far more
-			modular in design making expansion and experimentation feasible. The print
-			quality achieved by the printer is now consistent with the constraints of
-			the hardware itself rather than inadequacies of the firmware.
+			previous system making more detailed prints possible due to improved
+			system performance and communications. It is also far more modular in
+			design making expansion and experimentation feasible. The print quality
+			achieved by the printer is now largely consistent with the constraints of
+			the hardware itself rather than inadequacies of the firmware or
+			microcontroller.
 			
-			FreeRTOS proved a good choice for the operating system as it provided a
+			FreeRTOS proved a good choice of operating system as it provided a
 			reliable multi-process environment. It also didn't place any restrictions
 			on development allowing straightforward code for interacting with the
 			low-level features of the Mbed.
 			
-			\uIP{}, with the exception of the TCP flow control issue, was well suited
-			to the project providing the features needed allowing straightforward
-			development. As well as this, the API it enforces (requiring protothreads
-			and protosockets) is likely to make future expansion of the network
-			interface difficult due to it's heavy restrictions. Future changes to
-			overcome these problems are discussed in \S\ref{sec:future_network}.
+			\uIP{}, though the best option within the constraints of the project due
+			to its simplicity, wasn't especially well suited to the task. The flow
+			control problem greatly diminished the utility of the stack by forcing the
+			development of a custom protocol. As well as this, the API it enforces
+			(requiring protothreads and protosockets) is likely to make future
+			expansion of the network interface difficult due to it's heavy
+			restrictions in the name of unneeded performance savings. Future changes
+			to overcome these problems are discussed in \S\ref{sec:future_network}.
 			
-			The stepper and heater control systems were adequate for this project
-			though relatively na\"ive. Possible future improvements are described in
-			\S\ref{sec:future_firmware}.
+			The stepper and heater control systems developed, though relatively
+			na\"ive, proved performant and improved on the old system. Possible future
+			improvements are described in \S\ref{sec:future_firmware}.
+			
+			Overall, the improvements made to the microcontroller and firmware were
+			successful and have had a positive effect on the performance and future
+			expandability of the printer.
 		
 		\subsection{End-stops}
 			
-			Though susceptible glitches under direct lighting, the end-stops developed
+			Though susceptible to glitches under direct lighting, the end-stops developed
 			functioned correctly and allowed automatic calibration of the axis
 			positions as required. They also obey the standard interface used by other
 			Makerbot end-stops meaning future modifications may make use of standard
 			designs.
 			
-			The need to build a control circuit resulted in another circuit board on
-			the printer reducing some of the simplicity gained from simplifying the
-			main electronics. The CAT-5 cables used to connect to the rest of the
-			electronics are also bulky, especially considering that only a single
-			signal wire is contained within each cable.
+			The need to build a control circuit rather than using pre-made PCBs
+			resulted in another circuit board on the printer reducing some of the
+			simplicity gained from simplifying the main electronics. The CAT-5 cables
+			used to connect the board to the rest of the electronics are also bulky,
+			especially considering that only a single signal wire is used within each
+			8-core cable.
 			
-			Due to time limitations, the end-stops are not used except for
-			positioning. There are other uses for the sensors which are described in
+			Due to time limitations, the end-stops were only used for positioning.
+			Though not used to their full capability, the end-stops provide a valuable
+			improvement to the printer's operation.  Other uses for the sensors and a
+			fix for the ambient lighting issues are described in
 			\S\ref{sec:future_endstop}.
 		
 	\section{Future Work}
 		
 		There are many possible avenues of future work which would either strongly
-		complement the results of this project or build directly on the system. The
-		most interesting of these possibilities are presented below.
+		complement the project or build directly on the system. The most interesting
+		of these possibilities are presented below.
 		
 		\subsection{Network Interface}
 			
 			\label{sec:future_network}
 			
-			The interface with the printer is an important part of the system.
-			Unfortunately, the interface built falls short in some areas and these
-			issues are deserving of further work.
+			The interface used to interact with the printer is an important part of
+			the system as it is both user-facing and performance critical.
+			Unfortunately, while adequately performant, the interface built falls
+			short in other areas and these issues are deserving of further work.
 			
 			\subsubsection{G-code Interface}
 				
 				No job control, security or multiple-user support is provided by the
-				G-code interface of the printer. Each of these problems restricts the
-				printer to networks of trusted users who are able to manually
-				collaborate when scheduling print jobs. Future work might build upon
-				conventional printer interfaces, for example integrating with CUPS, to
-				extend the work already done in this area.
+				G-code interface of the printer. Each of these shortcomings restricts
+				the printer to networks of trusted users who are able to collaborate to
+				manually schedule print jobs. Future work might build upon conventional
+				printer interfaces, for example integrating with the central Unix
+				printing system (CUPS), to provide a more polished user experience.
 			
 			\subsubsection{Network Stack}
 				
 				Due to the limitations and bugs in \uIP{} an alternative stack such as
 				lwIP could be used \cite{lwip}. This would provide a higher level,
-				FreeRTOS-integrated network interface and enable TCP to be used for
-				G-code transmission. This improved interface could also make other
-				improvements to the network interface significantly cleaner.
+				FreeRTOS-integrated network interface and, with its better tested flow
+				control features, would enable TCP to be used for G-code transmission.
+				This improved interface could also allow changes to the network
+				interface to be significantly cleaner to implement.
 			
 			\subsubsection{Web Interface}
 				
-				The Mbed is powerful enough to generate and host dynamic web pages. A
-				web application for control and monitoring of the printer via a web
-				interface could make the printer significantly easier to use.
+				The Mbed is powerful enough to generate and host dynamic web pages as
+				demonstrated by the FreeRTOS web server demo. A web application for
+				control and monitoring of the printer via a web browser could make the
+				printer significantly easier to use by not requiring specialist
+				software.
 		
 		\subsection{Endstop Support}
 			
 			\label{sec:future_endstop}
 			
-			To eliminate problems caused by lighting, a more complex system could be
+			To eliminate problems caused by lighting, a more advanced system could be
 			implemented.  The infra-red LEDs in the opto-interrupters could be rewired
-			such that they can be pulsed by the microcontroller. The
-			photo-transistor's signal is then checked for the presence of these
-			pulses. External light sources are unlikely to contain the same pulses and
-			so the system can be sure of the origin of the light passing onto the
-			photo-transistor.
+			such that they are pulsed, the photo-transistor's signal is then checked
+			by the microcontroller for the presence of these pulses. External light
+			sources are unlikely to contain matching pulses and so the system can be
+			sure of the origin of the light passing into the photo-transistor.
 			
 			As well as this, the end-stops could be used for safety to detect when the
 			axis have moved outside their operating area unexpectedly. This could help
-			prevent damage to the printer when G-code with unreachable coordinates are
-			used.
+			prevent damage to the printer and ensure safer operation when G-code with
+			unreachable coordinates are used or mechanical failures occur.
 			
 		\subsection{G-Code Support}
 			
@@ -139,28 +160,41 @@
 			
 			\label{sec:future_firmware}
 			
-			% TODO: Cite motion compensation
+			Two major improvements could be made to the firmware to better account for
+			the mechanical properties of the printer. These are outlined below.
 			
-			Complex stepper control systems don't often step at a constant rate.
-			Instead the speed is increased and decreased gradually which takes
-			advantage of stepper motors' increased talk at low speeds. Such a system
-			would also require more precise control of the extruder as the amount of
-			plastic required would vary throughout each line segment.
-			
-			% TODO: Cite PID hardness with variable power
+			Complex stepper control systems take into account the properties of
+			stepper motors and do not step at a constant rate.  Instead, the speed is
+			increased and decreased gradually making use of the increased torque
+			available at low speeds during acceleration and deceleration. Such
+			behaviours unfortunately also require more precise control of the extruder
+			as the amount of plastic required throughout each line segment would vary
+			with the speed of movement.
 			
 			The heaters could potentially respond more appropriately if variable
 			amounts of power could be supplied (rather than just `on' and `off'). This
-			requires PWM support to be added to allow the heater to be controlled
-			variably. PID controllers often require complex additions to enable
-			control of such systems and require careful set up.
+			requires PWM support to be added and changes made to the PID controller.
+			PID controllers for variable power systems often require complex additions
+			to function correctly and require careful set up.
 			
 		\subsection{Mechanical Improvements}
 			
-			As well as the aspects focused on in this project, many improvements can
+			As well as the aspects focused on in this project, many improvements could
 			be made by modifying the printer's mechanical components. This work is the
 			focus of many hobbyists and organisations with improvements in further
-			generations of Makerbot being made. Porting promising ideas from other
-			printers could provide valuable improvements in performance.
-			
-			% XXX: Expand?
+			generations of the Makerbot design building on these ideas. Porting
+			promising ideas from other printers could provide valuable improvements in
+			performance complementing the improved control of the printer achieved in
+			this project.
+	
+	\section{Final Conclusions}
+		
+		The limitations of the network interface are probably the most significant
+		but, with some modest restrictions, are not fatal. Future work in this area
+		could address these limitations and explore possibilities for network
+		printing with 3D printers.
+		
+		Overall, the project has been a success with the performance and
+		extensibility of the printer being improved. As shown in appendix
+		\ref{sec:workflow}, the printer is usable and follows essentially the same
+		usage pattern as other 3D printers.
