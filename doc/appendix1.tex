@@ -7,8 +7,7 @@
 	production of a 3D model of the design. The next step is to convert the model
 	into G-code instructions and send them to the printer. A description is then
 	given of the key phases of the printing process. Once the print is complete,
-	the printed object is finished after a small amount of cleaning up if
-	required.
+	the printed object is ready after a small amount of cleaning if required.
 	
 	A simple cuboid is used as an example throughout as the process of designing
 	complex 3D models is not the focus of this report. The cube will measure
@@ -24,7 +23,7 @@
 		websites such as Thingiverse \cite{thingiverse}.
 		
 		OpenSCAD is a constructive-solid-geometry modelling tool that takes
-		descriptions of 3D models as text and output them as STL files
+		descriptions of 3D models as text and outputs them as STL files
 		\cite{openscad}. In order to define the cube model we specified, the
 		following code is used:
 		\begin{verbatim}
@@ -33,7 +32,7 @@
 		Typing this into the OpenSCAD GUI allows you to see a rendered version of
 		the object by choosing `Compile and Render' from the `Design' menu (figure
 		\ref{fig:openSCAD}).  The
-		object can now be exported to an STL file ready for G-code generation by
+		object can be exported to an STL file ready for G-code generation by
 		choosing `Export as STL' from the same menu.
 		
 		\begin{figure}
@@ -48,18 +47,17 @@
 		generated. ReplicatorG provides a more user-friendly front-end to the
 		Skeinforge G-code generator \cite{replicatorg}. Skeinforge relies on a
 		calibrated printer profile to guide its decisions. A profile was produced
-		for the printer as part of the project which is compatible with ReplicatorG
-		27 and Skeinforge 35 which must be copied into
-		\begin{verbatim}
-			replicatorg-0027/skein_engines/skeinforge-35/skeinforge_application/prefs
+		compatible with ReplicatorG 27 and Skeinforge 35 as part of the project
+		which must be copied into \begin{verbatim}
+		replicatorg-0027/skein_engines/skeinforge-35/skeinforge_application/prefs
 		\end{verbatim}
 		
 		Once ReplicatorG has been started, the STL file from the previous step is
 		loaded using `Open' from the `File' menu (figure \ref{fig:replicatorG}).
 		Once loaded, the model should be positioned centrally on the platform using
 		the tools on the right of the preview. Clicking `Move' provides features to
-		`Center' the model and `Put on Platform' to ensure the model is not going to
-		be printed in mid-air.
+		`Center' the model and `Put on Platform' to ensure the model is not
+		printed in mid-air.
 		
 		\begin{figure}
 			\includegraphics[width=1\textwidth]{diagrams/replicatorG.pdf}
@@ -70,8 +68,8 @@
 		Once the model is correctly positioned, the G-code is generated using the
 		`Generate GCode' button. A dialogue will prompt for a profile to be
 		selected, `SF35-cupcake-ABP-raftless' should be used (figure
-		\ref{fig:skeinforge}). This process can take some time for complex models
-		and produces a \verb|.gcode| file containing the printer data in the same
+		\ref{fig:skeinforge}). This process can take some time for complex models.
+		A \verb|.gcode| file is produced containing the printer data in the same
 		directory and with the same name as the STL file.
 		
 		\begin{figure}
@@ -93,70 +91,46 @@
 		
 	\section{G-Code Streaming}
 		
-		UDP and TCP interfaces are provided for sending the G-code files generated
-		by Skeinforge to the printer. Due to problems with the libraries used in the
-		project, the TCP interface is currently unusable for printing purposes but
-		is shown for future reference.
-		
 		Before any G-code is sent to the printer, the printer should me moved to its
 		`home' position (figure \ref{fig:homing}). This can be done manually by hand
-		or automatically by sending a G-code file containing automatic homing
-		instructions\footnote{Because the Z-axis end-stops did not have a trigger
-		fitted during the project, this process is currently only possible for the X
-		and Y axes. See appendix \ref{sec:gcode_home_xy} for an example of such an
-		automatic homing G-code file.}.
+		or automatically by sending a G-code file to the printer containing
+		automatic homing instructions\footnote{See appendix \ref{sec:gcode_home_xy}
+		for an example of such an automatic homing G-code file.}.
 		
 		\begin{figure}
 			\includegraphics[width=1\textwidth]{diagrams/homing.pdf}
 			\caption{Extruder placed in the homing bracket}
 			\label{fig:homing}
 		\end{figure}
+		
+		The \verb|makebed.py| utility is used to stream a G-code file to the
+		printer:
+		\begin{verbatim}
+			makebed.py send cube.gcode
+		\end{verbatim}
+		This command will block until all print data is sent to the printer.
+		
+		Complete documentation and safety advice for using \verb|makebed.py| to send
+		files to the printer is provided in appendix \ref{sec:makebedDoc}.
 			
-		\subsection{UDP}
-			
-			The \verb|makebed.py| utility is used to stream a G-code file to the
-			printer:
-			\begin{verbatim}
-				makebed.py send cube.gcode
-			\end{verbatim}
-			This command will block until all print data is sent to the printer.
-			
-			Complete documentation and safety advice for using \verb|makebed.py| to
-			send files to the printer is provided in appendix \ref{sec:makebedDoc}.
-			
-		\subsection{TCP}
-			
-			The printer listens on TCP port 1818 for incoming connections. G-code sent
-			to the printer via this port is executed directly and no special software
-			is required. Netcat (\verb|nc|) is a standard Unix tool which can be used
-			for this purpose like so:
-			\begin{verbatim}
-				nc -q 0 192.168.3.100 1818 < cube.gcode
-			\end{verbatim}
-			Where 192.168.3.100 is the IP address of the printer.
-			
-			Due to problems with TCP flow control in \uIP{}, this interface is
-			currently not usable for printing but should become available in the
-			future when the issue in \uIP{} is addressed.
-	
 	\section{Printing Process}
 		
-		The G-code generated by Skeinforge using the profile created in this project
+		The G-code generated by Skeinforge profile created in this project
 		goes through several phases during a print. Each of these is described in
-		order in the following subsections.
+		the following subsections.
 		
 		\subsection{Warm Up \& Self-Clean}
 			
 			The printer first enables the platform and extruder heaters setting the
 			temperatures to $120\dC$ and $225\dC$ respectively. Next, it moves the
-			extruder to the heating position to the left of the platform and in front
+			extruder to the heating position, to the left of the platform and in front
 			of the rubber cleaning peg. The printer then stays in this position until
-			both heaters are up to temperature (taking around 10 to 15 minutes).
+			both heaters are up to temperature (taking around 10 minutes).
 			
 			Some plastic may ooze from the extruder during heating leaving an unknown
 			quantity of plastic in the extruder's heating chamber. Before printing,
-			the extruder must be filled with plastic and any excess wiped off against
-			the cleaning peg (figure \ref{fig:selfClean}).
+			the extruder is refilled with plastic and any excess wiped off against the
+			cleaning peg (figure \ref{fig:selfClean}).
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/selfClean.pdf}
@@ -186,8 +160,7 @@
 			Once the border is drawn, the extruder prints out the first layer of the
 			object (figure \ref{fig:firstLayer}). This is done at a slower speed than
 			other layers allowing more plastic to be deposited producing thicker
-			lines. This helps the print adhere better to the platform and also
-			improves the finish of the surface produced.
+			lines helping the print adhere better to the platform.
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/firstLayer.pdf}
@@ -197,15 +170,14 @@
 			
 		\subsection{Main Printing Phase}
 			
-			During this phase the model is printed layer by layer. Each layer is
-			usually printed first by drawing three solid shells and then filling in
-			the centre. Layers near the top and bottom of the model are filled
-			completely to produce a solid finish.
-			
-			Layers inside the model are filled with a hexagonal `fill pattern' (figure
-			\ref{fig:fillPattern}). The fill pattern is not visible when the object is
-			completed. It is used as it significantly reduces the time and plastic
-			required to fill objects while still being strong.
+			During this phase, the model is printed layer by layer. Each layer is
+			usually printed first by drawing three solid outer `shells' and then
+			filling in the centre. Layers near the top and bottom of the model are
+			filled completely to produce a solid finish. Layers inside the model are
+			filled with a hexagonal `fill pattern' (figure \ref{fig:fillPattern}). The
+			fill pattern is not visible when the object is completed. It is used as it
+			significantly reduces the time and plastic required to fill objects while
+			still retaining strength.
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/fillPattern.pdf}
@@ -213,15 +185,16 @@
 				\label{fig:fillPattern}
 			\end{figure}
 			
-			The cube takes around 8 minutes to print.
+			The cube takes about 8 minutes to print.
 		
 		\subsection{Cool-down, Eject and Self-Clean}
 			
-			Once the print completes, the platform is allowed to cool down to allow
+			Once the print completes, the platform is cooled down to allow
 			the object to solidify completely. This takes around 2 minutes.
 			
 			When the object has cooled, the platform conveyor is activated and the
-			object is peeled off the platform and deposited in front of the printer.
+			object is peeled off the platform and deposited in front of the printer
+			(figure \ref{fig:eject}).
 			
 			\begin{figure}
 				\includegraphics[width=1\textwidth]{diagrams/eject.pdf}
@@ -235,11 +208,9 @@
 			Finally, the printer returns to the home position and the heaters and
 			power supply turned off. If another print job is started at this point,
 			the extruder will still be hot but the platform, having cooled slightly,
-			will need to partly reheated before the print can begin.
-			
-			Many prints can be run successively with no human intervention unless a
-			print fails.
-			
+			will need to partly reheated before the print can begin. Many prints can
+			be run successively in this way with no human intervention unless a print
+			fails.
 		
 	\section{Final Print}
 		
@@ -247,8 +218,8 @@
 		slightly soft in some places. Care should be taken when handling the object
 		until it has fully cooled.
 		
-		The border can be snapped off the printed cube and the process is complete.
-		For more complex models, some strings of plastic left during printing
+		The border printed at the start can be snapped off and the process is
+		complete.  For more complex models, strings of plastic left during printing
 		(figure \ref{fig:stringing}) may also need to be removed using a knife.
 		
 		\begin{figure}
