@@ -35,19 +35,12 @@
 				\addlinespace
 				\verb|makerbot/makerbot.{c,h}| & Print manager/scheduler \\
 				\addlinespace
-				\verb|network/clock-arch.h| & \uIP{} timer definitions \\
-				\verb|network/clock.h| & \uIP{} clock interface \\
 				\verb|network/emac.h| & FreeRTOS EMAC driver \\
 				\verb|network/EthDev*.h| & Ethernet driver \\
-				\verb|network/lc*.h| & \uIP{} local continuations library \\
 				\verb|network/network.{c,h}| & Network interface \uIP{} `application' \\
 				\verb|network/network_uip_state.h| & State struct for \uIP{} `application' \\
 				\verb|network/network_debug.{c,h}| & Debugging/Status interface \\
 				\verb|network/network_gcode.{c,h}| & G-code transmission interface \\
-				\verb|network/psock.{c,h}| & \uIP{} protosockets library \\
-				\verb|network/pt.h| & \uIP{} protothreads library \\
-				\verb|network/timer.{c,h}| & \uIP{} timer library \\
-				\verb|network/uip*.{c,h}| & \uIP{} \\
 				\addlinespace
 				\verb|pid/pid.{c,h}| & PID controller \\
 				\addlinespace
@@ -65,7 +58,7 @@
 				\bottomrule
 			\end{tabular}
 			
-			\caption{Source file listing}
+			\caption{Key source file listing}
 			\label{tab:files}
 		\end{table}
 	
@@ -110,8 +103,8 @@
 				\item In the Makefile, set \verb|RTOS_SOURCE_DIR| to the \verb|Source|
 				directory of your FreeRTOS distribution.
 				
-				\item In the Makefile, set the path of the Mbed drive on your computer
-				in the \verb|install: all| make rule.
+				\item In the Makefile, set the path of the Mbed mount point on your
+				computer in the \verb|install: all| make rule.
 				
 				\item Run \verb|make| to build the firmware
 				
@@ -127,8 +120,8 @@
 			
 			To set the system's IP, net-mask and MAC addresses, the definitions
 			\verb|configIP_ADDR0-3|, \verb|configIP_ADDR0-3| and
-			\verb|configMAC_ADDR0-5| can be set in \verb|FreeRTOSConfig.h|. DHCP is
-			not supported.
+			\verb|configMAC_ADDR0-5| can be set as the contents of the dot-file
+			\verb|FreeRTOSConfig.h|. DHCP is not supported.
 			
 	
 	\section{Utilities}
@@ -178,8 +171,8 @@
 			If the printer is suffering buffer underruns, the rate at which the
 			utility polls the printer can be increased with the \verb|-p| option which
 			takes a number of seconds (defaulting to 0.1) to wait between poll
-			requests. This should not be required for most prints and can result in a
-			large amount of network traffic being generated.
+			requests. This should not need changing for most prints and can result in
+			a large amount of network traffic being generated if set very low.
 			
 			\subsubsection{Safety}
 				
@@ -203,7 +196,7 @@
 			The \verb|-p| option causes the printer to be repeatedly polled for status
 			information until the utility is terminated.
 			
-			The output of this utility is compatible with GNUPlot.
+			The output of this utility is compatible with GNU Plot.
 		
 		\subsection{makebed\_live.sh}
 			
@@ -211,4 +204,6 @@
 			
 			To provide a live view of the printer's status during a print, a shell
 			script has been provided which plots live data from the printer's status
-			interface. It is a simple wrapper for the \verb|makebed.sh get| command.
+			interface. It is a simple wrapper for the \verb|makebed.sh get| command. A
+			screen shot is shown in figure \ref{fig:makebedlive} on page
+			\pageref{fig:makebedlive}.
