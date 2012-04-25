@@ -5,7 +5,7 @@
 	
 	\section{Language}
 		
-		The G-code machine is described in \S\ref{sec:gcodemachine}. The following
+		The G-code machine is implemented as in \S\ref{sec:gcodemachine}. The following
 		subsections specify the syntax and registers of the language.
 		
 		\subsection{BNF}
@@ -93,15 +93,15 @@
 		\subsection{`G' Actions}
 			
 			\gcodeaction{G0 \& G1}{Move extruder to coordinate}{
-				G1 moves the extruder through a straight line from the current position
-				to the position given in the arguments.
+				G1 moves the extruder through a straight line in 3D space from the
+				current position to the position given in the arguments.
 				
-				G0 is included for compatibility reasons but does the same thing as G1.
+				G0 is included for compatibility reasons and does the same thing as G1.
 			}{
 				\gcodearg{X}{X-coordinate}{Current unit}
 				\gcodearg{Y}{Y-coordinate}{Current unit}
 				\gcodearg{Z}{Z-coordinate}{Current unit}
-				\gcodearg{F}{Feed rate (speed) of movement}{Current units per minute}
+				\gcodearg{F}{Feed rate (speed) of movement}{Current unit per minute}
 			}
 			
 			\gcodeaction{G4}{Sleep}{
@@ -111,8 +111,8 @@
 			}
 			
 			\gcodeaction{G20 \& G21}{Set unit}{
-				Set the units used to specify movements to inches or milimeters
-				respectively. The default is inches for historical reasons.
+				Set the unit used to specify movements to inches or milimeters
+				respectively.
 			}{
 				\gcodenoargs
 			}
@@ -148,13 +148,13 @@
 			}
 			
 			\gcodeaction{M-1 \& M0}{Turn the PSU on/off}{
-				M-1 is a custom extension to the standard G-code actions.
-				
 				Turns the PSU on and off respectively. Note that if the PSU is not
 				powered on, many actions may block indefinately.
 				
 				This action blocks until mains power is available if the
 				microcontroller is being powered via USB.
+				
+				M-1 is a custom extension to the standard G-code actions.
 			}{
 				\gcodenoargs
 			}
@@ -168,8 +168,7 @@
 			}
 			
 			\gcodeaction{M17 \& M18}{Power stepper motors on/off}{
-				Enable or disable power to all stepper motor drivers. If the stepper
-				motors are powered they cannot be moved manually. The steppers are
+				Enable or disable power to all stepper motor drivers. The steppers are
 				automatically powered on when moved.
 			}{
 				\gcodenoargs
@@ -354,10 +353,8 @@
 		
 		\subsection{Home X \& Y Axes}
 			
-			Home the X \& Y axes using the end stops. Assumes that the Z-axis starts at
-			the correct height to fit in the homing bracket. Raise the nozzle out
-			of the homing bracket, home to the endstops and then place the nozzle in
-			the calibration bracket.
+			Home the X \& Y axes using the end stops. Assumes that the Z-axis is
+			initially placed at the correct height to fit in the homing bracket.
 			
 			\begin{verbatim}
 				(Power on)
