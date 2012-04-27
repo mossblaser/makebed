@@ -67,19 +67,19 @@
 			the window re-opens by issuing new empty packets with increasing sequence
 			numbers.
 			
-			Exponential back-off is not used in an effort to to reduce the latency
+			Exponential back-off is not used in an effort to reduce the latency
 			between the window opening and sending the next piece of data. Shorter
 			timeouts result in more traffic and less delay in restarting transmission
-			after a zero window. Longer timeouts result in less wasted traffic but if
-			too long can result in buffer underruns occurring in the printer before
-			more data is sent after a zero window.
+			after a zero window. Longer timeouts result in less wasted traffic but, if
+			too long, can result in buffer underruns before more data is sent after a
+			zero window.
 			
 		\subsection{Errors}
 			
 			If the printer receives some unexpected data (for example if the printer
 			is reset and receives a datagram from the middle of a transmission before
 			it was reset), an acknowledgement with sequence number 0 and a zero-window
-			is returned Indicating a terminal error.
+			is returned indicating a terminal error.
 			
 	\section{Status Monitoring Protocol}
 		
@@ -91,7 +91,7 @@
 		\ref{tab:statuscmds} lists the commands and their responses.
 		
 		The `Integer $\times100$' format is used for decimal values as printing
-		floating point values is not supported by the standard libraries used. The
+		floating point values are not supported by the standard libraries used. The
 		floating point value is multiplied by 100 and truncated to an integer.
 		
 		\begin{table}

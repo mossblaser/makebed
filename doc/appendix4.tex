@@ -70,7 +70,7 @@
 		\label{sec:gcodeactions}
 		
 		Each instruction should write a value to the `G' or `M' register. Depending
-		on the value written, the printer will carry out a diferrent action. These
+		on the value written, the printer will carry out a different action. These
 		actions are specified below.
 		
 		\newcommand{\gcodeaction}[4]{
@@ -107,11 +107,11 @@
 			\gcodeaction{G4}{Sleep}{
 				Pause the printer for a specified period.
 			}{
-				\gcodearg{P}{Period}{Miliseconds}
+				\gcodearg{P}{Period}{Milliseconds}
 			}
 			
 			\gcodeaction{G20 \& G21}{Set unit}{
-				Set the unit used to specify movements to inches or milimeters
+				Set the unit used to specify movements to inches or millimetres
 				respectively.
 			}{
 				\gcodenoargs
@@ -149,7 +149,7 @@
 			
 			\gcodeaction{M-1 \& M0}{Turn the PSU on/off}{
 				Turns the PSU on and off respectively. Note that if the PSU is not
-				powered on, many actions may block indefinately.
+				powered on, many actions may block indefinitely.
 				
 				This action blocks until mains power is available if the
 				microcontroller is being powered via USB.
@@ -177,7 +177,7 @@
 			\gcodeaction{M101, M102 \& M103}{Extruder motor forward/backward/off}{
 				Set the extruder motor moving forward, backward or not at all
 				respectively. M102 is not supported by the system and will raise an
-				error and stop the motor motor.
+				error and stop the motor.
 				
 				The extruder should not be turned on unless it has heated up enough to
 				melt the incoming filament.
@@ -186,8 +186,8 @@
 			}
 			
 			\gcodeaction{M104}{Set extruder temperature}{
-				Set the target temperature of the extruder. This action does not block,
-				to wait for heating to complete use M6.
+				Set the target temperature of the extruder. This action does not block.
+				To wait for heating to complete use M6.
 			}{
 				\gcodearg{S}{Target temperature}{\dC}
 			}
@@ -206,15 +206,15 @@
 			}
 			
 			\gcodeaction{M109}{Set platform temperature}{
-				Set the target temperature of the platform. This action does not block,
-				to wait for heating to complete use M6.
+				Set the target temperature of the platform. This action does not block.
+				To wait for heating to complete use M6.
 			}{
 				\gcodearg{S}{Target temperature}{\dC}
 			}
 	
 	\section{Examples}
 		
-		The following example G-code files show how G-code can be used for various
+		The following examples of G-code files show how it can be used for various
 		useful tasks.
 		
 		\subsection{Power On, Heat Up}
@@ -256,7 +256,7 @@
 		
 		\subsection{Skeinforge Print Prefix}
 			
-			Prifix added to all print jobs to heat up and prepare the printer before a
+			Prefix added to all print jobs to heat up and prepare the printer before a
 			print job.
 			
 			\begin{verbatim}
@@ -385,7 +385,7 @@
 		\subsection{Circle}
 			
 			Plots a circle segmented into lines using the X and Y axes. Assumes the
-			extruder is hovering safely above the center of the platform before
+			extruder is hovering safely above the centre of the platform before
 			moving.
 			
 			\begin{verbatim}

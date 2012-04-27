@@ -140,7 +140,7 @@
 			The RepRap generation 3 firmware on the motherboard uses a custom serial
 			protocol to communicate with the host computer. This protocol is designed
 			to be simple for the microcontroller to use and, as well as various
-			diagnostic features contains a compressed version of G-code.
+			diagnostic features, contains a compressed version of G-code.
 			
 		\subsection{G-Code}
 			
@@ -172,9 +172,9 @@
 				\reg{Z}{0.3}
 			\end{gcoderegs}
 			
-			In this example, the action is determined based on the `G' register to be
-			`move to' and the `X', `Y' and `Z' registers determine where to move and
-			`F' at what speed. If this is followed by \verb|M104 S225| then the
+			In this example, the action is `move to' as determined by the `G'
+			register. The `X', `Y' and `Z' registers determine where to move and
+			`F' determines the speed. If this is followed by \verb|M104 S225| then the
 			following registers will be set:
 			
 			\begin{gcoderegs}
@@ -203,7 +203,7 @@
 			
 			Once again the machine determines the action to be `move to' and moves to
 			the position defined by `X', `Y' and `Z' at the speed in `F', ignoring the
-			`S' register.  Because the values of `X', `Y' have not been changed, the
+			`S' register.  Because the values of `X' and `Y' have not been changed, the
 			machine will move only the `Z' axis.
 		
 		\subsection{Support Software}
@@ -276,13 +276,13 @@
 		
 		\subsection{Differences With Non-Real-Time Systems}
 			
-			Real-time operating systems, like other operating systems, provides a
+			Real-time operating systems, like other operating systems, provide a
 			scheduler which allows multiple processes to run as if simultaneously. It
 			also provides facilities for communicating between these processes. Unlike
 			regular operating systems, an RTOS can provide exact timing guarantees.
-			They are also generally be targeted at microcontroller development with
-			tight resource constraints and without the need for extra hardware such as
-			a memory management unit (MMU).
+			They are also generally targeted at microcontroller development with tight
+			resource constraints and without the need for extra hardware such as a
+			memory management unit (MMU).
 			
 		\subsection{FreeRTOS}
 			
@@ -325,4 +325,4 @@
 				provide timing guarantees on timeouts waiting for these functions to
 				complete. It also allows a task's priority to be temporarily raised when
 				resumed after a blocking call, ensuring it is scheduled as soon as
-				possible, reducing the delay before any new data data is processed.
+				possible, reducing the delay before any new data is processed.
