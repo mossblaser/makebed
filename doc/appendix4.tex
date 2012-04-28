@@ -26,7 +26,10 @@
 		
 		\subsection{Register Types \& Behaviour}
 			
-			\begin{table}[H]
+			Table \ref{tab:gcoderegisters} shows the type and reset behaviour of each
+			of the G-code registers.
+			
+			\begin{table}
 				\centering
 				\begin{tabular}{c l l}
 					\toprule
@@ -260,8 +263,6 @@
 			print job.
 			
 			\begin{verbatim}
-				(**** begin initilization commands ****)
-				
 				(power on)
 				M-1
 				
@@ -295,8 +296,6 @@
 				(Go to origin)
 				(M101)
 				(G1 X0 Y0 Z0 F2400.0)
-				
-				(**** end initilization commands ****)
 			\end{verbatim}
 		
 		\subsection{Skeinforge Print Postfix}
@@ -305,8 +304,6 @@
 			printing.
 			
 			\begin{verbatim}
-				(**** begin ending commands ****)
-				
 				G1 X0 Y40 F3300.0 (move platform to ejection position)
 				(cool down platform)
 				M104 S225
@@ -347,8 +344,6 @@
 				
 				(power off)
 				M0
-				
-				(**** end ending commands ****)
 			\end{verbatim}
 		
 		\subsection{Home X \& Y Axes}
