@@ -23,9 +23,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.77119342"
-     inkscape:cx="441"
-     inkscape:cy="889"
+     inkscape:zoom="1.5423868"
+     inkscape:cx="435.61145"
+     inkscape:cy="880.89963"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -173,7 +173,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -186,15 +186,15 @@
        style="fill:#ffffff;fill-opacity:1;stroke:none"
        id="rect6660"
        width="566.92914"
-       height="193.52209"
+       height="146.8412"
        x="88.58268"
-       y="66.073647" />
+       y="89.414093" />
     <image
-       y="59.900658"
-       x="232.31032"
+       y="87.262749"
+       x="269.26602"
        id="image9095"
-       height="206.92305"
-       width="279.47385"
+       height="152.19887"
+       width="205.56242"
        xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/mbed.jpg" />
   </g>
 </svg>

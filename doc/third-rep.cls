@@ -53,7 +53,7 @@
       \Large {Project Report \@reportyear} \\
       \vspace*{0.2in}
       \rule{\linewidth}{0.5mm}\\
-      \vspace*{0.1in}
+      \vspace*{0.15in}
       {\LARGE \bf \@title} \\
       \rule{\linewidth}{0.5mm}\\
       \vspace*{0.6in}

@@ -33,8 +33,8 @@
      inkscape:guide-bbox="true"
      units="mm"
      inkscape:showpageshadow="false"
-     inkscape:window-width="1672"
-     inkscape:window-height="1023"
+     inkscape:window-width="1912"
+     inkscape:window-height="1173"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0">
@@ -220,6 +220,17 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath2852">
+      <rect
+         y="104.18584"
+         x="88.580444"
+         height="210.04393"
+         width="566.92914"
+         id="rect2854"
+         style="fill:#ffffff;fill-opacity:1;stroke:none" />
+    </clipPath>
   </defs>
   <metadata
      id="metadata7">
@@ -229,7 +240,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -242,15 +253,16 @@
        style="fill:#ffffff;fill-opacity:1;stroke:none"
        id="rect6660"
        width="566.92914"
-       height="233.80505"
+       height="209.09349"
        x="88.580444"
-       y="80.424721" />
+       y="105.13628" />
     <image
        y="78.826935"
        x="165.77852"
        id="image2922"
        height="237.00053"
        width="412.53299"
-       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/eject.jpg" />
+       xlink:href="file:///home/jonathan/Programing/mbed/makebed/doc/images/eject.jpg"
+       clip-path="url(#clipPath2852)" />
   </g>
 </svg>
