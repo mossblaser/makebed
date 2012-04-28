@@ -14,7 +14,7 @@
 		which provides an interface between the end-stops and stepper controller
 		boards.
 		
-		The main board will host the Mbed, electronics for controlling heaters and
+		The main board hosts the Mbed, electronics for controlling heaters and
 		motors, reading from temperature sensors and connections for the stepper
 		controller boards (figure \ref{fig:electronicsDiagram}). A second board is
 		used for the end-stop electronics as these parts may be replaced separately
@@ -108,7 +108,7 @@
 			\end{figure}
 			
 			The behaviour of a MOSFET when the gate is left floating (disconnected) is
-			generally undefined and can damage the component. When the Mbed powers on
+			generally undefined and can damage the component. When the Mbed powers on,
 			its output pins default to a floating state which could cause a MOSFET to
 			unexpectedly switch on or become damaged. To prevent this happening the
 			gate is connected to ground via a resistor. When the output pin is
@@ -305,10 +305,10 @@
 			as the process of uploading code to be compiled is laborious and the
 			compilation options restricted.
 			
-			The CodeSourcery G++ None-EABI toolchain includes a GCC ARM cross-compiler,
-			linker and LibC compiled for various ARM based microcontrollers. It was
-			selected over closed-source alternatives because it has a large community of
-			users and produces reasonable code.
+			The CodeSourcery G++ None-EABI toolchain includes a GCC ARM
+			cross-compiler, linker and LibC compiled for various ARM based
+			microcontrollers. It was selected over closed-source alternatives because
+			it has a large community of users and produces good quality code.
 			
 			An unofficial port of FreeRTOS for the Mbed is available designed for the
 			CodeSourcery toolchain. It provides a base FreeRTOS configuration with a
@@ -463,7 +463,7 @@
 				
 				FreeRTOS provides timing guarantees for scheduling arbitrary delays
 				within tasks. Unfortunately, this uses the system timer which ticks at
-				$1\kHz$ which is too far low for the frequencies such as those discussed
+				$1\kHz$ which is far too low for the frequencies such as those discussed
 				above. 
 				
 				According to the Nyquist-Shannon sampling theorem a frequency of $f\Hz$
@@ -875,7 +875,7 @@
 			management no garbage collection or dynamic memory allocation was required
 			which helps make system performance more deterministic.
 			
-			The off-printer utilities are written primarily in python and include a
+			The off-printer utilities are written primarily in Python and include a
 			wrapper shell script written in Bash. These languages provide very high
 			levels of abstraction simplifying and accelerating development. The
 			performance costs incurred by using such languages are not relevant on a
