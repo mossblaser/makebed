@@ -28,7 +28,7 @@
 			\subsubsection{Axes of Movement}
 				
 				There are three axes of movement in the Makerbot. Two horizontal axes
-				along which the platform can travel, the X and Y, axes, and one vertical
+				along which the platform can travel, the X- and Y-axes, and one vertical
 				axis along which the extruder is moved, the Z-axis.
 				
 				The X and Y axes move along rails and are belt driven by a stepper
@@ -59,17 +59,17 @@
 				assumption does not hold if the motor is unable to provide enough torque
 				(turning power) to move its load. As a result, the motors used by the
 				printer are designed to be powerful enough to reliably provide the
-				torque needed so that sensors are not needed to judge the position of
+				torque required so that sensors are not needed to judge the position of
 				the system.
 				
 			\subsubsection{Extruder}
 				
 				The extruder uses a simple DC motor and gearbox to force a filament of
 				acrylonitrile butadiene styrene (ABS) plastic, the material from which
-				Lego is made, into a heater and out of a fine nozzle (figure
-				\ref{fig:extruder}).  A temperature sensor is installed in the heater
-				allowing the temperature to be carefully controlled to ensure an even
-				flow.
+				Lego\textsuperscript{\textregistered} is made, into a heater and out of
+				a fine nozzle (figure \ref{fig:extruder}).  A temperature sensor is
+				installed in the heater allowing the temperature to be carefully
+				controlled to ensure an even flow.
 				
 				\begin{figure}
 					\includegraphics[width=1\textwidth]{diagrams/extruder.pdf}
@@ -132,7 +132,7 @@
 			microcontroller must be used.
 			
 			3D printers typically receive print data in the form of G-code files
-			\cite{reprapgcode}. G-code is the de facto standard for controlling
+			\cite{reprapgcode}. G-code is the \emph{de facto} standard for controlling
 			computer numerical control (CNC) machines such as 3D printers, laser
 			cutters and lathes. The language is human readable and defines
 			step-by-step instructions for machine actions such as `move to (X,Y,Z)' or
@@ -270,7 +270,7 @@
 			
 	\section{Real-Time Operating Systems}
 		
-		The firmware consists of various complimentary parts (such as communication
+		The firmware consists of various complementary parts (such as communication
 		and control), which are easily managed with the use of an operating system.
 		Due to the absolute timing and performance requirements FreeRTOS, a
 		real-time operating system (RTOS), was selected.
